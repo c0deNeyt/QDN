@@ -1,0 +1,50 @@
+
+
+/*=====================
+    INPUT BOX STYLE 
+=======================*/
+#issuedByEmpTeam, #issuedByEmpName,
+#issuedToEmpTeam, #issuedToEmpName,
+#teamResp, #station, #packageType,
+#dateTime  {
+    text-align: center;
+  }
+#teamResp, #station, #packageType,
+#dateTime  {
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-radius: 0;
+    cursor: not-allowed;
+  }
+
+
+
+
+body {
+  /* Disables pull-to-refresh but allows overscroll glow effects. */
+ overscroll-behavior-y: contain;
+ /* Location of the image */
+ background-image: url(../images/BG.jpg);
+ 
+ /* Image is centered vertically and horizontally at all times */
+ background-position: center center;
+ 
+ /* Image doesn't repeat */
+ background-repeat: no-repeat;
+ 
+ /* Makes the image fixed in the viewport so that it doesn't move when 
+    the content height is greater than the image height */
+ background-attachment: fixed;
+ 
+ /* This is what makes the background image rescale based on its container's size */
+ background-size: cover;
+ 
+ /* Pick a solid background color that will be displayed while the background image is loading */
+ background-color:#464646;
+ 
+ /* SHORTHAND CSS NOTATION
+  * background: url(background-photo.jpg) center center cover no-repeat fixed;
+  */
+  font-size: 1rem;
+}

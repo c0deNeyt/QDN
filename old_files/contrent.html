@@ -1,0 +1,138 @@
+  <!--
+              ================
+                ROW #2
+              ================  
+              -->  
+              <div class="row col-md-12 ">
+                <div class="col-md-4">
+                  <label for="issuedByEmpNumber" class="col-form-label">Issued By:</label>
+                  <input id="issuedByEmpNumber" type="number" class="form-control" placeholder="Employee #" required/>
+                  <div class="invalid-feedback">
+                    Required field.
+                  </div>
+                </div>
+                <div class="col-md-5">
+                  <label class="col-form-label">Emp. Name:</label>
+                  <input id="issuedByEmpName" type="text" class="form-control" disabled/>
+                </div>
+                <div class="col-md-3">
+                  <label class="col-form-label">Team:</label>
+                  <input id="issuedByEmpTeam" type="text" class="form-control" disabled/>
+                </div>
+              </div>
+              <!--
+              ================
+                  ROW #3
+              ================  
+              -->  
+              <div id="issuedToDiv" class="row col-md-12">
+                <div class="col-md">
+                  <label for="issuedToEmpNumber" class="col-form-label">Issued To:</label>
+                  <input id="issuedToEmpNumber" type="text" class="form-control" placeholder="Employee #" required/>
+                  <div class="invalid-feedback">
+                    Required field.
+                  </div>
+                </div>
+                <div class="col-md-5">
+                    <label for="issuedToEmpName" class="col-form-label">Emp. Name:</label>
+                    <input id="issuedToEmpName" type="text" class="form-control" disabled/>
+                </div>
+                <div class="col-md-3">
+                    <label for="issuedToEmpTeam" class="col-form-label">Team:</label>
+                    <input id="issuedToEmpTeam" type="text" class="form-control" disabled/>
+                </div>
+              </div>
+              <!--
+              ================
+                  ROW #4
+              ================  
+              -->  
+              <div class="row col-md-12">
+                <div class="col-md-4">
+                  <label class="col-form-label">Customer:</label>
+                    <select class="form-select" id="customer" required>
+                      <option value="" disabled selected hidden></option>
+                      <option>N/A</option>
+                      <option>ADLT</option>
+                      <option>ADGT</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                  <label class="col-form-label">Machine:</label>
+                    <select class="form-select" id="machine" required>
+                      <option value=""disabled selected hidden required> </option>
+                      <option>N/A</option>
+                      <option>Sample</option>
+                      <option>Sample</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                  <label for="packageType" class="col-form-label">Package Type:</label>
+                  <select class="form-select" id="packageType" required>
+                    <option value=""disabled selected hidden> </option>
+                    <option>N/A</option>
+                    <option>Sample</option>
+                    <option>Sample</option>
+                  </select>
+                </div>
+              </div>
+              <!--
+              ================
+                  ROW #5
+              ================  
+              -->  
+              <div class="row col-md-12">
+                <div class="col-md-4">
+                  <label for="deviceName" class="col-form-label">Device Name:</label>
+                  <input id="deviceName" type="text" class="form-control"required/>
+                </div>
+                <div class="col-md-4">
+                  <label for="station" class="col-form-label">Station:</label>
+                  <input id="station" type="text" class="form-control"required />
+                </div>
+                <div class="col-md-4">
+                  <label for="lotId" class="col-form-label">Lot ID:</label>
+                  <input id="lotId" type="text" class="form-control"required />
+                </div>
+              </div>
+              <!--
+              ================
+                  ROW #6
+              ================  
+              -->  
+              <div class="row col-md-12">
+                <div class="col-md-5">
+                    <label class="col-form-label">Team/Resp:</label>
+                    <input id="teamResp" type="text" class="form-control" disabled/>
+                    
+                </div>
+                <div class="col-md-6">
+                    <label class="col-form-label">Date/Time:</label>
+                    <input id="dateTime" type="text" class="form-control" placeholder="autogenerated..." disabled/>
+                </div>
+              </div>
+              <!--
+              ================
+                  ROW #7
+              ================  
+              -->  
+  
+              <div class="row col-md-12 mt-4 mb-4">
+                <div class="col-md-6">
+                  <label class="col-md-3 col-form-label">Classification:</label>
+                  <label for="classification" class="form-check-label">
+                    <input type="radio" class="form-check-input " name="classification" id="classification" value="Minor" required> Minor
+                    <input type="radio" class="form-check-input " name="classification" id="classification" value="Major" required> Major
+                  
+                  </label>
+                </div>
+              </div>
+              <!--
+              ================
+                  ROW8
+              ================  
+              -->          
+              <div class="row col-md-12 mb-4">
+                <label for="exampleTextarea1">NONCONFORMITY/ DEFECTS:</label>
+                <textarea id="defects" class="form-control" rows="4" required></textarea>
+              </div>

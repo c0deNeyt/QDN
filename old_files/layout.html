@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<!-- <html lang="en" oncontextmenu="return false"> -->
+  <html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="QUALITY DEVIATION NOTICE System">
+  <meta name="author" content="Christian Araña, and open source Contributors">
+  <link rel="icon" href="images/asti.ico"  type="image/x-icon">
+
+  <title>Quality Deviation Notice</title>
+    
+
+    <!-- Bootstrap core CSS -->
+<link href="./bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<script src="./bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<style>
+  *{
+  margin: 0;
+  padding: 0;
+}
+body *{
+  /* outline: 1px double black; */
+}
+.wrapper{
+  background-image: linear-gradient(to top, #ffffff, #ddc5df, #ce86a9, #b9465d, #8c0000);
+  width: 1366px;
+  margin: 0px auto;
+}
+.card {
+  display: inline-block;
+  width: 1106px;
+  vertical-align: top;
+  margin: 8px;
+}
+.col-2 {
+  background-image: linear-gradient(to bottom, #dbf900, #dbfb48, #dcfc6a, #defd88, #e1fda2);
+  display: inline-block;
+  
+}
+  
+  .col-2 img{          
+      width: 172px;
+      height: 29px;
+      display: block;
+      margin: 6px auto;
+      border-radius: 5px;
+  }
+  .systemName {
+      display: block;
+      text-align: center;
+      border-bottom: 1px solid #00000080;
+  }
+  .menu {
+      list-style-type: none;
+      font-size: 18px;
+      max-width: 100vh;
+  }
+      .menu li {
+          text-decoration: none;
+          transition: transform .2s;
+          display: block;
+          text-align: center;
+          box-shadow: -2px 6px 5px black;
+      }
+      .menu a {
+          color: black;
+          text-decoration: none;
+      }
+      .menu li:hover {
+          
+          position: sticky;
+          box-shadow: -2px 6px 5px black;
+          transform: scale(1.4);/* (120% zoom) */
+          z-index:99;
+          background-color:rgba(72, 255, 0, 0.2);
+      }
+      .menu li a img {
+          display: block;
+          margin: 28px 0px -24px -50px;
+      }
+  
+</style>
+
+<!-- Custom styles for this template -->
+</head>
+<body>
+<div class="wrapper">
+  <div class="row">
+    <div class="col-2">
+      <img src="./images/TELFORDmd.png" alt="TELFORDmd">
+      <h3 class="systemName">QDN SYSTEM</h3>
+      <ul class="menu">
+        <li><a href="#"><img src="./images/svg/012-analytics.svg"></img>Analysis</a></li>
+        <li><a href="#"><img src="./images/svg/017-process.svg"></img>Review</a></li>
+        <li><a href="#"><img src="./images/svg/016-plan.svg">Approval</a></li>
+      </ul>
+    </div>
+<!-- COL-2 (SIDE BAR) -->
+    <div class="col-10">
+      <div class="card">
+        <div class="card-body">
+
+          <form class="needs-validation" novalidate>
+            <h4 class="mb-4">QUALITY DEVIATION NOTICE</h4>
+
+            <div class="row col-md-12">
+              <div class="col-sm-4">
+              <label for="qdnNumber" class="form-label">QDN #:</label>
+              <input type="text" class="form-control" id="qdnNumber" >
+            </div>
+            <!--
+            ================
+              ROW #2
+            ================  
+            -->  
+            <div class="row col-md-12 ">
+              <div class="col-md-4">
+                <label for="issuedByEmpNumber" class="col-form-label">Issued By:</label>
+                <input id="issuedByEmpNumber" type="number" class="form-control" placeholder="Employee #" required/>
+                <div class="invalid-feedback">
+                  Required field.
+                </div>
+              </div>
+              <div class="col-md-5">
+                <label class="col-form-label">Emp. Name:</label>
+                <input id="issuedByEmpName" type="text" class="form-control" disabled/>
+              </div>
+              <div class="col-md-3">
+                <label class="col-form-label">Team:</label>
+                <input id="issuedByEmpTeam" type="text" class="form-control" disabled/>
+              </div>
+            </div>
+            <!--
+            ================
+                ROW #3
+            ================  
+            -->  
+            <div id="issuedToDiv" class="row col-md-12">
+              <div class="col-md">
+                <label for="issuedToEmpNumber" class="col-form-label">Issued To:</label>
+                <input id="issuedToEmpNumber" type="text" class="form-control" placeholder="Employee #" required/>
+                <div class="invalid-feedback">
+                  Required field.
+                </div>
+              </div>
+              <div class="col-md-5">
+                  <label for="issuedToEmpName" class="col-form-label">Emp. Name:</label>
+                  <input id="issuedToEmpName" type="text" class="form-control" disabled/>
+              </div>
+              <div class="col-md-3">
+                  <label for="issuedToEmpTeam" class="col-form-label">Team:</label>
+                  <input id="issuedToEmpTeam" type="text" class="form-control" disabled/>
+            </div>
+            <!--
+            ================
+                ROW #4
+            ================  
+            -->  
+            <div class="row col-md-12">
+              <div class="col-md-4">
+                <label class="col-form-label">Customer:</label>
+                  <select class="form-select" id="customer" required>
+                    <option value="" disabled selected hidden></option>
+                    <option>N/A</option>
+                    <option>ADLT</option>
+                    <option>ADGT</option>
+                  </select>
+              </div>
+              <div class="col-md-4">
+                <label class="col-form-label">Machine:</label>
+                  <select class="form-select" id="machine" required>
+                    <option value=""disabled selected hidden required> </option>
+                    <option>N/A</option>
+                    <option>Sample</option>
+                    <option>Sample</option>
+                  </select>
+              </div>
+              <div class="col-md-4">
+                <label for="packageType" class="col-form-label">Package Type:</label>
+                <select class="form-select" id="packageType" required>
+                  <option value=""disabled selected hidden> </option>
+                  <option>N/A</option>
+                  <option>Sample</option>
+                  <option>Sample</option>
+                </select>
+              </div>
+            </div>
+            <!--
+            ================
+                ROW #5
+            ================  
+            -->  
+            <div class="row col-md-12">
+              <div class="col-md-4">
+                <label for="deviceName" class="col-form-label">Device Name:</label>
+                <input id="deviceName" type="text" class="form-control"required/>
+              </div>
+              <div class="col-md-4">
+                <label for="station" class="col-form-label">Station:</label>
+                <input id="station" type="text" class="form-control"required />
+              </div>
+              <div class="col-md-4">
+                <label for="lotId" class="col-form-label">Lot ID:</label>
+                <input id="lotId" type="text" class="form-control"required />
+              </div>
+            </div>
+            <!--
+            ================
+                ROW #6
+            ================  
+            -->  
+            <div class="row col-md-12">
+              <div class="col-md-5">
+                  <label class="col-form-label">Team/Resp:</label>
+                  <input id="teamResp" type="text" class="form-control" disabled/>
+                  
+              </div>
+              <div class="col-md-6">
+                  <label class="col-form-label">Date/Time:</label>
+                  <input id="dateTime" type="text" class="form-control" placeholder="autogenerated..." disabled/>
+              </div>
+            </div>
+            <!--
+            ================
+                ROW #7
+            ================  
+            -->  
+
+            <div class="row col-md-12 mt-4 mb-4">
+              <div class="col-md-6">
+                <label class="col-md-3 col-form-label">Classification:</label>
+                <label for="classification" class="form-check-label">
+                  <input type="radio" class="form-check-input " name="classification" id="classification" value="Minor" required> Minor
+                  <input type="radio" class="form-check-input " name="classification" id="classification" value="Major" required> Major
+                
+                </label>
+              </div>
+            </div>
+            <!--
+            ================
+                ROW8
+            ================  
+            -->          
+            <div class="row col-md-12 mb-4">
+              <label for="exampleTextarea1">NONCONFORMITY/ DEFECTS:</label>
+              <textarea id="defects" class="form-control" rows="4" required></textarea>
+            </div>
+                          
+            <button class="w-100 btn btn-success btn-lg mt-3" type="submit">Continue to checkout</button>
+          </form>
+        </div>
+      </div>
+<!--CARD------------------>
+    </div>
+<!--COL-10 (CONTENT)------>
+  </div>
+<!--DIV ROW--------------->
+</div>
+<!--DIV WRAPPER----------->
+
+<script src="./js/form-validation.js"></script>
+
+</body>
+
+</html>
