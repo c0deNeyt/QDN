@@ -234,6 +234,9 @@ $(document).ready(function(){
                     };
                     //</ END OF CHECKING IF DATA PARAM IS NOT NULL
                 },
+                error: function(){
+                    $("#packageType").val("N/A");
+                }
             });
         };
         // STORING THE DATA FROM DATABASE INTO ARRAY
