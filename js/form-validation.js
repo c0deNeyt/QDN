@@ -13,7 +13,26 @@
         if (!form.checkValidity()) {
           event.preventDefault();
           event.stopPropagation();
-          // console.log ("This is test");    
+          let invalids = $(".form-control:invalid, .form-control.is-invalid, .form-select:invalid, .form-select.is-invalid, input[inputName].form-check-input:invalid");
+          let invalidsLen = invalids.length;
+          let invalidList;
+          // let z = x[0].getAttribute("inputName");
+          for (let i = 0; i < invalidsLen; i++){
+            if (i == 0 ){
+              invalidList = "<i class='fa fa-exclamation-triangle'></i> " + invalids[i].getAttribute("inputName");
+            }
+            else{
+              invalidList = invalidList + "<br>" + "<i class='fa fa-exclamation-triangle'></i> " + invalids[i].getAttribute("inputName");
+            };
+          };
+          Swal.fire({
+            icon: 'error',
+            title: 'User error check input(s)!',
+            customClass: {
+              html: "invalidInputAlert",
+            },
+            html: invalidList,
+          });
         } 
         else{
           event.preventDefault();

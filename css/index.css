@@ -1,26 +1,7 @@
-
-
-/*=====================
-    INPUT BOX STYLE 
-=======================*/
-#issuedByEmpTeam, #issuedByEmpName,
-#issuedToEmpTeam, #issuedToEmpName,
-#teamResp, #station, #packageType,
-#dateTime  {
-    text-align: center;
-  }
-#teamResp, #station, #packageType,
-#dateTime  {
-    border-top: none;
-    border-right: none;
-    border-left: none;
-    border-radius: 0;
-    cursor: not-allowed;
-  }
-
-
-
-
+*{
+  margin: 0;
+  padding: 0;
+}
 body {
   /* Disables pull-to-refresh but allows overscroll glow effects. */
  overscroll-behavior-y: contain;
@@ -47,4 +28,240 @@ body {
   * background: url(background-photo.jpg) center center cover no-repeat fixed;
   */
   font-size: 1rem;
+  margin: 0;
+  font-family: "Lato", sans-serif;
+  /* outline: 1px solid grey; */
+}
+
+/*==============================================================
+                        "SIDE BAR STYLE"
+================================================================*/
+.sidebar {
+  background-image: linear-gradient(to bottom, #dbf900, #dbfb48, #dcfc6a, #defd88, #e1fda2);
+  margin: 0;
+  padding: 0;
+  width: 200px;
+  background-color: #f1f1f1;
+  position: fixed;
+  height: 100%;
+  overflow: auto;
+}
+  .sidebar a {
+    display: block;
+    color: black;
+    padding: 20px;
+    text-decoration: none;
+  }
+
+    .sidebar a:hover:not(.active) {
+      color: rgb(0, 0, 0);
+      position: sticky;
+      transform: scale(1.19);/* (120% zoom) */
+      z-index:99;
+    }
+    .sidebar img, svg {
+      vertical-align: middle;
+      width: 40px;
+      margin: 10px;
+  }
+/*=====================
+    INPUT BOX STYLE 
+=======================*/
+#issuedByEmpTeam, #issuedByEmpName,
+#issuedToEmpTeam, #issuedToEmpName,
+#teamResp, #station, #packageType,
+#dateTime  {
+    text-align: center;
+}
+#teamResp, #station, #packageType,
+#dateTime  {
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-radius: 0;
+    cursor: not-allowed;
+  }
+
+#issuedByEmpTeam, #issuedByEmpName,
+#issuedToEmpTeam, #issuedToEmpName,
+#teamResp, #station,#machine {
+    display: block;
+    width: 100%;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+
+
+/*======================================
+  "SYSTEM TITTLE STYLE INSIDE SIDEBAR"
+========================================*/
+.sysName{
+  display: block;
+  text-align: center;
+  border: 5px;
+  border-bottom: 2px solid #00000030;
+  margin-bottom: 15px;
+}
+  .sysName img{
+    width: 8rem;
+    border-radius: 3px;
+  }
+
+/*==============================================================
+                  "MAIN CONTENT STYLE"
+================================================================*/
+div.content {
+  margin-left: 200px;
+  padding: 1px 16px;
+  height: 100vh;
+
+}
+  .card{
+    padding: 20px;
+    margin: 20px auto;
+  }
+  h4.mb-4 {
+    color: #8c7000;
+    font-weight: bold;
+    box-shadow: 2px 2px 5px black;
+    width: 23rem;
+    text-align: center;
+    padding: 4px;
+  }
+  #qdnNumber {
+    border: none;
+    font-weight: bold;
+    color: blue;
+    font-size: 1.3rem;
+  }
+
+  input[value="Minor"],
+  input[value="Major"] {
+    margin: 0px 3px 0px 20px;
+  }
+
+/*=======================
+  ALERT CUSTOM STYLES
+=========================*/
+div.swal2-content {
+  display: flex;
+  text-align: left;
+}
+  i.fa.fa-exclamation-triangle {
+      margin: 0 .4em;
+      color: #f27474;
+      font-size: 1em;
+  }
+  
+
+
+
+/*==============================================================
+                    "RESPONSIVE STYLE"
+================================================================*/
+
+@media screen and (max-width: 700px) {
+  div.content {
+  margin-left: 200px;
+  padding: 64px 16px;
+  height: 100vh;
+
+}
+/*======================
+  "NAME INCLUDING LOGO"
+========================*/
+  .sysName{
+    display: inline-block;
+    text-align: center;
+    width: 11rem;
+    vertical-align: top;
+    margin: 3px 0px 0px -6px;
+    border-bottom: none;
+    border-right: 2px solid #00000030;
+  }
+/*====================
+  "TOP NAV BAR"
+======================*/
+  .sidebar {
+    width: 100%;
+    height: 80px;
+    z-index: 99;
+    display: block;
+    overflow: unset;
+  }
+    .sidebar a {
+      display: inline-block;
+      font-size: 0;
+      line-height: 0;
+      color: transparent;
+      padding: 0;
+      margin: 0.7rem 0.5rem 0.7rem 0.5rem;
+      
+    }
+    .sidebar a img {
+      vertical-align: middle;
+      width: 41px;
+      margin: 0px 7px;
+    }
+  div.content {margin-left: 0;}
+}
+
+@media screen and (max-width: 400px) {
+/*======================
+  "NAME INCLUIDING LOGO"
+========================*/
+  .sysName {
+    width: 6rem;
+    font-size: 20px;
+  }
+  .sysName img {
+    width: 5rem;
+    border-radius: 2px;
+    margin: 0rem 0.68rem 0.5rem 0.68rem;
+  }
+    .sysName h4 {
+      font-size: 17px;
+      padding: 0px;
+      margin: -7px;
+    }
+/*====================
+  "TOP NAV BAR"
+======================*/
+  .sidebar {
+    width: 100%;
+    height: 70px;
+    z-index: 99;
+    display: inline;
+    overflow: scroll; /*WHEN SCREEN DROPS < 240PX*/
+  }
+    .sidebar a {
+      display: inline-block;
+      font-size: 0;
+      line-height: 0;
+      color: transparent;
+      padding: 0;
+      margin: 0.7rem 0.5rem 0.7rem 0.5rem;
+    }
+    .sidebar a img {
+      vertical-align: middle;
+      width: 30px;
+      margin: 6px 5px;
+    }
+  h4.mb-4 {
+  width: 100%;
+  overflow: scroll;
+
+  }
 }

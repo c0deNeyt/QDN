@@ -13,9 +13,6 @@ $(document).ready(function(){
         "border": ""
     });
 
-    if(userInput == "N/A"){
-        $("#packageType").val("N/A");
-    }
    
       //=======================================================================>
      //START OF ISSUED BY KEYUP FUNCTION
@@ -176,7 +173,7 @@ $(document).ready(function(){
                 data: {machineList: userInput, request: 4},
                 cache : false,
                 dataType: "json",
-                success: function(data){
+                success: (data) => {
                     // CHECK IF DATA PARAM IS NOT NULL
                     if ( data ){
                         var dataLen = data.length;
@@ -226,7 +223,7 @@ $(document).ready(function(){
                         else{
                             gPackageTypeFromDb.pop();
                             document.getElementById('packageType').value = "N/A";
-                            $("#packageType").css({"color":"", "border-bottom": "1px solid #63f200"});
+                            $("#packageType").css({"color":"", "border-bottom": "1px solid #63f200"/*Green Hex*/}); 
                             var tempPkgVal = uerpkgType;
                             // console.log("OK PA AKO", tempPkgVal);
                             gPackageTypeFromDb.push(tempPkgVal);
@@ -234,9 +231,9 @@ $(document).ready(function(){
                     };
                     //</ END OF CHECKING IF DATA PARAM IS NOT NULL
                 },
-                error: function(){
-                    $("#packageType").val("N/A");
-                }
+                error: () => {
+                    $("#packageType").val("N/A").css({"color":"", "border-bottom": "1px solid #63f200"/*Green Hex*/});
+                },
             });
         };
         // STORING THE DATA FROM DATABASE INTO ARRAY
@@ -255,7 +252,7 @@ $(document).ready(function(){
                     for(var i=0; i< dataLen; i++){
                         machinesDetails.push(data[i]['machines']);
                     };      
-                };
+                }; 
                 // </END OF CHECKING IF PARAM IS NOT NULL
             },                    
         });
@@ -333,16 +330,16 @@ $(document).ready(function(){
                         var dataLen = data.length;
                         var leadCount   = data[0]['lead_counts'];
                         if (dataLen){
+
                             var newPkgTyp   = $("#packageType").value = originalPackageType + "_" + leadCount + "L";
                             $("#packageType").val(newPkgTyp);
                         };
                        
                     }
                      else {
-                             console.log ("This is the partname Datat", data);
+                            // console.log ("This is the partname Datat", data);
                             var stringKey = "_";
                             key = 0;
-                            // console.log("Not matched!", enEy );
                             var customLeadCount = [];
 
                             for(var i = 0; i < userPartNameInputLen; i++  ){
