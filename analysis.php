@@ -21,7 +21,7 @@
   <!------------------------------------------------------------------>
   <link href="./css/simple-sidebar.css" rel="stylesheet">
   <!------------------------------------------------------------------>
-  <link type="text/css" href="./css/index.css" rel="stylesheet">
+  <link type="text/css" href="./css/analysis.css" rel="stylesheet">
   <!------------------------------------------------------------------>
   <!-- JQUERY STYLESHEET -->
   <link rel="stylesheet" href="./js/jquery-ui-1.12.1/jquery-ui.css">

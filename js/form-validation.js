@@ -138,7 +138,6 @@
                     "</pre>" +  
                     "<strong>Note:</strong>" + "<br>" +
                     "<pre>  This notification is an automated message. Please do not reply directly to this email.</pre>" 
-          
                 });
 
                 //  console.log("Email are SENT!");
