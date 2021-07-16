@@ -33,6 +33,112 @@
           // @ HANDLES REASSIGNMENT STATE 
           if(document.getElementById('submitReassignment')){
               var findThis         = $("#qdnNumber").val();
+              let reAssignTo        = $("#reAssignTo").val();
+              let reAssignToName    = $("#reAssignToName").val();
+              let reAssignToTeam    = $("#reAssignToTeam").val();
+              let reAssignToDept    = $("#dept").val();
+              let reAssignmentDes   = $("#reAssignmentDes").val();
+              // Function to  prepare email details to reassignment event
+              function reAssignmentMail(){
+                 // request for QDN compliance designated Email Receiver (request 13)
+                $.ajax({
+                  type: 'POST',
+                  url: "./php/getDetails.php",
+                  data: {issuedToEmpNo: reAssignTo, request: 13},
+                  cache : false,
+                  dataType: "json",
+                  success: function (data){
+                    if (data){
+                      reAssSendEmail(data);
+                    }
+                    else{
+                      alert ("No receiver Found! Error form file (analysisFormValidation.js) Line 55!");
+                    };
+                  },
+                  error: ()=>{
+                    alert ("No receiver Found! Error form file (analysisFormValidation.js) Line 59!");
+                  },
+                });
+                // FUNCTION TO HANDLE EMAIL DETAILS
+              };/*Function Ends here!*/
+
+              // ** Function responsible for sending emails
+              function reAssSendEmail(data){
+                var dataLen = data.length;
+                var receiver = "";
+                // LOOP TO HANDLE EACH EMAIL RESULTS
+                for (var i = 0; i < dataLen; i++){
+                  var receiverLen = receiver.length;
+
+                    if ( receiverLen == 0){
+                        var emailResult = data[i]['emailscol'];
+                        receiver = emailResult;
+                    }
+                    else if (receiverLen > 0){
+                        receiver = receiver + ", " + data[i]['emailscol'];
+                    };  
+                };
+                Email.send({
+                  Host: "smtp.gmail.com",
+                  Username : "systemqdn2021@gmail.com",
+                  Password : "tjvxdnvqvepgtwck",
+                  To : receiver,
+                  // To : "chanchristianarana@gmail.com",
+                  From : "systemqdn2021@gmail.com",
+                  Subject : "QDN Area Owner Reassignment",
+                  Body : "This is to notify that QDN# " + "<a href='http://tk-server.tspi.com:999/analysis.php'>" + findThis + "</a>" + " was reassigned under your ownership. <br><br>" +
+                  "<b>"+ "Description: " + "</b>" +
+                  "<pre>    "+ reAssignmentDes +"</pre>" + 
+                  "<strong>Note:</strong><br>" +
+                  "<i>  This notification is an automated message. Please do not reply directly to this email.</i>" 
+                });
+                console.log("Receiver Lists! |", receiver);
+              };/*Function Ends Here!*/
+
+              // Function to insert Reassignment details to database
+              function reAssInsertEvent(openQdnID){
+                $.ajax({
+                  url: './php/insertToReAss.php',
+                  type: 'POST',
+                  data:{reAssignTo2Db:  reAssignTo,
+                        reAssignToName2Db: reAssignToName,
+                        reAssignToTeam2Db: reAssignToTeam,
+                        reAssignToDept2Db: reAssignToDept,
+                        reAssignToDes2Db:  reAssignmentDes,
+                        openQdnID2Db:      openQdnID,
+                  },
+                  cache : false, 
+                  success: function(data){
+                    if (data){
+                      reAssignmentMail();
+                      reAssignmentAlert();
+                    }
+                    else{
+                      alert ("No receiver Found! Error form file (analysisFormValidation.js) Line 116!");
+                    };
+                  },
+                  error: () => {
+                    alert ("No receiver Found! Error form file (analysisFormValidation.js) Line 120!");
+                  },
+                });
+              };
+              // Function for Success Alert for  Reassignment
+              function reAssignmentAlert(){
+                Swal.fire({
+                  position: 'top-end',
+                  icon: 'success',
+                  title: 'Reassigned!',
+                  allowOutsideClick: false,
+                  allowEscapeKey: false,
+                  allowEnterKey: false,
+                  allowOutsideClick: false,
+                  showConfirmButton: false,
+                  timer: 3000
+                })
+                .then(function() {
+                  // window.location.href = "./analysis.php";
+                });
+              };/*Alert function ends here!*/
               // AJAX REQUEST TO FIND THE CURRENT ID OF QDN NUMBER
               // WE USE THIS ID TO STORE IN THE  REASSIGNMENT TABLE
               $.ajax({
@@ -42,93 +148,21 @@
                 cache : false,
                 dataType: "json",
                 success: function(data){
+                  if (data){
                     var openQdnID = data[0]['id'];
-                    var reAssignTo        = $("#reAssignTo").val();
-                    var reAssignToName    = $("#reAssignToName").val();
-                    var reAssignToTeam    = $("#reAssignToTeam").val();
-                    var reAssignToDept    = $("#dept").val();
-                    var reAssignmentDes   = $("#reAssignmentDes").val();
-  
-                    $.ajax({
-                      url: './php/insertToReAss.php',
-                      type: 'POST',
-                      data:{reAssignTo2Db:  reAssignTo,
-                            reAssignToName2Db: reAssignToName,
-                            reAssignToTeam2Db: reAssignToTeam,
-                            reAssignToDept2Db: reAssignToDept,
-                            reAssignToDes2Db:  reAssignmentDes,
-                            openQdnID2Db:      openQdnID,
-                      },
-                      cache : true, 
-                      success: function(data){
-                        // console.log("Insert SUCCESS for the current QDN ID", openQdnID);
-                        // console.log("Insert SUCCESS for the Reassignment Employee # ", reAssignTo);
-                        // console.log("Insert SUCCESS for the Reassignment Employee Name ", reAssignToName);
-                        // console.log("Insert SUCCESS for the Reassignment Employee Team ", reAssignToTeam);
-                        // console.log("Insert SUCCESS for the Reassignment Description ", reAssignmentDes); 
-
-                        // request for QDN compliance designated Email Receiver (request 13)
-                        $.ajax({
-                          type: 'POST',
-                          url: "./php/getDetails.php",
-                          data: {issuedToEmpNo: reAssignTo, request: 13},
-                          cache : false,
-                          dataType: "json",
-                          success:  emailDetails
-                        });
-                        // FUNCTION TO HANDLE EMAIL DETAILSsssss
-                        function emailDetails (data){
-                          var dataLen = data.length;
-                          var receiver = "";
-                          // LOOP TO HANDLE EACH EMAIL RESULTS
-                          for (var i = 0; i < dataLen; i++){
-                            var receiverLen = receiver.length;
-
-                              if ( receiverLen == 0){
-                                  var emailResult = data[i]['emailscol'];
-                                  receiver = emailResult;
-                              }
-                              else if (receiverLen > 0){
-                                  receiver = receiver + ", " + data[i]['emailscol'];
-                              };  
-                          };
-                          Email.send({
-                            Host: "smtp.gmail.com",
-                            Username : "systemqdn2021@gmail.com",
-                            Password : "tjvxdnvqvepgtwck",
-                            To : receiver,
-                            // To : "chanchristianarana@gmail.com",
-                            From : "systemqdn2021@gmail.com",
-                            Subject : "QDN Area Owner reassignment",
-                            Body : "This is to notify that QDN# " + "<a href='http://tk-server.tspi.com:999/analysis.php'>" + findThis + "</a>" + " was reassigned under your ownership. <br><br>" +
-                            "<b>"+ "Description: " + "</b>" +
-                            "<pre>"+ reAssignmentDes +"</pre>" + 
-                            "<strong>Note:</strong><br>" +
-                            "<i>  This notification is an automated message. Please do not reply directly to this email.</i>" 
-                          });
-                        };
-
-                        Swal.fire({
-                          position: 'top-end',
-                          icon: 'success',
-                          title: 'Reassigned!',
-                          allowOutsideClick: false,
-                          allowEscapeKey: false,
-                          allowEnterKey: false,
-                          allowOutsideClick: false,
-                          showConfirmButton: false,
-                          timer: 3000
-                        })
-                        .then(function() {
-                          window.location.href = "analysis.php";
-                        });
-                      }
-                    });
-                }, 
-              });
+                  reAssInsertEvent(openQdnID);
+                  }
+                  else{
+                    alert ("No receiver Found! Error form file (analysisFormValidation.js) Line 154!");
+                  };
+                },
+                error: () => {
+                  alert ("No receiver Found! Error form file (analysisFormValidation.js) Line 154!");
+                },
+              }); /*Main Ajax request for reassignment ends here!*/
           };
           // @ HANDLES UPDATE FOR OPEN QDN
-          if(document.getElementById('submitUpdate')){
+          if(document.getElementById('submitUpdate')){  
 
             // VARIABLE TO INITIALIZE THE CURRENT QND NUMBER
             // FROM USE INPUTS
@@ -147,7 +181,7 @@
             var newContainmentVal = newContainment.innerText;
             var newContainmentLen = $.trim(newContainmentVal).length;
 
-            // CORRECTION VARIABLES
+            // CORRECTION VARIABLES 
             var correction        = $("#correction").text();
             var correctionResp    = $("#correctionResp").text();
             var correctionWhen    = $("#correctionWhen").text();
@@ -420,8 +454,9 @@
                   showConfirmButton: false,
                   timer: 2500
                 })
-                .then (function (){
+                .then (function (){  
                   window.location.href = "analysis.php";
+                  Location.reload(true);
                 });
                 // console.log("Update Sent!!");
               };

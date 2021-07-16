@@ -15,6 +15,19 @@ $(document).ready(function(){
 
    
       //=======================================================================>
+     // START FUNCTION TO DISABLE USE INPUT 
+    //=========================================================================>
+    $(document).keypress(
+        function(event){
+          if ((event.keyCode == '13') || (event.keyCode == '9')) {
+            event.preventDefault();
+          };
+    });
+      //=======================================================================>
+     // END FUNCTION TO DISABLE USE INPUT 
+    //=========================================================================> 
+
+      //=======================================================================>
      //START OF ISSUED BY KEYUP FUNCTION
     //=========================================================================>
     $("#issuedByEmpNumber").keyup(function(){
@@ -48,10 +61,8 @@ $(document).ready(function(){
                         $("#issuedToEmpName, #issuedToEmpTeam")  
                         .attr("placeholder", "");
                         $("#issuedByEmpName, #issuedByEmpTeam, #issuedByEmpNumber")
-                        .css({
-                            "color":"",
-                            "border": "1px solid #63f200"
-                        });
+                        .css({"color":"", "border-bottom": "1px solid #63f200"})
+    
                            
                     };
                 }
@@ -66,9 +77,9 @@ $(document).ready(function(){
         .attr("placeholder", "Invalid 😡")
         .css({
             "color": "red",
-            "border": "1px solid red"
+            "border-bottom": "1px solid red"
         }); 
-        $("#issuedByEmpNumber").css("border", "1px solid red");
+        $("#issuedByEmpNumber").css("border-bottom", "1px solid red");
         $('#issuedToDiv').css('visibility', 'hidden');
         $("#issuedToEmpName,#issuedToEmpTeam, #issuedToEmpNumber").val("");       
     });
@@ -112,7 +123,6 @@ $(document).ready(function(){
                     });   
                     $("#teamResp, #station").css({"color":"", "border-bottom": "1px solid #63f200"});      
                    }
-                    
                 },
             });
             //=========================================>
@@ -436,15 +446,4 @@ $(document).ready(function(){
       //=======================================================================>
      // END OF AUTO REMOVE CUSTOM PARTNAME AND MACHINE WHEN  ON BLUR FUNCTION
     //=========================================================================>
-
-      //=======================================================================>
-     // START FUNCTION TO DISABLE USE INPUT 
-    //=========================================================================>
-    $("#qdnNumber, #issuedByEmpName, #issuedByEmpTeam, #issuedToEmpTeam, #issuedToEmpName, #issuedToEmpTeam, #teamResp, #station, #packageType, #dateTime").on('keydown paste focus mousedown', function(e){
-        if(e.keyCode != 9) // ignore tab
-            e.preventDefault();
-    });
-      //=======================================================================>
-     // END FUNCTION TO DISABLE USE INPUT 
-    //=========================================================================> 
 });

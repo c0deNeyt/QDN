@@ -16,6 +16,9 @@ if(isset($_POST)){
 			VALUES (?, ?, ?, ?, ?, ?)"; 
 	$stmtinsert = $db->prepare($Insert);
 	$result = $stmtinsert->execute([$reAssignTo2Db, $reAssignToName2Db, $reAssignToTeam2Db, $reAssignToDept2Db, $reAssignToDes2Db, $openQdnID2Db]);
-	}
+	if($result){
+		echo "Insert SUCCESS!!";
+	};
+};
 	
 ?>

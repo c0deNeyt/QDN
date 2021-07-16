@@ -7,6 +7,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="QUALITY DEVIATION NOTICE System">
   <meta name="author" content="Christian Araña, and open source Contributors">
+  <!-- This will remove or prevent cache -->
+  <meta http-equiv='cache-control' content='no-cache'>
+  <meta http-equiv='expires' content='0'>
+  <meta http-equiv='pragma' content='no-cache'>
+  <!-- Cache Control Ends Here -->
   <link rel="icon" href="images/asti.ico"  type="image/x-icon">
 
   <title>Quality Deviation Notice</title>

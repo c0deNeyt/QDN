@@ -16,7 +16,7 @@
           let invalids = $(".form-control:invalid, .form-control.is-invalid, .form-select:invalid, .form-select.is-invalid, input[inputName].form-check-input:invalid");
           let invalidsLen = invalids.length;
           let invalidList;
-          // let z = x[0].getAttribute("inputName");
+          // **Loop to handle each invalid items
           for (let i = 0; i < invalidsLen; i++){
             if (i == 0 ){
               invalidList = "<i class='fa fa-exclamation-triangle'></i> " + invalids[i].getAttribute("inputName");
@@ -24,7 +24,10 @@
             else{
               invalidList = invalidList + "<br>" + "<i class='fa fa-exclamation-triangle'></i> " + invalids[i].getAttribute("inputName");
             };
-          };
+          };/*Loop Ends here!*/
+          // ** SweetAlert to show each item 
+          //store in invalid list when loop is 
+          //finished.
           Swal.fire({
             icon: 'error',
             title: 'User error check input(s)!',
@@ -32,11 +35,10 @@
               html: "invalidInputAlert",
             },
             html: invalidList,
-          });
-        } 
+          }); /*SweetAlert Ends here!*/   
+        }
         else{
           event.preventDefault();
-
           var qdnNumber         = $("#qdnNumber").val();
           var qdnIBENo          = $("#issuedByEmpNumber").val();
           var qdnIBEN           = $("#issuedByEmpName").val();
@@ -93,7 +95,7 @@
                 dataType: "json",
                 success:  emailDetails,
                 error: function (){
-                  alert("Something went wrong on saving!")
+                  alert("Something went wrong when saving!")
                 },
               });
 
