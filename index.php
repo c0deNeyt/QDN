@@ -213,34 +213,6 @@
             <textarea id="defects"  rows="4" class="form-control" inputName = "Nonconformity Defects" required></textarea>
           </div>
         </div>  
-        
-        <label class="col-md-5 col-form-label-lg">Failure Mode:</label>
-        <div class="row col-md-12 mb-4">
-          <div class="col-md-10 ml-4">
-            <label for="classification" class="form-check-label">
-            <div class="form-check form-check-inline">
-              <input required name="failureMode" class="form-check-input" inputName = "Failure Mode" type="radio" value="Man" id="man" >
-              <label class="form-check-label" for="man">Man</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input required name="failureMode" class="form-check-input" type="radio" value="Machine" id="MaChine">
-              <label class="form-check-label" for="MaChine">Machine</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input required name="failureMode" class="form-check-input" type="radio" value="Material" id="material">
-              <label class="form-check-label" for="material">Material</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input required name="failureMode" class="form-check-input" type="radio" value="Method" id="method">
-              <label class="form-check-label" for="method">Method</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input required name="failureMode" class="form-check-input" type="radio" value="Environment" id="environment">
-              <label class="form-check-label" for="environment">Environment</label>
-            </div>
-          </div>
-        </div>
-        
         <button id="submit" class="w-100 btn btn-success btn-lg mt-3" type="submit">Send for Review & Analysis</button>
       </form>
     </div>  

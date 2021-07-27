@@ -78,12 +78,13 @@
                         receiver = receiver + ", " + data[i]['emailscol'];
                     };  
                 };
+                // console.log("This is the recievers!", receiver);
                 Email.send({
                   Host: "smtp.gmail.com",
                   Username : "systemqdn2021@gmail.com",
                   Password : "tjvxdnvqvepgtwck",
-                  To : receiver,
-                  // To : "chanchristianarana@gmail.com",
+                  // To : receiver,
+                  To : "chanchristianarana@gmail.com",
                   From : "systemqdn2021@gmail.com",
                   Subject : "QDN Area Owner Reassignment",
                   Body : "This is to notify that QDN# " + "<a href='http://tk-server.tspi.com:999/analysis.php'>" + findThis + "</a>" + " was reassigned under your ownership. <br><br>" +
@@ -92,7 +93,7 @@
                   "<strong>Note:</strong><br>" +
                   "<i>  This notification is an automated message. Please do not reply directly to this email.</i>" 
                 });
-                console.log("Receiver Lists! |", receiver);
+                // console.log("Receiver Lists! |", receiver);
               };/*Function Ends Here!*/
 
               // Function to insert Reassignment details to database
@@ -136,7 +137,7 @@
                   timer: 3000
                 })
                 .then(function() {
-                  // window.location.href = "./analysis.php";
+                  window.location.href = "./analysis.php";
                 });
               };/*Alert function ends here!*/
               // AJAX REQUEST TO FIND THE CURRENT ID OF QDN NUMBER
@@ -150,7 +151,7 @@
                 success: function(data){
                   if (data){
                     var openQdnID = data[0]['id'];
-                  reAssInsertEvent(openQdnID);
+                    reAssInsertEvent(openQdnID);
                   }
                   else{
                     alert ("No receiver Found! Error form file (analysisFormValidation.js) Line 154!");
@@ -168,6 +169,7 @@
             // FROM USE INPUTS
             var currentQdnNum = $("#qdnNumber").val();
 
+            var qdnFailureMode    = $("input[name = 'failureMode']:checked").val();
             var disposition       = $("input[name = 'disposition']:checked").val();
             var COD               = $("input[name = 'COD']:checked").val();
             var CODstatement      = $("#CODstatement").val();
@@ -256,7 +258,7 @@
                       var containWhenVal      = containWhen.innerText;
                       var containStatusVal    = containStatus.innerText;
                       var newCombine   = containActVal + containRespVal + containWhenVal + containStatusVal;
-                      
+                      // IF STATEMENT TO CHECK IF THERE IS A CHANGES
                       if (combine != newCombine){
                         $.ajax({
                           url: './php/update_containments.php',
@@ -432,10 +434,11 @@
               $.ajax({
                 url: './php/update_analysis.php',
                 type: 'POST',
-                data:{id:               currentQdnId,
-                      disposition2Db:   disposition,
-                      COD2Db:           COD,
-                      CODstatement2Db:  CODstatement  
+                data:{id:                   currentQdnId,
+                      qdnFailureMode2Db:    qdnFailureMode,
+                      disposition2Db:       disposition,
+                      COD2Db:               COD,
+                      CODstatement2Db:      CODstatement  
                 },
                 cache : true,
                 success : alert,

@@ -1,7 +1,7 @@
 <?php
 
 //DATABASE CONNECTION
-require("../php/cnfg.php");
+require("./cnfg.php");
 
  // FOR AJAX REQUEST' S
 $request = $_POST['request'];  
@@ -16,7 +16,7 @@ if($request == 1){
     $dataRequest = "SELECT  
                         `qdnNo`
                     FROM 
-                        `qdnNo`
+                        `qdnno`
                     WHERE  
                         `qdnNo`
                     LIKE 
@@ -30,10 +30,10 @@ if($request == 1){
     while($row =$dataFromDatabase->fetch(PDO::FETCH_ASSOC)){
         $qdnNo       = $row['qdnNo'];
         // STORING DATA TO AN ARRAY
-        $qndNoData[] = array("qdnNo" => $qdnNo);
+        $data[] = array("qdnNo" => $qdnNo);
     }
     // ENCODING ARRAY TO JSON FORMAT
-    echo json_encode($qndNoData);
+    echo json_encode($data);
     exit;
 }
   //=========================================
@@ -249,20 +249,20 @@ else if($request == 9){
     $matchedReAss = $_POST["matchedReAss"];
     $dataRequest = "SELECT `analysis_tbl`.`id`,
                            `analysis_tbl`.`issuedByName`,
-                           `reAssignments_tbl`.`reAssignedName`,
-                           `reAssignments_tbl`.`reAssignedTeam`,
-                           `reAssignments_tbl`.`reAssignDescription`,
-                           `reAssignments_tbl`.`analysis_tbl_id`
+                           `reassignments_tbl`.`reAssignedName`,
+                           `reassignments_tbl`.`reAssignedTeam`,
+                           `reassignments_tbl`.`reAssignDescription`,
+                           `reassignments_tbl`.`analysis_tbl_id`
                         FROM 
                             `telford_db`.`analysis_tbl`
                         INNER JOIN 
-                                `telford_db`.`reAssignments_tbl`
+                                `telford_db`.`reassignments_tbl`
                             ON 
-                                `analysis_tbl`.`id` = `reAssignments_tbl`.`analysis_tbl_id`
+                                `analysis_tbl`.`id` = `reassignments_tbl`.`analysis_tbl_id`
                             WHERE 
                                 `analysis_tbl`.`id` = '$matchedReAss'
                             AND 
-                                `reAssignments_tbl`.`analysis_tbl_id` = '$matchedReAss'";
+                                `reassignments_tbl`.`analysis_tbl_id` = '$matchedReAss'";
     $dataFromDatabase = $db->prepare($dataRequest);
     $dataFromDatabase -> execute();
 

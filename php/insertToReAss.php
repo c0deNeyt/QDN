@@ -11,7 +11,7 @@ if(isset($_POST)){
 	$reAssignToDes2Db 		= $_POST['reAssignToDes2Db'];
 	$openQdnID2Db 			= $_POST['openQdnID2Db'];
 	$Insert = "INSERT INTO 
-			reAssignments_tbl
+			reassignments_tbl
 			(reAssignedTo, reAssignedName, reAssignedTeam, department, reAssignDescription, analysis_tbl_id)
 			VALUES (?, ?, ?, ?, ?, ?)"; 
 	$stmtinsert = $db->prepare($Insert);

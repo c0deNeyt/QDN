@@ -21,14 +21,13 @@ if(isset($_POST)){
 	$qdnDateTime2Db 		= $_POST['qdnDateTime2Db'];
 	$qdnClassification2Db 	= $_POST['qdnClassification2Db'];
 	$qdnDefects2Db			= $_POST['qdnDefects2Db'];
-	$qdnFailureMode2Db		= $_POST['qdnFailureMode2Db'];
+	// $qdnFailureMode2Db		= $_POST['qdnFailureMode2Db'];
 	
-
-		$Insert = "INSERT INTO analysis_tbl (qdnNo, issuedBy, issuedByName, issuedByTeam, issuedTo, issuedToName, issuedToTeam, customer, machine, packageType, deviceName, station, lotId, teamResp, dateTime, classification, defects, failure_mode) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"; 
+		$Insert = "INSERT INTO analysis_tbl (qdnNo, issuedBy, issuedByName, issuedByTeam, issuedTo, issuedToName, issuedToTeam, customer, machine, packageType, deviceName, station, lotId, teamResp, dateTime, classification, defects) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"; 
 		$stmtinsert = $db->prepare($Insert);
-		$result = $stmtinsert->execute([$qdnNumber2Db, $qdnIBENo2Db, $qdnIBEN2Db, $qdnIBET2Db, $qdnITENo2Db, $qdnITEN2Db, $qdnITET2Db, $qdncustomer2Db, $qdnmachine2Db, $qdnpkgtype2Db, $qdnDeviceName2Db, $qdnStation2Db, $qdnLotId2Db, $qdnTeamResp2Db, $qdnDateTime2Db, $qdnClassification2Db, $qdnDefects2Db, $qdnFailureMode2Db]);
+		$result = $stmtinsert->execute([$qdnNumber2Db, $qdnIBENo2Db, $qdnIBEN2Db, $qdnIBET2Db, $qdnITENo2Db, $qdnITEN2Db, $qdnITET2Db, $qdncustomer2Db, $qdnmachine2Db, $qdnpkgtype2Db, $qdnDeviceName2Db, $qdnStation2Db, $qdnLotId2Db, $qdnTeamResp2Db, $qdnDateTime2Db, $qdnClassification2Db, $qdnDefects2Db]);
 		if($result){
-			$anotherInsert = "INSERT INTO `telford_db`.`qdnNo`
+			$anotherInsert = "INSERT INTO `telford_db`.`qdnno`
 							(`qdnNo`)
 						VALUES (?)"; 
 			$stmtinsertTwo = $db->prepare($anotherInsert);
