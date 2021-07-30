@@ -1,10 +1,6 @@
 $(document).ready(function(){    
-// ** GET THE STATUS IF = 0 TWO BTN IS ENABLE ✅
-// ** GET THE STATUS IF = 1 TWO BTN IS WILL BE REMOVE AND (This will for approval✅
-// ** FUNCTION TO GET THE ISSUED TO EMP NUMBER ✅
-// ** IF REASSIGNED EXIST GET THE THE EMP NUMBER OF REASSIGNED PERSON✅
-// ** IF THERE IS NO REASSIGNMENT REQUEST FOR ANALYSIS DATA TO CHECK THE
-// QND RESPONSIBLE EMPLOYEE 
+// ** ✅ ==> DDONE
+// ** 🔚 ==> END
 
     // INTERVAL FUNCTION TO CHECK THE STATUS OF QDN EVERY 500 Millisecond
     setInterval(function(){ 
@@ -20,9 +16,9 @@ $(document).ready(function(){
         });
         //FUNCTION TO HANDLE THE REQUEST FOR QND STATUS
         //IF THE STATUS = 1 then remove the buttons
-        function loadDataFromDb(response){
+        function loadDataFromDb( response ){
             // CHECK IF RESPONSE IS NULL 
-            if (response){
+            if ( response ){
                 var status = response[0]['status'];
                 if (status == 1){
                     var forTanggal = document.getElementById('analysisBtn');
@@ -36,9 +32,123 @@ $(document).ready(function(){
     },500);
     // </END OF INTERVAL TO CHECK THE QDN STATUS
 
+    //**FUNCTION THAT WILL GENERATE THE INITIAL EMAIL
+    // RECIEVERS
+    let fetchEmailRecievers = (empNumero) => {
+        // request for QDN compliance designated Email Receiver (request 13)
+        let recieversData = $.ajax({
+            type: 'POST',
+            url: "./php/getDetails.php",
+            data: {issuedToEmpNo: empNumero, request: 13},
+            cache : false,
+            dataType: "json",
+            async: false
+        });
+        return recieversData.responseJSON;//**This will return JSON Object*/
+    };//🔚**FUNCITON FOR INITIAL RECEIVERS ENDS HERE!*/
+
+    //**FUCNTION THAT WILL LOOP THROUGH THE RESULTS OF fetchEmailRecievers Result */
+    //**AND RETURN THE FINAL RECIEVERS FORMAT*/
+    let generateEmailRecievers = (empNum) => {
+        let objEmail = fetchEmailRecievers(empNum);
+        var objEmailLen = objEmail.length;
+        let receiver;
+        if ( objEmail ){
+            // LOOP TO HANDLE EACH EMAIL RESULTS
+            for (var i = 0; i < objEmailLen; i++){
+                if ( receiver ){
+                    receiver = receiver + ", " + objEmail[i]['emailscol'];
+                }
+                else{
+                    var emailResult = objEmail[i]['emailscol'];
+                    receiver = emailResult;
+                };
+            };
+        };
+        return receiver;
+    };//🔚*FUNCTION FOR RECEIVERS FORMAT ENDS HERE*/
+
+    //*FUNCTION THAT WILL SEND AN EMAIL AND ALERT WHEN APPROVAL BUTTON CONFIRMED*/
+    let emailSentAlert = ( qndNumber, receiver ) => {
+        // SCRIPT FOR EMAIL SENDING AND EMAIL FORMATS
+        Email.send({
+            Host: "smtp.gmail.com",
+            Username : "systemqdn2021@gmail.com",
+            Password : "tjvxdnvqvepgtwck",
+            // To : receiver,
+            To : "chanchristianarana@gmail.com",
+            From : "systemqdn2021@gmail.com",
+            Subject : "QDN No. " + qndNumber  + " FOR APPROVAL",
+            Body : "QDN " + "<a href='http://tk-server.tspi.com:999/analysis.php'>" + qndNumber + "</a> needs approval. <br><br>" + 
+            "<strong>Note:</strong><br>" +
+            "<i>  This notification is an automated message. Please do not reply directly to this email.</i>" 
+        }).then(() => {
+            // ALERT WHEN STATUS SUCCESSFULLY SET TO 1
+            Swal.fire({
+                title:'Sent!',
+                html:"QDN " + "<b style ='color:red;'>"+ qndNumber +"</b>"
+                + " Sent for approval!",
+                icon:'success',
+                showConfirmButton: false,
+                timer: 2000,
+            });
+        });
+    };//🔚**FUNCTION FOR SENDING EMAIL ANDD ALERT ENDS HERE!*/
+
+    //**FUNCTION THAT WILL SET THE QDN STATUS*/
+    let setStatus = qndNumber => {
+        // REQUEST TO UPDATE THE STUTUS
+        $.ajax({
+            type: 'POST',
+            url: "./php/getDetails.php",
+            data: {status: status, qndNumber: qndNumber, request: 16},
+            success: () => {    
+                emailSentAlert(qndNumber);
+            },
+            error: (error) => {
+                errorAlert(error); //** ERROR FUNCTION */
+            },
+        });
+        // </END OF REQUEST TO UPDATE THE STUTUS
+    };//**🔚
+
+    //**FUNCTION THAT WILL SHOW APPROVAL BUTTON DIALOG BOX*/
+    let forApprovalDialogBox = qndNumber => {
+        // SUBMIT FOR APPROVAL ALERT
+        Swal.fire({
+            title: 'Are you sure?',
+            html: "Sending this QDN (Number: " + "<b style ='color:red;'>"+ qndNumber +"</b>"
+                + ") for approval won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Submit this!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var status = 1;
+                // setStatus(status);
+            };
+        });
+        console.log("This is test if it is working!!");
+    };//**🔚
+
+    //*FUNCTION FOR ERROR ALERT*/
+    let errorAlert = errorCode => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: "Something went wrong on " + errorCode + "!", 
+        });
+    };//🔚*FUNCTION FOR ERROR ALERT ENDS HERE!*/
+
     // CLICK FUNCTION FOR APPROVAL SUBMISSION
     $(document).on('click', '#forApproval', function (){
         var qndNumber = document.getElementById('qdnNumber').value;
+
+        forApprovalDialogBox("qndNumber");
+        // emailSentAlert("T27234-1");
+        // errorAlert("111");
         // REQUEST TO CHECK IF THESE IS THE REASSIGNMENT
         $.ajax({
             type: 'POST',
@@ -52,38 +162,9 @@ $(document).ready(function(){
             // CHECK IF dokumentoDetalye(data) PARAM IS NULL
             // console.log(data); 
             if ( data ){
-                var empNumero = data[0]['to'];
-                // request for QDN compliance designated Email Receiver (request 13)
-                $.ajax({
-                    type: 'POST',
-                    url: "./php/getDetails.php",
-                    data: {issuedToEmpNo: empNumero, request: 13},
-                    cache : false,
-                    dataType: "json",
-                    success:  emailDetails
-                });
-                // FUNCTION TO HANDLE EMAIL DETAILS
-                function emailDetails (data){
-                    // CHECK IF emailDetails (data) PARAM IS NULL
-                    if ( data ){
-                        var dataLen = data.length;
-                        var receiver = "";
-                        // LOOP TO HANDLE EACH EMAIL RESULTS
-                        for (var i = 0; i < dataLen; i++){
-
-                            if ( receiver.length == 0){
-                                var emailResult = data[i]['emailscol'];
-                                receiver = emailResult;
-                            }
-                            else if (receiver.length > 0){
-                                receiver = receiver + ", " + data[i]['emailscol'];
-                            };
-                        };
-                        receiverData(receiver);
-                    };
-                    // </END OF CHEKING IF emailDetails (data) PARAM IS NULL
-                };
-
+                let empNumero = data[0]['to'];
+                let recievers =  generateEmailRecievers(empNumero);
+                forApprovalDialogBox("qndNumber");
                 // FUNCTION TO HANDLE RECEIVER(Supervisor or Manager of the employee for this reassigned QDN) DATA             
                 function receiverData(receiver){
                     // CHECK IF receiverData(receiver) PARAM IS NULL
@@ -110,57 +191,8 @@ $(document).ready(function(){
                                             receiver = receiver + ", " + authEmails;
                                         };
                                     };
-                                    // SUBMIT FOR APPROVAL ALERT
-                                    Swal.fire({
-                                        title: 'Are you sure?',
-                                        html: "Sending this QDN (Number: " + "<b style ='color:red;'>"+ qndNumber +"</b>"
-                                            + ") for approval won't be able to revert this!",
-                                        icon: 'warning',
-                                        showCancelButton: true,
-                                        confirmButtonColor: '#3085d6',
-                                        cancelButtonColor: '#d33',
-                                        confirmButtonText: 'Yes, Submit this!'
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            var status = 1;
-                                            // REQUEST TO UPDATE THE STUTUS
-                                            $.ajax({
-                                                type: 'POST',
-                                                url: "./php/getDetails.php",
-                                                data: {status: status, qndNumber: qndNumber, request: 16},
-                                                success: function(response){
-                                                    
-                                                    // SCRIPT FOR EMAIL SENDING AND EMAIL FORMATS
-                                                    Email.send({
-                                                        Host: "smtp.gmail.com",
-                                                        Username : "systemqdn2021@gmail.com",
-                                                        Password : "tjvxdnvqvepgtwck",
-                                                        To : receiver,
-                                                        // To : "chanchristianarana@gmail.com",
-                                                        From : "systemqdn2021@gmail.com",
-                                                        Subject : "QDN No. " + qndNumber  + " FOR APPROVAL",
-                                                        Body : "Accomplished QDN    " + "<a href='http://tk-server.tspi.com:999/analysis.php'>" + qndNumber + "</a> <br><br>" + 
-                                                        "<strong>Note:</strong><br>" +
-                                                        "<i>  This notification is an automated message. Please do not reply directly to this email.</i>" 
-                                                    });
-                                                    // ALERT WHEN STATUS SUCCESSFULLY SET TO 1
-                                                    Swal.fire(
-                                                        'Sent!',
-                                                        'QDN Sent for approval!',
-                                                        'success'
-                                                    );
-                                                },
-                                                error: function(response){
-                                                    Swal.fire({
-                                                        icon: 'error',
-                                                        title: 'Oops...',
-                                                        text: 'Something went wrong!'
-                                                    });
-                                                },
-                                            });
-                                            // </END OF REQUEST TO UPDATE THE STUTUS
-                                        }
-                                    });
+                                    forApprovalDialogBox(qndNumber);
+                                  
                                 };
                                 // </END OF CHECKING IS NOT NULL
                             },
@@ -169,7 +201,7 @@ $(document).ready(function(){
                     // </END OF CHEKING IF receiverData(receiver) PARAM IS NULL
                 };
             }else{
-                noReassignment();
+                // noReassignment();
             };
             // </END OF CHEKING IF dokumentoDetalye(data) PARAM IS NULL
         };
@@ -188,7 +220,6 @@ $(document).ready(function(){
             // FUNCTION TO HANDLE QDN DETAILS
             function analysisDetails(response){ 
                 // CHECK IF receiverData(receiver) PARAM IS NULL
-                console.log(response); 
                 if ( response ){
                     // console.log("This is for anlysis QDN Details", response[0]['issuedTo']);
                     var responseLen = response.length
@@ -288,8 +319,8 @@ $(document).ready(function(){
                                                         Host: "smtp.gmail.com",
                                                         Username : "systemqdn2021@gmail.com",
                                                         Password : "tjvxdnvqvepgtwck",
-                                                        To : receiver,
-                                                        // To : "chanchristianarana@gmail.com",
+                                                        // To : receiver,
+                                                        To : "chanchristianarana@gmail.com",
                                                         From : "systemqdn2021@gmail.com",
                                                         Subject : "QDN No. " + qndNumber  + " FOR APPROVAL",
                                                         Body : "Accomplished QDN    " + "<a href='http://tk-server.tspi.com:999/approval.php'>" + qndNumber + "</a> <br><br>" + 

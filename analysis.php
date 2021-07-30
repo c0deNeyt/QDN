@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <!-- <html lang="en" oncontextmenu="return false"> -->
   <html lang="en">
-
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -415,7 +414,7 @@
           ================  
           -->  
           <div class="row ">
-            <div class="col-sm-2">
+            <div class="col-sm-2">    
               <label for="station" class="telfordRed col-form-label">Station: </label>
             </div>
             <div class="col">
@@ -478,25 +477,12 @@
               <span class="fromdbResutl" id="classification"></span>
             </div>
             <div class="col-sm-2">
-              <label for="lotId" class="telfordRed col-form-label">Failure Mode: </label>
+            <label for="nonconformity" class="telfordRed col-form-label"> NC/Defects: </label>
             </div>
             <div class="col">
-              <span class="fromdbResutl" id="failureMode"></span>
+            <span class="fromdbResutl" id="defects"></span>
             </div>
           </div>
-          <!--
-          ================
-              ROW8
-          ================  
-          -->          
-          <div class="row ">
-            <div class="col-md-4">
-              <label for="nonconformity" class="telfordRed col-form-label-lg">NONCONFORMITY/ DEFECTS: </label>
-            </div>
-            <div class="col mt-3">
-              <span class="fromdbResutl" id="defects">Example Bent Leads</span>
-            </div>
-          </div> 
         </fieldset>
 
         <!-- <div id='reAssignment'>
@@ -648,10 +634,8 @@
                   <td id="containmentWhen" contenteditable="true" class="pre-wrap"></td>
                   <td id="containmentStatus" contenteditable="true" class="pre-wrap"></td>
                 </tr>
-                
               </tbody>
             </table>
-
             <table class="table table-hover table-bordered border-warning text-center" >
               <thead class="table-warning">
                 <tr>

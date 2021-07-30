@@ -86,8 +86,6 @@
           <label for="qdnNumber" class="form-label">QDN #:</label>
           <input type="text" class="form-control" id="qdnNumber" >
         </div>
-
-
          <!--
         ================
           ROW #2
@@ -172,7 +170,6 @@
             <input class="autofill" id="packageType" type="text" class="form-control"  inputName = "Package Type" required/>
           </div>
         </div>
-       
         <!--
         ================
             ROW #6

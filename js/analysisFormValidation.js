@@ -87,7 +87,7 @@
                   To : "chanchristianarana@gmail.com",
                   From : "systemqdn2021@gmail.com",
                   Subject : "QDN Area Owner Reassignment",
-                  Body : "This is to notify that QDN# " + "<a href='http://tk-server.tspi.com:999/analysis.php'>" + findThis + "</a>" + " was reassigned under your ownership. <br><br>" +
+                  Body : "This is to notify that QDN number " + "<a href='http://tk-server.tspi.com:999/analysis.php'>" + findThis + "</a>" + " was reassigned under your ownership. <br><br>" +
                   "<b>"+ "Description: " + "</b>" +
                   "<pre>    "+ reAssignmentDes +"</pre>" + 
                   "<strong>Note:</strong><br>" +
@@ -459,7 +459,6 @@
                 })
                 .then (function (){  
                   window.location.href = "analysis.php";
-                  Location.reload(true);
                 });
                 // console.log("Update Sent!!");
               };

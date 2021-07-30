@@ -49,19 +49,21 @@ $(document).ready(function(){
                         // VARIABLE FOR EACH ROW RESULT FROM DATABASE
                         var empName         = response[0]['EMP_NAME'];
                         var empTeam         = response[0]['TEAM'];
+                        var empStn         = response[0]['STATION'];
                          
                         // PARSING VARIABLE TO THE HTML ELEMENT
                         $('#issuedByEmpName').val(empName);
                         $('#issuedByEmpTeam').val(empTeam);
+                        $('#station').val(empStn); 
                         $('#issuedToDiv').css('visibility', 'visible');
                         $("#issuedToEmpName,#issuedToEmpTeam, #issuedToEmpNumber")
                         .css({
                             "border": "",
                         });
-                        $("#issuedToEmpName, #issuedToEmpTeam")  
+                        $("#issuedToEmpName, #issuedToEmpTeam, #station")  
                         .attr("placeholder", "");
-                        $("#issuedByEmpName, #issuedByEmpTeam, #issuedByEmpNumber")
-                        .css({"color":"", "border-bottom": "1px solid #63f200"})
+                        $("#issuedByEmpName, #issuedByEmpTeam, #issuedByEmpNumber, #station")
+                        .css({"color":"", "border-bottom": "1px solid #63f200"});
     
                            
                     };
@@ -72,7 +74,7 @@ $(document).ready(function(){
             //=========================================>
         }
 
-        $("#issuedByEmpName, #issuedByEmpTeam")
+        $("#issuedByEmpName, #issuedByEmpTeam, #station")
         .val("")
         .attr("placeholder", "Invalid 😡")
         .css({
@@ -110,18 +112,16 @@ $(document).ready(function(){
                     var empName         = response[0]['EMP_NAME'];
                     var empTeam         = response[0]['TEAM'];
                     var empDept         = response[0]['DEPARTMENT'];
-                    var empStn         = response[0]['STATION'];
                     // PARSING VARIABLE TO THE HTML ELEMENT
                     $('#issuedToEmpName').val(empName);
                     $('#issuedToEmpTeam').val(empTeam); 
                     $('#teamResp').val(empDept); 
-                    $('#station').val(empStn); 
                     $("#issuedToEmpName,#issuedToEmpTeam, #issuedToEmpNumber")
                     .css({
                         "color":"",
                         "border-bottom": "1px solid #63f200"
                     });   
-                    $("#teamResp, #station").css({"color":"", "border-bottom": "1px solid #63f200"});      
+                    $("#teamResp").css({"color":"", "border-bottom": "1px solid #63f200"});      
                    }
                 },
             });
@@ -137,7 +137,7 @@ $(document).ready(function(){
             "border-bottom": "1px solid red"
         });
 
-        $("#teamResp, #station")
+        $("#teamResp")
         .val("")
         .attr("placeholder", "Invalid 😡")
         .css({
