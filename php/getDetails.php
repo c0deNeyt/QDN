@@ -782,13 +782,13 @@ else if($request == 18){
                         `department`,
                         `reAssignDescription`
                     FROM `analysis_tbl`
-                    INNER JOIN `reAssignments_tbl`
+                    INNER JOIN `reassignments_tbl`
                     ON
-                        `analysis_tbl`.`id` =  `reAssignments_tbl`.`analysis_tbl_id`
+                        `analysis_tbl`.`id` =  `reassignments_tbl`.`analysis_tbl_id`
                     WHERE 
                         `analysis_tbl`.`qdnNo` = '$qdnNum'
                     ORDER BY
-                    `reAssignments_tbl`.`id` DESC LIMIT 1";
+                    `reassignments_tbl`.`id` DESC LIMIT 1";
     $dataFromDatabase = $db->prepare($dataRequest);
     $dataFromDatabase -> execute();
 
@@ -799,10 +799,11 @@ else if($request == 18){
         $dept   = $row['department'];
         $des   = $row['reAssignDescription'];
 
-        $data[] = array("to" => $to, "name" => $name,"team" => $team, "dept" => $dept, "des" => $des
-        );
+        $data[] = array("to" => $to, "name" => $name,"team" => $team, "dept" => $dept, "des" => $des);
     }
-    echo json_encode($data);
+    if ( $data ){
+        echo json_encode($data);
+    };
     exit;
 }
    //========================================
