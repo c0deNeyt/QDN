@@ -4,8 +4,8 @@ $host = '127.0.0.1';
 $db   = 'telford_db';
 $user = 'root';
 // $user = 'neyt';
-// $pass = 'gieRHAAA9iSi3ULZ';
-$pass = 'dkoalam3h';
+$pass = 'gieRHAAA9iSi3ULZ';
+// $pass = 'dkoalam3h';
 $charset = 'utf8mb4';
 
 $options = [
