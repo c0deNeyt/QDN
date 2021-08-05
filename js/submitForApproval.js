@@ -34,17 +34,16 @@ $(document).ready(function(){
 
     //**FUNCTION THAT WILL GENERATE THE INITIAL EMAIL
     // RECEIVERS
-    let fetchEmailRecievers = (empNumero) => {
-        // request for QDN compliance designated Email Receiver (request 13)
-        let recieversData = $.ajax({
+    let fetchEmailReceivers = (empNumero) => {
+        // // request for QDN compliance designated Email Receiver (request 13)
+         let receiversData = $.ajax({
             type: 'POST',
             url: "./php/getDetails.php",
             data: {issuedToEmpNo: empNumero, request: 13},
             cache : false,
-            dataType: "json",
-            async: false
+            dataType: "json"
         });
-        return recieversData.responseJSON;//**This will return JSON Object*/
+        return receiversData.responseJSON;//**This will return JSON Object*/
     };//🔚**FUNCTION FOR INITIAL RECEIVERS ENDS HERE!*/
 
     //**FUNCTION THAT WILL LOOP THROUGH THE RESULTS OF fetchEmailReceivers Result */
@@ -208,6 +207,8 @@ $(document).ready(function(){
     // CLICK FUNCTION FOR APPROVAL SUBMISSION
     $(document).on('click', '#forApproval', function (){
         var qdnNumber = document.getElementById('qdnNumber').value;
+        let x = fetchEmailReceivers(12856)
+        console.log(x);
         // REQUEST TO CHECK IF THESE IS THE REASSIGNMENT
         // REQUEST TO CHECK IF THESE IS THE REASSIGNMENT
         $.ajax({
