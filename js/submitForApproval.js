@@ -34,37 +34,60 @@ $(document).ready(function(){
 
     //**FUNCTION THAT WILL GENERATE THE INITIAL EMAIL
     // RECEIVERS
-    let fetchEmailRecievers = (empNumero) => {
-        // request for QDN compliance designated Email Receiver (request 13)
-        let recieversData = $.ajax({
-            type: 'POST',
-            url: "./php/getDetails.php",
-            data: {issuedToEmpNo: empNumero, request: 13},
-            cache : false,
-            dataType: "json",
-            async: false
-        });
-        return recieversData.responseJSON;//**This will return JSON Object*/
-    };//🔚**FUNCTION FOR INITIAL RECEIVERS ENDS HERE!*/
+    let fetchEmailRecievers = ( empNumero ) => {
+        var xhr = new XMLHttpRequest();
+        var data = new FormData();
+        data.append('issuedToEmpNo', empNumero);
+        data.append('request', 13);
+        return new Promise ((resolve, reject)=>{
+            setTimeout(() => {
+               
+                // xhr.onreadystatechange = function() {
+                //     if (this.readyState === this.DONE) {
+                //         console.log(this.response) // do something; the request has completed
+                //     }
+                // };
+                xhr.open("POST", './php/getDetails.php');
+                xhr.send(data);
+                let x = xhr.response;
 
+                resolve (x);
+            },2000);
+        });
+        // request for QDN compliance designated Email Receiver (request 13)
+        // var xhr = new XMLHttpRequest();
+        // var data = new FormData();
+        // data.append('issuedToEmpNo', empNumero);
+        // data.append('request', 13);
+        // xhr.open('POST', './php/getDetails.php', false);
+        // xhr.send(data);
+        // if (xhr.status === 200){
+        //     return JSON.parse(xhr.responseText); //**This will return JSON Object*/
+        // }
+        // else {
+        //     console.warn('request_error | submitforApproval.js Line 51');
+        // }
+       
+    };//🔚**FUNCTION FOR INITIAL RECEIVERS ENDS HERE!*/
+  
     //**FUNCTION THAT WILL LOOP THROUGH THE RESULTS OF fetchEmailReceivers Result */
     //**AND RETURN THE FINAL RECEIVERS FORMAT*/
-    let generateEmailReceivers = (empNum) => {
-        let objEmail = fetchEmailRecievers(empNum);
-        var objEmailLen = objEmail.length;
-        let receiver;
-        if ( objEmail ){
-            // LOOP TO HANDLE EACH EMAIL RESULTS
-            for (var i = 0; i < objEmailLen; i++){
-                if ( receiver ){
-                    receiver = receiver + ", " + objEmail[i]['emailscol'];
-                }
-                else{
-                    var emailResult = objEmail[i]['emailscol'];
-                    receiver = emailResult;
+    let generateEmailReceivers =  (empNum) => {
+            let objEmail =    fetchEmailRecievers(empNum);
+            let objEmailLen = objEmail.length;
+            let receiver;
+            if ( objEmail ){    
+                // LOOP TO HANDLE EACH EMAIL RESULTS
+                for (var i = 0; i < objEmailLen; i++){
+                    if ( receiver ){
+                        receiver = receiver + ", " + objEmail[i]['emailscol'];
+                    }
+                    else{
+                        var emailResult = objEmail[i]['emailscol'];
+                        receiver = emailResult;
+                    };
                 };
             };
-        };
         return receiver;
     };//🔚*FUNCTION FOR RECEIVERS FORMAT ENDS HERE*/
 
@@ -208,42 +231,49 @@ $(document).ready(function(){
     // CLICK FUNCTION FOR APPROVAL SUBMISSION
     $(document).on('click', '#forApproval', function (){
         var qdnNumber = document.getElementById('qdnNumber').value;
+        // var x = generateEmailReceivers(12856);
+        // console.log (x);
+       
+        fetchEmailRecievers(1111).then(emails => {
+            console.log(emails);
+        }) 
+
         // REQUEST TO CHECK IF THESE IS THE REASSIGNMENT
         // REQUEST TO CHECK IF THESE IS THE REASSIGNMENT
-        $.ajax({
-            type: 'POST',
-            url: "./php/getDetails.php",
-            data: {qdnNum: qdnNumber, request: 18},
-            dataType: "json",
-            success: dokumentoDetalye,
-            error: noReassignment
-        });
+        // $.ajax({
+        //     type: 'POST',
+        //     url: "./php/getDetails.php",
+        //     data: {qdnNum: qdnNumber, request: 18},
+        //     dataType: "json",
+        //     success: dokumentoDetalye,
+        //     error: noReassignment
+        // });
         function dokumentoDetalye(data){
             // console.log (data);
             // CHECK IF dokumentoDetalye(data) PARAM IS NULL
             if ( data ){
                 let empNumero = data[0]['to'];
-                let receivers =  generateEmailReceivers(empNumero);
+                // let receivers =  generateEmailReceivers(empNumero);
                 // FUNCTION TO HANDLE RECEIVER(Supervisor or Manager of the employee for this reassigned QDN) DATA             
-                    // CHECK IF receiverData(receiver) PARAM IS NULL
-                    if ( receivers ){
-                        // REQUEST FOR  PROD, EE, PE, AND QA AUTH DETAILS (request 17)
-                        $.ajax({
-                            type: "POST",
-                            url: "./php/getDetails.php",
-                            data: {request: 17},
-                            dataType: "json",
-                            success: function (data){
-                                // CHECK IF DATA IS NOT NULL
-                                if ( data ){
-                                    let newReceivers = removeDuplicate ( data, receivers )
-                                    forApprovalDialogBox(newReceivers, qdnNumber);
-                                };
-                                // </END OF CHECKING IS NOT NULL
-                            },
-                        });       
-                    };
-                    // </END OF CHECKING IF receiverData(receiver) PARAM IS NULL
+                // CHECK IF receiverData(receiver) PARAM IS NULL
+                if ( receivers ){
+                    // REQUEST FOR  PROD, EE, PE, AND QA AUTH DETAILS (request 17)
+                    $.ajax({
+                        type: "POST",
+                        url: "./php/getDetails.php",
+                        data: {request: 17},
+                        dataType: "json",
+                        success: function (data){
+                            // CHECK IF DATA IS NOT NULL
+                            if ( data ){
+                                let newReceivers = removeDuplicate ( data, receivers )
+                                // forApprovalDialogBox(newReceivers, qdnNumber);
+                            };
+                            // </END OF CHECKING IS NOT NULL
+                        },
+                    });       
+                };
+                // </END OF CHECKING IF receiverData(receiver) PARAM IS NULL
                
             }else{
                 noReassignment();

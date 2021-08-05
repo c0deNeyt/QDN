@@ -140,6 +140,7 @@ div.content {
     padding: 4px;
   }
   #qdnNumber {
+    cursor: not-allowed;
     border: none;
     font-weight: bold;
     color: blue;

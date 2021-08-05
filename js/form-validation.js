@@ -39,7 +39,7 @@
         }
         else{
           event.preventDefault();
-          var qdnNumber         = $("#qdnNumber").val();
+          var qdnNumber         = $("#qdnNumber").html();
           var qdnIBENo          = $("#issuedByEmpNumber").val();
           var qdnIBEN           = $("#issuedByEmpName").val();
           var qdnIBET           = $("#issuedByEmpTeam").val();
@@ -95,7 +95,7 @@
                 dataType: "json",
                 success:  emailDetails,
                 error: function (){
-                  alert("Something went wrong when saving!")
+                  alert("Something went wrong when saving! Line 98 FormValidation.js")
                 },
               });
 
@@ -120,8 +120,8 @@
                     Host: "smtp.gmail.com",
                     Username : "systemqdn2021@gmail.com",
                     Password : "tjvxdnvqvepgtwck",
-                    To : receiver,
-                    // To : "chanchristianarana@gmail.com",
+                    // To : receiver,
+                    To : "chanchristianarana@gmail.com",
                     From : "systemqdn2021@gmail.com",
                     Subject : "QDN Issuance",
                     Body : "Good Day," + "<br>" + "<br>" +

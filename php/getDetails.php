@@ -20,7 +20,7 @@ if($request == 1){
                     WHERE  
                         `qdnNo`
                     LIKE 
-                        '$qdnNoReq%' 
+                        '%$qdnNoReq%' 
                     ORDER BY
                         `id`  
                     DESC LIMIT 1";
@@ -33,7 +33,10 @@ if($request == 1){
         $data[] = array("qdnNo" => $qdnNo);
     }
     // ENCODING ARRAY TO JSON FORMAT
-    echo json_encode($data);
+    if ($data){
+        echo json_encode($data);
+    };
+   
     exit;
 }
   //=========================================
