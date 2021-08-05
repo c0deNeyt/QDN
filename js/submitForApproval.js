@@ -29,11 +29,12 @@ $(document).ready(function(){
             };
             // </ END OF CHECKING IF loadDataFromDb(response) IS NULL
         };
-    },500);
+    },250);
     // </END OF INTERVAL TO CHECK THE QDN STATUS
 
     //**FUNCTION THAT WILL GENERATE THE INITIAL EMAIL
     // RECEIVERS
+<<<<<<< HEAD
     let fetchEmailReceivers = (empNumero) => {
         // // request for QDN compliance designated Email Receiver (request 13)
          let receiversData = $.ajax({
@@ -44,6 +45,22 @@ $(document).ready(function(){
             dataType: "json"
         });
         return receiversData.responseJSON;//**This will return JSON Object*/
+=======
+    let fetchEmailRecievers = (empNumero) => {
+        // request for QDN compliance designated Email Receiver (request 13)
+        var xhr = new XMLHttpRequest();
+        var data = new FormData();
+        data.append('issuedToEmpNo', empNumero);
+        data.append('request', 13);
+        xhr.open('POST', './php/getDetails.php', false);
+        xhr.send(data);
+        if (xhr.status === 200){
+            return JSON.parse(xhr.responseText); //**This will return JSON Object*/
+        }
+        else {
+            console.warn('request_error | submitforApproval.js Line 51');
+        }
+>>>>>>> f31d8351051b0381752b6089ee41ceb8adee7aed
     };//🔚**FUNCTION FOR INITIAL RECEIVERS ENDS HERE!*/
 
     //**FUNCTION THAT WILL LOOP THROUGH THE RESULTS OF fetchEmailReceivers Result */
@@ -70,6 +87,7 @@ $(document).ready(function(){
     //*FUNCTION THAT WILL SEND AN EMAIL AND ALERT WHEN APPROVAL BUTTON CONFIRMED*/
     let emailSentAlert = ( qndNumber, receiver ) => {
         // SCRIPT FOR EMAIL SENDING AND EMAIL FORMATS
+        console.log(receiver);
         Email.send({
             Host: "smtp.gmail.com",
             Username : "systemqdn2021@gmail.com",
