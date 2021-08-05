@@ -79,23 +79,32 @@ $(document).ready(function(){
             Host: "smtp.gmail.com",
             Username : "systemqdn2021@gmail.com",
             Password : "tjvxdnvqvepgtwck",
-            // To : receiver,
-            To : "chanchristianarana@gmail.com",
+            To : receiver,
+            // To : "chanchristianarana@gmail.com",
             From : "systemqdn2021@gmail.com",
-            Subject : "QDN No. " + qndNumber  + " FOR APPROVAL",
-            Body : "QDN " + "<a href='http://tk-server.tspi.com:999/analysis.php'>" + qndNumber + "</a> needs approval. <br><br>" + 
+            Subject : "QDN No. " + qndNumber  + " FOR APPROVAL" ,
+            Body : "QDN " + "<a href='http://tk-server.tspi.com:999/analysis.php'>" + qndNumber + "</a> needs approval.<br><br>" + 
             "<strong>Note:</strong><br>" +
             "<i>  This notification is an automated message. Please do not reply directly to this email.</i>" 
-        }).then(() => {
-            // ALERT WHEN STATUS SUCCESSFULLY SET TO 1
-            Swal.fire({
-                title:'Sent!',
-                html:"QDN " + "<b style ='color:red;'>"+ qndNumber +"</b>"
-                + " Sent for approval!",
-                icon:'success',
-                showConfirmButton: false,
-                timer: 2000,
-            });
+        });
+        // ALERT WHEN STATUS SUCCESSFULLY SET TO 1
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
+        Toast.fire({
+            icon:'success',
+            title:'Sent!',
+            html:"QDN " + "<b style ='color:red;'>"+ qndNumber +"</b>"
+            + " Sent for approval!",
+            showConfirmButton: false
         });
     };//🔚**FUNCTION FOR SENDING EMAIL AND ALERT ENDS HERE!*/
 
@@ -130,7 +139,7 @@ $(document).ready(function(){
             confirmButtonText: 'Yes, Submit this!'
         }).then((result) => {
             if (result.isConfirmed) {
-                var status = 1;
+                var status = 0;
                 setStatus(status, qdnNumber, newReceivers );
             };
         });
@@ -153,6 +162,42 @@ $(document).ready(function(){
             };
         };
         return newReceiver;
+    };//**🔚
+
+    // REQUEST FOR ALL QDN DETAILS (request 7)
+    // THIS IS TO GET THE EMPLOYEE NUMBER OF 
+    // PERSON RESPONSIBLE TO THE QDN
+    let analysisTblReq = () => {
+        let empAyDie = $.ajax({
+            type: 'POST',
+            url: "./php/getDetails.php",
+            data: { request: 7 },
+            cache: false,
+            dataType: "json",
+            async: false
+        });
+        return empAyDie.responseJSON;
+    };//**🔚
+            
+    // FUNCTION TO HANDLE QDN DETAILS
+    let  verifyEmpId = () => { 
+        let x = analysisTblReq();
+        // CHECK IF receiverData(receiver) PARAM IS NULL
+        if ( x  ){
+            // console.log("This is for analysis QDN Details", response[0]['issuedTo']);
+            var responseLen = x.length
+            // LOOT TO CHECK EVERY QDN DETAILS
+            for (var i = 0; i < responseLen; i++){
+                var qdnNUm = x [i]['qdnNo'];
+                // IF THE QDN No. MATCHED TO THE CURRENT QDN
+                // GET THE ISSUED TO EMPLOYEE No. 
+                if(qdnNUm == qdnNumber){
+                    var issuedToEmpID = x [i]['issuedTo'];
+                };
+            };
+            return issuedToEmpID;
+        };
+        // </END OF CHECKING IF receiverData(receiver) PARAM IS NULL
     };//**🔚
 
     //*FUNCTION FOR ERROR ALERT*/
@@ -205,53 +250,18 @@ $(document).ready(function(){
                     // </END OF CHECKING IF receiverData(receiver) PARAM IS NULL
                
             }else{
-                // noReassignment();
+                noReassignment();
             };
             // </END OF CHECKING IF dokumentoDetalye(data) PARAM IS NULL
         };
         function noReassignment(error){
             // console.log (error.responseText);
-            // REQUEST FOR ALL QDN DETAILS (request 7)
-            // THIS IS TO GET THE EMPLOYEE NUMBER OF 
-            // PERSON RESPONSIBLE TO THE QDN
-            let analysisTblReq = () => {
-                let empAyDie = $.ajax({
-                    type: 'POST',
-                    url: "./php/getDetails.php",
-                    data: { request: 7 },
-                    cache: false,
-                    dataType: "json",
-                    async: false
-                });
-                return empAyDie.responseJSON;
-            }; 
-            
-            // FUNCTION TO HANDLE QDN DETAILS
-            let  verifyEmpId = () => { 
-                let x = analysisTblReq();
-                // CHECK IF receiverData(receiver) PARAM IS NULL
-                if ( x  ){
-                    // console.log("This is for analysis QDN Details", response[0]['issuedTo']);
-                    var responseLen = x.length
-                    // LOOT TO CHECK EVERY QDN DETAILS
-                    for (var i = 0; i < responseLen; i++){
-                        var qdnNUm = x [i]['qdnNo'];
-                        // IF THE QDN No. MATCHED TO THE CURRENT QDN
-                        // GET THE ISSUED TO EMPLOYEE No. 
-                        if(qdnNUm == qdnNumber){
-                            var issuedToEmpID = x [i]['issuedTo'];
-                        };
-                    };
-                    return issuedToEmpID;
-                };
-                // </END OF CHECKING IF receiverData(receiver) PARAM IS NULL
-            };
             let issuedToEmpID = verifyEmpId();
             // CHECK IF empAyDie(issuedToEmpID) PARAM IS NOT NULL
             if(issuedToEmpID){
                 let receivers =  generateEmailReceivers(issuedToEmpID);
                     // CHECK IF receiverData(receiver) PARAM IS NOT NULL
-                    if(issuedToEmpID){
+                    if(receivers){
                         // REQUEST FOR  PROD, EE, PE, AND QA AUTH DETAILS (request 17)
                         $.ajax({
                             type: 'POST',
@@ -259,7 +269,7 @@ $(document).ready(function(){
                             data: {request: 17},
                             dataType: "json",
                             success: (data) => {
-                                let newReceivers = removeDuplicate ( data, receivers )
+                                let newReceivers = removeDuplicate ( data, receivers );
                                 forApprovalDialogBox(newReceivers, qdnNumber);
                             },
                         });

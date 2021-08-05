@@ -116,8 +116,8 @@ $(document).ready(function () {
                         Host: "smtp.gmail.com",
                         Username : "systemqdn2021@gmail.com",
                         Password : "tjvxdnvqvepgtwck",
-                        // To : receiver,
-                        To : "chanchristianarana@gmail.com",
+                        To : receiver,
+                        // To : "chanchristianarana@gmail.com",
                         From : "systemqdn2021@gmail.com",
                         Subject : "Reanalysis Granted QDN No. " + qndNumber ,
                         Body : "Need to Reprocess QDN Number " + "<a href='http://127.0.0.1/sandbox/QDN/approval.php'>" + qndNumber + "</a> <br>" + "Requested by: " + authPerson +   "<br><br>" +

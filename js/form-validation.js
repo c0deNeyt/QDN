@@ -120,8 +120,8 @@
                     Host: "smtp.gmail.com",
                     Username : "systemqdn2021@gmail.com",
                     Password : "tjvxdnvqvepgtwck",
-                    // To : receiver,
-                    To : "chanchristianarana@gmail.com",
+                    To : receiver,
+                    // To : "chanchristianarana@gmail.com",
                     From : "systemqdn2021@gmail.com",
                     Subject : "QDN Issuance",
                     Body : "Good Day," + "<br>" + "<br>" +
