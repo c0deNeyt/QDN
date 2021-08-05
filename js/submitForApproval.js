@@ -29,7 +29,7 @@ $(document).ready(function(){
             };
             // </ END OF CHECKING IF loadDataFromDb(response) IS NULL
         };
-    },500);
+    },250);
     // </END OF INTERVAL TO CHECK THE QDN STATUS
 
     //**FUNCTION THAT WILL GENERATE THE INITIAL EMAIL
