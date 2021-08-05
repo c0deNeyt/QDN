@@ -29,45 +29,25 @@ $(document).ready(function(){
             };
             // </ END OF CHECKING IF loadDataFromDb(response) IS NULL
         };
-    },500);
+    },250);
     // </END OF INTERVAL TO CHECK THE QDN STATUS
 
     //**FUNCTION THAT WILL GENERATE THE INITIAL EMAIL
     // RECEIVERS
-    let fetchEmailRecievers = ( empNumero ) => {
+    let fetchEmailRecievers = (empNumero) => {
+        // request for QDN compliance designated Email Receiver (request 13)
         var xhr = new XMLHttpRequest();
         var data = new FormData();
         data.append('issuedToEmpNo', empNumero);
         data.append('request', 13);
-        return new Promise ((resolve, reject)=>{
-            setTimeout(() => {
-               
-                // xhr.onreadystatechange = function() {
-                //     if (this.readyState === this.DONE) {
-                //         console.log(this.response) // do something; the request has completed
-                //     }
-                // };
-                xhr.open("POST", './php/getDetails.php');
-                xhr.send(data);
-                let x = xhr.response;
-
-                resolve (x);
-            },2000);
-        });
-        // request for QDN compliance designated Email Receiver (request 13)
-        // var xhr = new XMLHttpRequest();
-        // var data = new FormData();
-        // data.append('issuedToEmpNo', empNumero);
-        // data.append('request', 13);
-        // xhr.open('POST', './php/getDetails.php', false);
-        // xhr.send(data);
-        // if (xhr.status === 200){
-        //     return JSON.parse(xhr.responseText); //**This will return JSON Object*/
-        // }
-        // else {
-        //     console.warn('request_error | submitforApproval.js Line 51');
-        // }
-       
+        xhr.open('POST', './php/getDetails.php', false);
+        xhr.send(data);
+        if (xhr.status === 200){
+            return JSON.parse(xhr.responseText); //**This will return JSON Object*/
+        }
+        else {
+            console.warn('request_error | submitforApproval.js Line 51');
+        }
     };//🔚**FUNCTION FOR INITIAL RECEIVERS ENDS HERE!*/
   
     //**FUNCTION THAT WILL LOOP THROUGH THE RESULTS OF fetchEmailReceivers Result */
@@ -94,6 +74,7 @@ $(document).ready(function(){
     //*FUNCTION THAT WILL SEND AN EMAIL AND ALERT WHEN APPROVAL BUTTON CONFIRMED*/
     let emailSentAlert = ( qndNumber, receiver ) => {
         // SCRIPT FOR EMAIL SENDING AND EMAIL FORMATS
+        console.log(receiver);
         Email.send({
             Host: "smtp.gmail.com",
             Username : "systemqdn2021@gmail.com",
