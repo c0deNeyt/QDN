@@ -9,7 +9,8 @@ $request = $_POST['request'];
   //=========================================
  //  FOR QDN NUMBER
 //===========================================
-if($request == 1){
+switch ($request) {
+case 1:
     $qdnNoReq = $_POST['qdnNoReq'];
     // SQL QUERY DATA REQUEST THAT IS MATCHED TO STORED QDN# AT DB 
     // "qdnNOReq" --> CAME FROM AJAX REQUEST OF issuance.js
@@ -36,31 +37,29 @@ if($request == 1){
     if ($data){
         echo json_encode($data);
     };
-   
-    exit;
-}
+    break;
   //=========================================
  //  FOR AUTOCOMPLETE MACHINES SUGGESTIONS
 //===========================================
-else if($request == 2){
+case 2: 
     $machineList = $_POST["machineList"];
     $dataRequest = "SELECT machines, package_type FROM tspi_machines WHERE machines LIKE '%$machineList%' LIMIT 6";
     $dataFromDatabase = $db->prepare($dataRequest);
     $dataFromDatabase -> execute();
-
     while($row = $dataFromDatabase->fetch(PDO::FETCH_ASSOC)){
         $machines = $row['machines'];
         $pkg_type = $row['package_type'];
 
         $data[] = array("machines" => $machines, "package_type" => $pkg_type);
     }
-    echo json_encode($data);
-    exit;
-}
+    if ( $ddata ){
+        echo json_encode($data);
+    };
+    break;
  //==========================================
  //  FOR EMPLOYEE AUTOCOMPLETE
 //===========================================
-else if($request == 3){
+case 3:
     $employeeId = $_POST['employeeId'];
     // SQL QUERY DATA REQUEST THAT IS MATCHED TO USER INPUT STORED IN "employeeId"
     // "employeeId" --> CAME FROM AJAX REQUEST OF issuance.js
@@ -80,13 +79,14 @@ else if($request == 3){
         $empData[] = array("EMP_NAME" => $nameDbResult, "TEAM" => $teamDbResult, "DEPARTMENT" => $departmentDbResult,"STATION" => $stationDbResult, "PRODUCT_LINE" => $plDbResult);
     }
     // ENCODING ARRAY TO JSON FORMAT
-    echo json_encode($empData);
-    exit;
-}
+    if ( $empData ){
+        echo json_encode($empData);
+    };
+    break;
   //=========================================
  //  FOR PACKAGE TYPE AUTOCOMPLETE SELECTION
 //===========================================
-else if($request == 4){
+case 4:
     $machineList = $_POST["machineList"];
     $dataRequest = "SELECT package_type FROM tspi_machines WHERE machines = '$machineList'";
     $dataFromDatabase = $db->prepare($dataRequest);
@@ -97,13 +97,14 @@ else if($request == 4){
 
         $data[] = array("package_type" => $pkg_type);
     }
-    echo json_encode($data);
-    exit;
-}
+    if ( $data ){
+        echo json_encode($data);
+    };
+    break;
   //=========================================
  //  FOR AUTOCOMPLETE PART NAME SUGGESTIONS 
 //===========================================
-else if($request == 5){
+case 5:
     $thisPartName = $_POST["thisPartName"];
     $dataRequest = "SELECT * FROM part_names WHERE names LIKE '%$thisPartName%' LIMIT 6";
     $dataFromDatabase = $db->prepare($dataRequest);
@@ -115,13 +116,14 @@ else if($request == 5){
 
         $data[] = array("names" => $names, "lead_counts" => $lead_count);
     }
-    echo json_encode($data);
-    exit;
-}
+    if ( $data ){
+        echo json_encode($data);
+    };
+    break;
   //=========================================
  //  FOR AUTOCOMPLETE PART NAME SELECTION
 //===========================================
-else if($request == 6){
+case 6:
     $matchedPartName = $_POST["matchedPartName"];
     $dataRequest = "SELECT names, lead_counts FROM part_names WHERE names = '$matchedPartName'";
     $dataFromDatabase = $db->prepare($dataRequest);
@@ -132,13 +134,14 @@ else if($request == 6){
 
         $data[] = array("lead_counts" => $lead_counts);
     }
-    echo json_encode($data);
-    exit;
-}
+    if ( $data ){
+        echo json_encode($data);
+    };
+    break;
   //=========================================
  //  FOR  ANALYSIS AUTOCOMPLETE   
 //===========================================
-else if($request == 7){
+case 7:
     $dataRequest = "SELECT * 
                     FROM `analysis_tbl`
                     WHERE `status` = 0
@@ -154,11 +157,11 @@ else if($request == 7){
 
         $data[] = array("id" => $id, "qdnNo" => $qdnNo, "status" => $status, "issuedTo" => $issuedTo);
     }
-    echo json_encode($data);
-    exit;
-}
-
-else if($request == 7.1){
+    if ( $data ){
+        echo json_encode($data);
+    };
+    break;
+case 7.1:
     $searchForThisQdnNo = $_POST["searchForThisQdnNo"];
     $dataRequest = "SELECT `id`, 
                             `qdnNo`
@@ -176,13 +179,14 @@ else if($request == 7.1){
 
         $data[] = array("id" => $id, "qdnNo" => $qdnNo);
     }
-    echo json_encode($data);
-    exit;
-}
+    if ( $data ){
+        echo json_encode($data);
+    };
+    break;
   //=========================================
  //  FOR AUTOCOMPLETE ANALYSIS SELECTION 
 //===========================================
-else if($request == 8){
+case 8:
     $matchedQdnNum = $_POST["matchedQdnNum"];
     $dataRequest = "SELECT * FROM analysis_tbl WHERE qdnNo = '$matchedQdnNum' ORDER BY id DESC LIMIT 5";
     $dataFromDatabase = $db->prepare($dataRequest);
@@ -225,13 +229,14 @@ else if($request == 8){
             "status" => $status 
         );
     }
-    echo json_encode($data);
-    exit;
-}
+    if ( $data ){
+        echo json_encode($data);
+    };
+    break;
   //=========================================
  //  FOR AUTOCOMPLETE ANALYSIS SELECTION 
 //===========================================
-else if($request == 8.1){
+case 8.1:
     $matchedQdnNum = $_POST["matchedQdnNum"];
     $dataRequest = "SELECT `analysis_tbl`.`status` FROM `telford_db`.`analysis_tbl` WHERE `analysis_tbl`.`qdnNo` = '$matchedQdnNum' ";
     $dataFromDatabase = $db->prepare($dataRequest);
@@ -241,14 +246,15 @@ else if($request == 8.1){
         $status                 = $row['status'];
         $data[] = array("status" => $status);
     }
-    echo json_encode($data);
-    exit;
-}
+    if ( $data ){
+        echo json_encode($data);
+    };
+    break;
    //========================================
   //  FOR CHECKING IF THERE IS A REASSIGNMENT 
  //  FOR THE QDN   
 //===========================================
-else if($request == 9){
+case 9:
     $matchedReAss = $_POST["matchedReAss"];
     $dataRequest = "SELECT `analysis_tbl`.`id`,
                            `analysis_tbl`.`issuedByName`,
@@ -284,14 +290,15 @@ else if($request == 9){
                         "analysis_tbl_id" => $analysis_tbl_id
         );
     }
-    echo json_encode($data);
-    exit;
-}
+    if ( $data ){
+        echo json_encode($data);
+    };
+    break;
    //========================================
   //  FOR CHECKING IF THERE IS A CONTAINMENT 
  //  FOR THE QDN   
 //===========================================
-else if($request == 10){
+case 10:
     $matchedContainment = $_POST["matchedContainment"];
     $dataRequest = "SELECT `containments`.`id`,
                            `containments`.`actions`,
@@ -328,14 +335,15 @@ else if($request == 10){
                         "analysis_tbl_id" => $containmentId 
         );
     }
-    echo json_encode($data);
-    exit;
-}
+    if ( $data ){
+        echo json_encode($data);
+    };
+    break;
    //========================================
   //  FOR CHECKING IF THERE IS A CORRECTION 
  //  FOR THE QDN   
 //===========================================
-else if($request == 11){
+case 11:
     $matchedCorrection = $_POST["matchedCorrection"];
     $dataRequest = "SELECT `corrections`.`id`,
                         `corrections`.`actions`,
@@ -372,14 +380,15 @@ else if($request == 11){
                         "analysis_tbl_id" => $correctionId 
         );
     }
-    echo json_encode($data);
-    exit;
-}
+    if ( $data ){
+        echo json_encode($data);
+    };
+    break;
    //========================================
   //  FOR CHECKING IF THERE IS A CORRECTIVE 
  //  FOR THE QDN   
 //===========================================
-else if($request == 12){
+case 12:
     $matchedCorrective = $_POST["matchedCorrective"];
     $dataRequest = "SELECT `correctives`.`id`,
                         `correctives`.`actions`,
@@ -416,13 +425,14 @@ else if($request == 12){
                         "analysis_tbl_id" => $correctionId 
         );
     }
-    echo json_encode($data);
-    exit;
-}
+    if ( $data ){
+        echo json_encode($data);
+    };
+    break;
   //=========================================
  //  FOR EMAIL RECEIVER    
 //===========================================
-else if($request == 13){
+case 13:
     $issuedToEmpNo = $_POST["issuedToEmpNo"];
     $dataRequest = "SELECT 
                         `emp_masterlist`.`EMP_NAME`,
@@ -450,14 +460,15 @@ else if($request == 13){
                         "emailscol" => $emailscol
         );
     }
-    echo json_encode($data);
-    exit;
-}
+    if ( $data ){
+        echo json_encode($data);
+    };
+    break;
   //=========================================
  //  FOR APPROVER LIST    
 //===========================================
 // PROD AUTH
-else if($request == 14){
+case 14:
     $dataRequest = "SELECT 
                         `emp_masterlist`.`EMP_NAME`,
                         `emp_masterlist`.`EMP_NO`,
@@ -488,12 +499,12 @@ else if($request == 14){
                         "emailscol" => $emailscol
         );
     }
-    echo json_encode($data);
-    exit;
-}
-
+    if ( $data ){
+        echo json_encode($data);
+    };
+    break;
 // EE AUTH
-else if($request == 14.1){
+case 14.1:
     $dataRequest = "SELECT 
                         `emp_masterlist`.`EMP_NAME`,
                         `emp_masterlist`.`EMP_NO`,
@@ -524,11 +535,12 @@ else if($request == 14.1){
                         "emailscol" => $emailscol
         );
     }
-    echo json_encode($data);
-    exit;
-}
+    if ( $data ){
+        echo json_encode($data);
+    };
+    break;
 // PE AUTH
-else if($request == 14.2){
+case 14.2:
     $dataRequest = "SELECT 
                         `emp_masterlist`.`EMP_NAME`,
                         `emp_masterlist`.`EMP_NO`,
@@ -559,11 +571,12 @@ else if($request == 14.2){
                         "emailscol" => $emailscol
         );
     }
-    echo json_encode($data);
-    exit;
-}
+    if ( $data ){
+        echo json_encode($data);
+    };
+    break;
 // QA AUTH
-else if($request == 14.3){
+case 14.3:
     $dataRequest = "SELECT 
                         `emp_masterlist`.`EMP_NAME`,
                         `emp_masterlist`.`EMP_NO`,
@@ -594,11 +607,12 @@ else if($request == 14.3){
                         "emailscol" => $emailscol
         );
     }
-    echo json_encode($data);
-    exit;
-}
+    if ( $data ){
+        echo json_encode($data);
+    };
+    break;
 // OTHERS AUTH
-else if($request == 14.4){
+case 14.4:
     $dataRequest = "SELECT 
                         `emp_masterlist`.`EMP_NAME`,
                         `emp_masterlist`.`EMP_NO`,
@@ -629,13 +643,14 @@ else if($request == 14.4){
                         "emailscol" => $emailscol
         );
     }
-    echo json_encode($data);
-    exit;
-}
+    if ( $data ){
+        echo json_encode($data);
+    };
+    break;
   //============================================
  //  FOR APPROVER LIST AUTHENTICATION REQUEST
 //==============================================
-else if($request == 15){
+case 15:
     $userPassInput  = $_POST['userPassInput'];
     $empId          = $_POST['empId'];
 
@@ -668,13 +683,14 @@ else if($request == 15){
             );
         } 
     }
-    echo json_encode($data);
-    exit;
-}
+    if ( $data ){
+        echo json_encode($data);
+    };
+    break;
   //=========================================
  // UPDATE REQUEST FOR STATUS 
 //===========================================
-else if($request == 16){
+case 16:
     $status     = $_POST['status'];
     $qndNumber  = $_POST['qndNumber'];
     $Insert = "UPDATE `analysis_tbl`
@@ -686,12 +702,11 @@ else if($request == 16){
     if ($result){
         echo "Insert SUCCESS!";
     }
-    exit;
-}
+    break;
   //=========================================
  // PROD, EE, PE, AND QA AUTH DETAILS
 //===========================================
-else if($request == 17){
+case 17:
     $dataRequest = "SELECT 
                         `EMP_NAME`,
                         `emailscol`
@@ -769,15 +784,16 @@ else if($request == 17){
     while($row = $dataFromDatabase->fetch(PDO::FETCH_ASSOC)){
             $empName   = $row['EMP_NAME'];
             $email   = $row['emailscol'];
-            $data[] = array("EMP_NAME" => $empName, "Email" =>  $email);
+            $data[] = array("EMP_NAME" => $empName, "emailscol" =>  $email);
     }
-    echo json_encode($data);
-    exit;
-}
+    if ( $data ){
+        echo json_encode($data);
+    };
+    break;
   //=========================================
  // REQUEST FOR STATUS QDN REASSIGNMENT 
 //===========================================
-else if($request == 18){
+case 18:
     $qdnNum = $_POST['qdnNum'];
     $dataRequest = "SELECT `reAssignedTo`,
                         `reAssignedName`,
@@ -807,13 +823,12 @@ else if($request == 18){
     if ( $data ){
         echo json_encode($data);
     };
-    exit;
-}
+    break;
    //========================================
   // REQUEST FOR QDN DETAILS  
  // (for approval section)
 //===========================================
-else if($request == 19){
+case 19:
     $dataRequest = "SELECT * 
                     FROM `analysis_tbl`
                     WHERE `status` = 1
@@ -864,13 +879,14 @@ else if($request == 19){
         );
     }
     // ENCODING ARRAY TO JSON FORMAT
-    echo json_encode($qndNoData);
-    exit;
-}
+    if ( $qndNoData ){
+        echo json_encode($qndNoData);
+    };
+    break;
 //=========================================
  // REQUEST FOR QDN REASSIGNMENT 
 //===========================================
-else if($request == 20){
+case 20:
     $qdnNum = $_POST['qdnNum'];
     $dataRequest = "SELECT * 
                     FROM `analysis_tbl`
@@ -919,13 +935,14 @@ else if($request == 20){
         );
     }
     // ENCODING ARRAY TO JSON FORMAT
-    echo json_encode($qndNoData);
-    exit;
-}
+    if ( $qndNoData ){
+        echo json_encode($qndNoData);
+    };
+    break;
   //=========================================
  //  FOR  APPROVAL AUTOCOMPLETE (AC)
 //===========================================
-else if($request == 21){
+case 21:
     $searchForThisQdnNo = $_POST["searchForThisQdnNo"];
     $dataRequest = "SELECT `id`, 
                            `qdnNo`
@@ -943,13 +960,14 @@ else if($request == 21){
 
         $data[] = array("id" => $id, "qdnNo" => $qdnNo);
     }
-    echo json_encode($data);
-    exit;
-}
+    if ( $data ){
+        echo json_encode($data);
+    };
+    break;
   //============================================
  //  FOR APPROVER LIST AUTHENTICATION REQUEST
 //==============================================
-else if($request == 22){
+case 22:
     $userPassInput  = $_POST['userPassInput'];
     $empId          = $_POST['empId'];
     $dataRequest = "SELECT `approvers`.`password`,
@@ -958,7 +976,6 @@ else if($request == 22){
                     WHERE `EMP_NO` = '$empId'"; 
     $dataFromDatabase = $db->prepare($dataRequest);
     $dataFromDatabase -> execute();
-
     while($row = $dataFromDatabase->fetch(PDO::FETCH_ASSOC)){
         
         $hashed_password = $row['password'];    
@@ -968,13 +985,14 @@ else if($request == 22){
             );
         }; 
     };
-    echo json_encode($data);
-    exit;
-}
+    if ( $data ){
+        echo json_encode($data);
+    };
+    break;
   //=========================================
  //  FOR AUTOCOMPLETE MACHINES SUGGESTIONS
 //===========================================
-else if($request == 23){
+case 23:
     $empNumero = $_POST["empNumero"];
     $dataRequest = "SELECT `EMP_NAME`
                     FROM `emp_masterlist`
@@ -987,7 +1005,9 @@ else if($request == 23){
 
         $data[] = array("EMP_NAME" => $EMP_NAME);
     }
-    echo json_encode($data);
-    exit;
-}
+    if ( $data ){
+        echo json_encode($data);
+    };
+    break;
+};    
 ?>
