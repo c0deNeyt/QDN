@@ -28,7 +28,7 @@ $(document).ready(function(){
             };
             // </ END OF CHECKING IF loadDataFromDb(response) IS NULL
         };
-    },250);
+    });
     // </END OF INTERVAL TO CHECK THE QDN STATUS
     //**FUNCTION TO CHECK REASSIGMENT*/
     let checkReAss = (qdnNumber) => {
@@ -201,6 +201,10 @@ $(document).ready(function(){
         const Toast = Swal.mixin({
             toast: true,
             position: 'top-end',
+            iconColor: 'white',
+            customClass: {
+                popup: 'colored-toast'
+            },
             showConfirmButton: false,
             timer: 3000,
             timerProgressBar: true,
@@ -379,7 +383,7 @@ $(document).ready(function(){
                             default:
                                 //**FUNCTION EXECUTION TO REMOVE DUPLICATE EMAILS*/
                                 const emailsNotGandA = removeDupMails(combinedEmails);
-                                // console.log("G & A NOOOOOOOOT DETECTED!!", emailsNotGandA);
+                                console.log("G & A NOOOOOOOOT DETECTED!!", emailsNotGandA);
                                 forApprovalDialogBox(emailsNotGandA, qdnNumber);
                             break;
                         };
@@ -391,13 +395,13 @@ $(document).ready(function(){
                                 //**FUNCTION EXECUTION TO REMOVE DUPLICATE EMAILS*/
                                 const finalEmailReceivers = removeDupMails(combinedEmails2);
                                 console.log("G & A DETECTED!!", finalEmailReceivers);
-                                forApprovalDialogBox(newReceivers, qdnNumber);
+                                forApprovalDialogBox(finalEmailReceivers, qdnNumber);
                             break;
                             default:
                                 //**FUNCTION EXECUTION TO REMOVE DUPLICATE EMAILS*/
                                 const emailsNotGandA = removeDupMails(combinedEmails);
                                 console.log("G & A NOOOOOOOOT DETECTED!!", emailsNotGandA);
-                                forApprovalDialogBox(newReceivers, qdnNumber);
+                                forApprovalDialogBox(emailsNotGandA, qdnNumber);
                             break;
                         };
                     break;

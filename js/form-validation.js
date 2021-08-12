@@ -2,7 +2,31 @@
 // Example starter JavaScript for disabling form submissions if there are invalid fields
 (function () {
   'use strict'
-
+  let successAlert  = async() => {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'top-right',
+      iconColor: 'white',
+      customClass: {
+        popup: 'colored-toast'
+      },
+      allowEscapeKey: false,
+      showConfirmButton: false,
+      timer: 5500,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
+      }
+    })
+    await Toast.fire({
+      icon: 'success',
+      title: 'Reassignment Success!',
+    }).then(()=>{
+      window.location.replace("index.php");
+    });
+  
+  };
   // Fetch all the forms we want to apply custom Bootstrap validation styles 
   var forms = document.querySelectorAll('.needs-validation')
 
@@ -39,6 +63,7 @@
         }
         else{
           event.preventDefault();
+          event.stopPropagation();
           var qdnNumber         = $("#qdnNumber").html();
           var qdnIBENo          = $("#issuedByEmpNumber").val();
           var qdnIBEN           = $("#issuedByEmpName").val();
@@ -121,7 +146,7 @@
                     Username : "systemqdn2021@gmail.com",
                     Password : "tjvxdnvqvepgtwck",
                     // To : receiver,
-                    To : "chanchristianarana@gmail.com",
+                    To : "chanchristianarana@gmaill.com",
                     From : "systemqdn2021@gmail.com",
                     Subject : "QDN Issuance",
                     Body : "Good Day," + "<br>" + "<br>" +
@@ -144,21 +169,7 @@
 
                 //  console.log("Email are SENT!");
               };
-              Swal.fire({
-                position: 'top-end',
-                icon: 'success',
-                title: 'QDN sent for Analysis',
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                allowEnterKey: false,
-                allowOutsideClick: false,
-                showConfirmButton: false,
-                timer: 3000
-              })
-              .then(function() {
-                window.location.href = "index.php";
-              });
-              
+              successAlert();
             }
           });
         };

@@ -41,6 +41,7 @@
   <!------------------------------------------------------------------>
   <!-- JS-->
   <script type="text/javascript" src="./js/jquery-3.6.0.min.js"></script>
+  <script defer src="./js/form-validation.js"></script>
   <!------------------------------------------------------------------> 
   <script src="./js/issuance.js" defer></script>
   <!------------------------------------------------------------------>
@@ -215,6 +216,6 @@
     </div>  
 
     </div>
-  <script  src="./js/form-validation.js"></script>
+  
 </body>
 </html>
