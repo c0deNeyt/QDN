@@ -2,7 +2,7 @@
 // Example starter JavaScript for disabling form submissions if there are invalid fields
 (function () {
   'use strict'
-  let successAlert  = async() => {
+  let successAlert  = async(qdnNumber) => {
     const Toast = Swal.mixin({
       toast: true,
       position: 'top-right',
@@ -12,7 +12,7 @@
       },
       allowEscapeKey: false,
       showConfirmButton: false,
-      timer: 5500,
+      timer: 3500,
       timerProgressBar: true,
       didOpen: (toast) => {
         toast.addEventListener('mouseenter', Swal.stopTimer)
@@ -21,7 +21,9 @@
     })
     await Toast.fire({
       icon: 'success',
-      title: 'Reassignment Success!',
+      title: 'Success!',
+      html:"QDN " + "<b style ='color:red;'>"+ qdnNumber +"</b>"
+      + " Sent for analysis!",
     }).then(()=>{
       window.location.replace("index.php");
     });
@@ -164,12 +166,12 @@
                     "   <b>Machine No.:</b> "  + qdnMachine + "<br>" +
                     "</pre>" +  
                     "<strong>Note:</strong>" + "<br>" +
-                    "<pre>  This notification is an automated message. Please do not reply directly to this email.</pre>" 
+                    "<pre>  This notification is an automated message. Please do not reply directly to this email.</pre>"
                 });
 
                 //  console.log("Email are SENT!");
               };
-              successAlert();
+              successAlert(qdnNumber);
             }
           });
         };

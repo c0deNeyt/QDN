@@ -142,7 +142,7 @@ $(document).ready(function () {//*✅*/
                 reassignments(data, checkID);
             },
         });
-    };/*Function Reassignmen Ends here!*/
+    };/*Function Reassignment Ends here!*/
     // FUNCTION TO PROCESS CONTAINMENT DATA
     let containmentData = (data, checkID) => {
         //**Check if parm data is not null
@@ -237,7 +237,7 @@ $(document).ready(function () {//*✅*/
             },
         });
     };/*FUNCTION FOR CONTAINMENT ENDS HERE!*/
-    //FUCNTION TO PROCESS CORRECTION DATA
+    //FUNCTION TO PROCESS CORRECTION DATA
     let correctionData = (data, checkID) => {
         // Check if data is not null
         if ( data ) {
@@ -416,9 +416,9 @@ $(document).ready(function () {//*✅*/
                 correctiveData (data, checkID);
             },
         });
-    };/*FUNCTION FOR CORREECTIVE ACTION ITEMS ENDS HERE!*/
+    };/*FUNCTION FOR CORRECTIVE ACTION ITEMS ENDS HERE!*/
     // FUNCTION TO CHECK WHAT RADIO BUTTON SHOULD BE 
-    // SELECTED BASE ON THE DATABSE
+    // SELECTED BASE ON THE DATABASE
     let checkIfnotNUll2Db = (arr, arrLen, toCheck) => {
         for (var i = 0; i < arrLen; i++){
             var fromDbVal = arr[i].val();
@@ -426,7 +426,7 @@ $(document).ready(function () {//*✅*/
                 arr[i].prop("checked", true);
             };
         };
-    };/*FUCNTION FOR RADIO BUTTON CHECKING ENDS HERE!*/
+    };/*FUNCTION FOR RADIO BUTTON CHECKING ENDS HERE!*/
     //**FUNCTION TO SET THE VALUE TO BLANK WHEN NO QDN NUMBER
     // MATCHED ON SEARCH EVENT
     let makeItBlank = () => {
@@ -435,7 +435,7 @@ $(document).ready(function () {//*✅*/
             toBeBlank[i].html("");
         };
     };
-    //**FUNCITON RESPOSIBLE FOR RADIO BUTTON VALUES
+    //**FUNCTION RESPONSIBLE FOR RADIO BUTTON VALUES
     let checkTheRadio = (des, COD, CODDes, failure_mode) =>{
         // PARSE THE DATA FROM DB TO HTML PAGE
         if (des || COD || CODDes || failure_mode) {
@@ -892,7 +892,7 @@ $(document).ready(function () {//*✅*/
                     // CHECKING THE EXISTENCE OF THE QDN ID 
                     if ((checkID) && ($(".fromDbData").length === 0)) {
                         // $("#reAssignDiv").after(analysisSectionTemplate);
-                        // EXECUTION OF FUCNTIONS Reassignment,
+                        // EXECUTION OF FUNCTIONS Reassignment,
                         // Containment, Correction, Corrective
                         exeFuncReass(checkID);
                         exeFuncContain(checkID);
