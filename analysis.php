@@ -192,7 +192,7 @@
     .colored-toast.swal2-icon-warning {
       background-color: #f8bb86 !important;
     }
-
+    
     .colored-toast.swal2-icon-info {
       background-color: #3fc3ee !important;
     }

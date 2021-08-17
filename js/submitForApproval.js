@@ -1,36 +1,57 @@
 $(document).ready(function(){    
-// ** ✅ ==> DDONE
+// ** ✅ ==> DONE
 // ** 🔚 ==> END
     // INTERVAL FUNCTION TO CHECK THE STATUS OF QDN EVERY 500 Millisecond
     setInterval(function(){ 
         var currentMatchedQdnNum = $("#qdnNumber").val();
         // REQUEST TO GET THE CURRENT STATUS OF QDN (request 8.1)
-        $.ajax({
-            type: 'POST',
-            url: "./php/getDetails.php",
-            data: { matchedQdnNum: currentMatchedQdnNum, request: 8.1 },
-            cache: false,
-            dataType: "json",
-            success: loadDataFromDb,
-        });
-        //FUNCTION TO HANDLE THE REQUEST FOR QND STATUS
-        //IF THE STATUS = 1 then remove the buttons
-        function loadDataFromDb( response ){
-            // CHECK IF RESPONSE IS NULL 
-            if ( response ){
-                var status = response[0]['status'];
-                if (status == 1){
-                    var forTanggal = document.getElementById('analysisBtn');
-                    var reassignToggle = document.getElementById('reAssignDiv');
-                    $(forTanggal).remove();
-                    $(reassignToggle).remove();
+        let checkStatus  = currentMatchedQdnNum => {
+            return new Promise ((resolve, reject) => {
+                let req = new XMLHttpRequest();
+                let data = new FormData();
+                data.append('matchedQdnNum', currentMatchedQdnNum);
+                data.append('request', 8.1);
+                req.responseType = "json";
+                req.onload = () => {
+                    if (req.readyState === 4 && req.status === 200){
+                        let output = req.response;
+                        resolve(output);
+                    }
+                    else{
+                        reject(req.statusText);
+                    };
                 };
-            };
-            // </ END OF CHECKING IF loadDataFromDb(response) IS NULL
+                req.open('POST', './php/getDetails.php');
+                req.send(data);
+            });
         };
-    },250);
+        let exec = async() => {
+            try{
+                let response =  await checkStatus(currentMatchedQdnNum);
+                // CHECK IF RESPONSE IS NULL 
+                if ( response ){
+                    //UPDATED STATUS OF QDN
+                    var status = response[0]['status'];
+                    let reAssBtn = document.getElementsByClassName("submitReassignment");
+                    if (status == 1){
+                        var forTanggal = document.getElementById('analysisBtn');
+                        var reassignToggle = document.getElementById('reAssignDiv');
+                        $(forTanggal).remove();
+                        $(reassignToggle).remove();
+                        if (reAssBtn){
+                            $(reAssBtn).remove();
+                        };
+                    };
+                };//**</ END OF CHECKING IF loadDataFromDb(response) IS NULL*/
+            }
+            catch(err){
+                console.log("Something went wrong. Check submitForApproval.js", err);
+            }
+        }
+        exec();
+    }, 500);
     // </END OF INTERVAL TO CHECK THE QDN STATUS
-    //**FUNCTION TO CHECK REASSIGMENT*/
+    //**FUNCTION TO CHECK REASSIGNMENT*/
     let checkReAss = (qdnNumber) => {
         //PROMISE 
         return new Promise ((resolve, reject) => {
@@ -199,8 +220,12 @@ $(document).ready(function(){
         const Toast = Swal.mixin({
             toast: true,
             position: 'top-end',
+            iconColor: 'white',
+            customClass: {
+                popup: 'colored-toast'
+            },
             showConfirmButton: false,
-            timer: 3000,
+            timer: 3500,
             timerProgressBar: true,
             didOpen: (toast) => {
                 toast.addEventListener('mouseenter', Swal.stopTimer)
@@ -377,7 +402,7 @@ $(document).ready(function(){
                             default:
                                 //**FUNCTION EXECUTION TO REMOVE DUPLICATE EMAILS*/
                                 const emailsNotGandA = removeDupMails(combinedEmails);
-                                // console.log("G & A NOOOOOOOOT DETECTED!!", emailsNotGandA);
+                                console.log("G & A NOOOOOOOOT DETECTED!!", emailsNotGandA);
                                 forApprovalDialogBox(emailsNotGandA, qdnNumber);
                             break;
                         };

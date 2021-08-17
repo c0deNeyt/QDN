@@ -33,6 +33,53 @@ body {
   /* outline: 1px solid grey; */
 }
 
+/*=======================
+  ALERT CUSTOM STYLES
+=========================*/
+div.swal2-content {
+  display: flex;
+  text-align: left;
+}
+  i.fa.fa-exclamation-triangle {
+      margin: 0 .4em;
+      color: #f27474;
+      font-size: 1em;
+  }
+  
+
+/* FOR SWEET ALERT */
+.colored-toast.swal2-icon-success {
+  background-color: #a5dc86 !important;
+}
+
+.colored-toast.swal2-icon-error {
+  background-color: #f27474 !important;
+}
+
+.colored-toast.swal2-icon-warning {
+  background-color: #f8bb86 !important;
+}
+
+.colored-toast.swal2-icon-info {
+  background-color: #3fc3ee !important;
+}
+
+.colored-toast.swal2-icon-question {
+  background-color: #87adbd !important;
+}
+
+.colored-toast .swal2-title {
+  color: white;
+}
+
+.colored-toast .swal2-close {
+  color: white;
+}
+
+.colored-toast .swal2-content {
+  color: white;
+}
+
 /*==============================================================
                         "SIDE BAR STYLE"
 ================================================================*/
@@ -141,7 +188,7 @@ div.content {
   }
   #qdnNumber {
     cursor: not-allowed;
-    border: none;
+    border: 0.05rem solid #800000;
     font-weight: bold;
     color: blue;
     font-size: 1.3rem;
@@ -151,22 +198,6 @@ div.content {
   input[value="Major"] {
     margin: 0px 3px 0px 20px;
   }
-
-/*=======================
-  ALERT CUSTOM STYLES
-=========================*/
-div.swal2-content {
-  display: flex;
-  text-align: left;
-}
-  i.fa.fa-exclamation-triangle {
-      margin: 0 .4em;
-      color: #f27474;
-      font-size: 1em;
-  }
-  
-
-
 
 /*==============================================================
                     "RESPONSIVE STYLE"

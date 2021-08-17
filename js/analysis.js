@@ -22,6 +22,8 @@ $(document).ready(function () {//*✅*/
     //=====================================================>
     // ALL ABOUT FUNCTIONS  🔽
     //=====================================================>
+    // IMPLEMENTING PROMISE 
+
     //FUNCTION RESPONSIBLE FOR HANDLING EACH REASSIGNMENT 
     let reassignments = (data, checkID) =>{
         if (data){
@@ -30,7 +32,6 @@ $(document).ready(function () {//*✅*/
             // LOOP TO CHECK IF THERE IS A MATCHED ID BETWEEN ANALYSIS AND REASSIGNMENT TABLE
             for (var i = 0; i < dataLen; i++) {
                 var fetchedData = data[i]['analysis_tbl_id'];
-
                 // FORMAT OF CUSTOM ELEMENT TO APPEND IF THERE IS A REASSIGNMENT
                 const colDiv = document.createElement("div");
                 const row1Div = document.createElement("div");
@@ -141,324 +142,324 @@ $(document).ready(function () {//*✅*/
                 reassignments(data, checkID);
             },
         });
-    };/*Function Reassignmen Ends here!*/
+    };/*Function Reassignment Ends here!*/
     // FUNCTION TO PROCESS CONTAINMENT DATA
-        let containmentData = (data, checkID) => {
-            //**Check if parm data is not null
-            // if not attach the item(s) to the DOM or html page
-            if ( data ){
-                var conDataLen = data.length;
-                var containmentCount = 0;
-                // LOOP TO HANDLE THE Containments Result
-                for (var i = 0; i < conDataLen; i++) {
-                    var actions = data[i]['actions'];
-                    var responsible = data[i]['responsible'];
-                    var when = data[i]['when'];
-                    var status = data[i]['status'];
-                    var fetchedId = data[i]['analysis_tbl_id'];
+    let containmentData = (data, checkID) => {
+        //**Check if parm data is not null
+        // if not attach the item(s) to the DOM or html page
+        if ( data ){
+            var conDataLen = data.length;
+            var containmentCount = 0;
+            // LOOP TO HANDLE THE Containments Result
+            for (var i = 0; i < conDataLen; i++) {
+                var actions = data[i]['actions'];
+                var responsible = data[i]['responsible'];
+                var when = data[i]['when'];
+                var status = data[i]['status'];
+                var fetchedId = data[i]['analysis_tbl_id'];
 
-                    const tblRow = document.createElement('tr');
+                const tblRow = document.createElement('tr');
 
-                    const tblRowCol = document.createElement('td');
-                    const tblRowCol1 = document.createElement('td');
-                    const tblRowCol2 = document.createElement('td');
-                    const tblRowCol3 = document.createElement('td');
-
-
-                    tblRow.id = "contain" + containmentCount;
-
-                    tblRowCol.id = "containAct" + containmentCount;
-                    tblRowCol.contentEditable = true;
-                    tblRowCol.className = "pre-wrap";
-                    tblRowCol.innerText = actions;
-
-                    tblRowCol1.id = "containResp" + containmentCount;
-                    tblRowCol1.contentEditable = true;
-                    tblRowCol1.className = "pre-wrap";
-                    tblRowCol1.innerText = responsible;
+                const tblRowCol = document.createElement('td');
+                const tblRowCol1 = document.createElement('td');
+                const tblRowCol2 = document.createElement('td');
+                const tblRowCol3 = document.createElement('td');
 
 
-                    tblRowCol2.id = "containWhen" + containmentCount;
-                    tblRowCol2.contentEditable = true;
-                    tblRowCol2.className = "pre-wrap";
-                    tblRowCol2.innerText = when;
+                tblRow.id = "contain" + containmentCount;
 
-                    tblRowCol3.id = "containStatus" + containmentCount;
-                    tblRowCol3.contentEditable = true;
-                    tblRowCol3.className = "pre-wrap";
-                    tblRowCol3.innerText = status;
+                tblRowCol.id = "containAct" + containmentCount;
+                tblRowCol.contentEditable = true;
+                tblRowCol.className = "pre-wrap";
+                tblRowCol.innerText = actions;
 
-                    // INSERTING TABLE ROW ABOVE THE CLASS "tdbodyContainment"
-                    if ((fetchedId == checkID) && (containmentCount == 0)) {
+                tblRowCol1.id = "containResp" + containmentCount;
+                tblRowCol1.contentEditable = true;
+                tblRowCol1.className = "pre-wrap";
+                tblRowCol1.innerText = responsible;
 
-                        $(".tbodyContainment").prepend($(tblRow));
-                        $(tblRow).append(tblRowCol);
 
-                        $(tblRow).append(tblRowCol1);
-                        $(tblRow).append(tblRowCol2);
-                        $(tblRow).append(tblRowCol3);
+                tblRowCol2.id = "containWhen" + containmentCount;
+                tblRowCol2.contentEditable = true;
+                tblRowCol2.className = "pre-wrap";
+                tblRowCol2.innerText = when;
 
-                        containmentCount++;
-                    }
-                    // INSERTING TABLE ROW BELOW THE THE NEWLY INSERTED ROW
-                    else if ((fetchedId == checkID) && (containmentCount > 0)) {
-                        const tblRowNew = document.createElement('tr');
-                        tblRowNew.id = "contain" + containmentCount;
-                        var newtr = document.getElementById("contain" + (containmentCount - 1));
-                        // console.log(newtr);
+                tblRowCol3.id = "containStatus" + containmentCount;
+                tblRowCol3.contentEditable = true;
+                tblRowCol3.className = "pre-wrap";
+                tblRowCol3.innerText = status;
 
-                        $(newtr).after(tblRow);
-                        $(tblRow).append(tblRowCol);
-                        $(tblRow).append(tblRowCol1);
-                        $(tblRow).append(tblRowCol2);
-                        $(tblRow).append(tblRowCol3);
+                // INSERTING TABLE ROW ABOVE THE CLASS "tdbodyContainment"
+                if ((fetchedId == checkID) && (containmentCount == 0)) {
 
-                        containmentCount++;
-                    };
+                    $(".tbodyContainment").prepend($(tblRow));
+                    $(tblRow).append(tblRowCol);
+
+                    $(tblRow).append(tblRowCol1);
+                    $(tblRow).append(tblRowCol2);
+                    $(tblRow).append(tblRowCol3);
+
+                    containmentCount++;
+                }
+                // INSERTING TABLE ROW BELOW THE THE NEWLY INSERTED ROW
+                else if ((fetchedId == checkID) && (containmentCount > 0)) {
+                    const tblRowNew = document.createElement('tr');
+                    tblRowNew.id = "contain" + containmentCount;
+                    var newtr = document.getElementById("contain" + (containmentCount - 1));
+                    // console.log(newtr);
+
+                    $(newtr).after(tblRow);
+                    $(tblRow).append(tblRowCol);
+                    $(tblRow).append(tblRowCol1);
+                    $(tblRow).append(tblRowCol2);
+                    $(tblRow).append(tblRowCol3);
+
+                    containmentCount++;
                 };
-                // </ END OF LOOP
             };
-            // </End of checking
+            // </ END OF LOOP
         };
-        // ANOTHER REQUEST FOR QDN DETAILS (request 10)
-        // IM SO TIRED AT THIS TIME SO MANY REQUEST :(
-        // THIS WILL CHECK IF THERE IS A CONTAINMENT ATTACHED 
-        let exeFuncContain = checkID => {
-            $.ajax({
-                type: 'POST',
-                url: "./php/getDetails.php",
-                data: { matchedContainment: checkID, request: 10 },
-                cache: false,
-                dataType: "json",
-                success: (data) => {
-                    //EXCECUTION OF FUCTION 
-                    containmentData(data, checkID);
-                },
-            });
-        };/*FUNCTION FOR CONTAINMENT ENDS HERE!*/
-    //FUCNTION TO PROCESS CORRECTION DATA
-        let correctionData = (data, checkID) => {
-            // Check if data is not null
-            if ( data ) {
-                var correctionDataLen = data.length;
-                var correctionCount = 0;
-                // LOOP TO HANDLE THE Containments Result
-                for (var i = 0; i < correctionDataLen; i++) {
-                    var actions = data[i]['actions'];
-                    var responsible = data[i]['responsible'];
-                    var when = data[i]['when'];
-                    var status = data[i]['status'];
-                    var fetchedId = data[i]['analysis_tbl_id'];
+        // </End of checking
+    };
+    // ANOTHER REQUEST FOR QDN DETAILS (request 10)
+    // IM SO TIRED AT THIS TIME SO MANY REQUEST :(
+    // THIS WILL CHECK IF THERE IS A CONTAINMENT ATTACHED 
+    let exeFuncContain = checkID => {
+        $.ajax({
+            type: 'POST',
+            url: "./php/getDetails.php",
+            data: { matchedContainment: checkID, request: 10 },
+            cache: false,
+            dataType: "json",
+            success: (data) => {
+                //EXCECUTION OF FUCTION 
+                containmentData(data, checkID);
+            },
+        });
+    };/*FUNCTION FOR CONTAINMENT ENDS HERE!*/
+    //FUNCTION TO PROCESS CORRECTION DATA
+    let correctionData = (data, checkID) => {
+        // Check if data is not null
+        if ( data ) {
+            var correctionDataLen = data.length;
+            var correctionCount = 0;
+            // LOOP TO HANDLE THE Containments Result
+            for (var i = 0; i < correctionDataLen; i++) {
+                var actions = data[i]['actions'];
+                var responsible = data[i]['responsible'];
+                var when = data[i]['when'];
+                var status = data[i]['status'];
+                var fetchedId = data[i]['analysis_tbl_id'];
 
-                    const tblRow = document.createElement('tr');
+                const tblRow = document.createElement('tr');
 
-                    const tblRowCol = document.createElement('td');
-                    const tblRowCol1 = document.createElement('td');
-                    const tblRowCol2 = document.createElement('td');
-                    const tblRowCol3 = document.createElement('td');
-
-
-                    tblRow.id = "correction" + correctionCount;
-
-                    tblRowCol.id = "correctionAct" + correctionCount;
-                    tblRowCol.contentEditable = true;
-                    tblRowCol.className = "pre-wrap";
-                    tblRowCol.innerText = actions;
-
-                    tblRowCol1.id = "correctionResp" + correctionCount;
-                    tblRowCol1.contentEditable = true;
-                    tblRowCol1.className = "pre-wrap";
-                    tblRowCol1.innerText = responsible;
+                const tblRowCol = document.createElement('td');
+                const tblRowCol1 = document.createElement('td');
+                const tblRowCol2 = document.createElement('td');
+                const tblRowCol3 = document.createElement('td');
 
 
-                    tblRowCol2.id = "correctionWhen" + correctionCount;
-                    tblRowCol2.contentEditable = true;
-                    tblRowCol2.className = "pre-wrap";
-                    tblRowCol2.innerText = when;
+                tblRow.id = "correction" + correctionCount;
 
-                    tblRowCol3.id = "correctionStatus" + correctionCount;
-                    tblRowCol3.contentEditable = true;
-                    tblRowCol3.className = "pre-wrap";
-                    tblRowCol3.innerText = status;
+                tblRowCol.id = "correctionAct" + correctionCount;
+                tblRowCol.contentEditable = true;
+                tblRowCol.className = "pre-wrap";
+                tblRowCol.innerText = actions;
 
-                    // INSERTING TABLE ROW ABOVE THE CLASS "tdboyCorrection"
-                    if ((fetchedId == checkID) && (correctionCount == 0)) {
+                tblRowCol1.id = "correctionResp" + correctionCount;
+                tblRowCol1.contentEditable = true;
+                tblRowCol1.className = "pre-wrap";
+                tblRowCol1.innerText = responsible;
 
-                        $(".tbodyCorrection").prepend($(tblRow));
-                        $(tblRow).append(tblRowCol);
 
-                        $(tblRow).append(tblRowCol1);
-                        $(tblRow).append(tblRowCol2);
-                        $(tblRow).append(tblRowCol3);
+                tblRowCol2.id = "correctionWhen" + correctionCount;
+                tblRowCol2.contentEditable = true;
+                tblRowCol2.className = "pre-wrap";
+                tblRowCol2.innerText = when;
 
-                        correctionCount++;
-                    }
-                    // INSERTING TABLE ROW BELOW THE THE NEWLY INSERTED ROW
-                    else if ((fetchedId == checkID) && (correctionCount > 0)) {
+                tblRowCol3.id = "correctionStatus" + correctionCount;
+                tblRowCol3.contentEditable = true;
+                tblRowCol3.className = "pre-wrap";
+                tblRowCol3.innerText = status;
 
-                        const tblRowNew = document.createElement('tr');
-                        tblRowNew.id = "correction" + correctionCount;
-                        var newtr = document.getElementById("correction" + (correctionCount - 1));
-                        // console.log(newtr);
+                // INSERTING TABLE ROW ABOVE THE CLASS "tdboyCorrection"
+                if ((fetchedId == checkID) && (correctionCount == 0)) {
 
-                        $(newtr).after(tblRow);
-                        $(tblRow).append(tblRowCol);
-                        $(tblRow).append(tblRowCol1);
-                        $(tblRow).append(tblRowCol2);
-                        $(tblRow).append(tblRowCol3);
+                    $(".tbodyCorrection").prepend($(tblRow));
+                    $(tblRow).append(tblRowCol);
 
-                        correctionCount++;
-                    };
+                    $(tblRow).append(tblRowCol1);
+                    $(tblRow).append(tblRowCol2);
+                    $(tblRow).append(tblRowCol3);
+
+                    correctionCount++;
+                }
+                // INSERTING TABLE ROW BELOW THE THE NEWLY INSERTED ROW
+                else if ((fetchedId == checkID) && (correctionCount > 0)) {
+
+                    const tblRowNew = document.createElement('tr');
+                    tblRowNew.id = "correction" + correctionCount;
+                    var newtr = document.getElementById("correction" + (correctionCount - 1));
+                    // console.log(newtr);
+
+                    $(newtr).after(tblRow);
+                    $(tblRow).append(tblRowCol);
+                    $(tblRow).append(tblRowCol1);
+                    $(tblRow).append(tblRowCol2);
+                    $(tblRow).append(tblRowCol3);
+
+                    correctionCount++;
                 };
-                // </ END OF LOOP
-            };/*</End of checking if data is not null*/ 
-        };
-        // CHECK IF THERE IS A CORRECTION ATTACHED 
-        // ANOTHER REQUEST FOR CORRECTION DETAILS (request 11)
-        let exeFuncCorrection = checkID => {
-            $.ajax({
-                type: 'POST',
-                url: "./php/getDetails.php",
-                data: { matchedCorrection: checkID, request: 11 },
-                cache: false,
-                dataType: "json",
-                success: (data) => { /*FUNCTION TO PROCESS CORRECTION DATA*/
-                    correctionData(data, checkID);
-                },
-            });    
-        };/*FUNCTION FOR CORRECTION DATA ENDS HERE!*/
+            };
+            // </ END OF LOOP
+        };/*</End of checking if data is not null*/ 
+    };
+    // CHECK IF THERE IS A CORRECTION ATTACHED 
+    // ANOTHER REQUEST FOR CORRECTION DETAILS (request 11)
+    let exeFuncCorrection = checkID => {
+        $.ajax({
+            type: 'POST',
+            url: "./php/getDetails.php",
+            data: { matchedCorrection: checkID, request: 11 },
+            cache: false,
+            dataType: "json",
+            success: (data) => { /*FUNCTION TO PROCESS CORRECTION DATA*/
+                correctionData(data, checkID);
+            },
+        });    
+    };/*FUNCTION FOR CORRECTION DATA ENDS HERE!*/
     //FUNCTION TO PROCESS CORRECTIVE ACTION ITEMS 
-        let correctiveData = (data, checkID) => {
-            // CHECK IF DATA IS NULL
-            if ( data ) {
-                var correctiveDataLen = data.length;
-                var correctiveCount = 0;
+    let correctiveData = (data, checkID) => {
+        // CHECK IF DATA IS NULL
+        if ( data ) {
+            var correctiveDataLen = data.length;
+            var correctiveCount = 0;
 
-                // LOOP TO HANDLE THE Containments Result
-                for (var i = 0; i < correctiveDataLen; i++) {
-                    var actions = data[i]['actions'];
-                    var responsible = data[i]['responsible'];
-                    var when = data[i]['when'];
-                    var status = data[i]['status'];
-                    var fetchedId = data[i]['analysis_tbl_id'];
+            // LOOP TO HANDLE THE Containments Result
+            for (var i = 0; i < correctiveDataLen; i++) {
+                var actions = data[i]['actions'];
+                var responsible = data[i]['responsible'];
+                var when = data[i]['when'];
+                var status = data[i]['status'];
+                var fetchedId = data[i]['analysis_tbl_id'];
 
-                    const tblRow = document.createElement('tr');
-                    const tblRowCol = document.createElement('td');
-                    const tblRowCol1 = document.createElement('td');
-                    const tblRowCol2 = document.createElement('td');
-                    const tblRowCol3 = document.createElement('td');
-
-
-                    tblRow.id = "corrective" + correctiveCount;
-
-                    tblRowCol.id = "correctiveAct" + correctiveCount;
-                    tblRowCol.contentEditable = true;
-                    tblRowCol.className = "pre-wrap";
-                    tblRowCol.innerText = actions;
-
-                    tblRowCol1.id = "correctiveResp" + correctiveCount;
-                    tblRowCol1.contentEditable = true;
-                    tblRowCol1.className = "pre-wrap";
-                    tblRowCol1.innerText = responsible;
+                const tblRow = document.createElement('tr');
+                const tblRowCol = document.createElement('td');
+                const tblRowCol1 = document.createElement('td');
+                const tblRowCol2 = document.createElement('td');
+                const tblRowCol3 = document.createElement('td');
 
 
-                    tblRowCol2.id = "correctiveWhen" + correctiveCount;
-                    tblRowCol2.contentEditable = true;
-                    tblRowCol2.className = "pre-wrap";
-                    tblRowCol2.innerText = when;
+                tblRow.id = "corrective" + correctiveCount;
 
-                    tblRowCol3.id = "correctiveStatus" + correctiveCount;
-                    tblRowCol3.contentEditable = true;
-                    tblRowCol3.className = "pre-wrap";
-                    tblRowCol3.innerText = status;
+                tblRowCol.id = "correctiveAct" + correctiveCount;
+                tblRowCol.contentEditable = true;
+                tblRowCol.className = "pre-wrap";
+                tblRowCol.innerText = actions;
 
-                    // INSERTING TABLE ROW ABOVE THE CLASS "tdboycorrective"
-                    if ((fetchedId == checkID) && (correctiveCount == 0)) {
+                tblRowCol1.id = "correctiveResp" + correctiveCount;
+                tblRowCol1.contentEditable = true;
+                tblRowCol1.className = "pre-wrap";
+                tblRowCol1.innerText = responsible;
 
-                        $(".tbodyCorrective").prepend($(tblRow));
-                        $(tblRow).append(tblRowCol);
-                        $(tblRow).append(tblRowCol1);
-                        $(tblRow).append(tblRowCol2);
-                        $(tblRow).append(tblRowCol3);
-                        correctiveCount++;
-                    }
-                    // INSERTING TABLE ROW BELOW THE THE NEWLY INSERTED ROW
-                    else if ((fetchedId == checkID) && (correctiveCount > 0)) {
 
-                        const tblRowNew = document.createElement('tr');
-                        tblRowNew.id = "corrective" + correctiveCount;
-                        var newtr = document.getElementById("corrective" + (correctiveCount - 1));
-                        // console.log(newtr);
+                tblRowCol2.id = "correctiveWhen" + correctiveCount;
+                tblRowCol2.contentEditable = true;
+                tblRowCol2.className = "pre-wrap";
+                tblRowCol2.innerText = when;
 
-                        $(newtr).after(tblRow);
-                        $(tblRow).append(tblRowCol);
-                        $(tblRow).append(tblRowCol1);
-                        $(tblRow).append(tblRowCol2);
-                        $(tblRow).append(tblRowCol3);
+                tblRowCol3.id = "correctiveStatus" + correctiveCount;
+                tblRowCol3.contentEditable = true;
+                tblRowCol3.className = "pre-wrap";
+                tblRowCol3.innerText = status;
 
-                        correctiveCount++;
-                    };
-                };
-                //     // </ END OF LOOP
-            };// </END OF CHECKING IF DATA IS NULL   
-        };
-        // CHECK IF THERE IS A CORRECTIVE ATTACHED 
-        // REQUEST FOR CORRECTIVE DETAILS (request 12)
-        let exeFuncCorrective = checkID => {
-            $.ajax({
-                type: 'POST',
-                url: "./php/getDetails.php",
-                data: { matchedCorrective: checkID, request: 12 },
-                cache: false,
-                dataType: "json",
-                success: (data) => {
-                    correctiveData (data, checkID);
-                },
-            });
-        };/*FUNCTION FOR CORREECTIVE ACTION ITEMS ENDS HERE!*/
-    // FUNCTION TO CHECK WHAT RADIO BUTTON SHOULD BE 
-    // SELECTED BASE ON THE DATABSE
-        let checkIfnotNUll2Db = (arr, arrLen, toCheck) => {
-            for (var i = 0; i < arrLen; i++){
-                var fromDbVal = arr[i].val();
-                if (toCheck == fromDbVal){
-                    arr[i].prop("checked", true);
+                // INSERTING TABLE ROW ABOVE THE CLASS "tdboycorrective"
+                if ((fetchedId == checkID) && (correctiveCount == 0)) {
+
+                    $(".tbodyCorrective").prepend($(tblRow));
+                    $(tblRow).append(tblRowCol);
+                    $(tblRow).append(tblRowCol1);
+                    $(tblRow).append(tblRowCol2);
+                    $(tblRow).append(tblRowCol3);
+                    correctiveCount++;
+                }
+                // INSERTING TABLE ROW BELOW THE THE NEWLY INSERTED ROW
+                else if ((fetchedId == checkID) && (correctiveCount > 0)) {
+
+                    const tblRowNew = document.createElement('tr');
+                    tblRowNew.id = "corrective" + correctiveCount;
+                    var newtr = document.getElementById("corrective" + (correctiveCount - 1));
+                    // console.log(newtr);
+
+                    $(newtr).after(tblRow);
+                    $(tblRow).append(tblRowCol);
+                    $(tblRow).append(tblRowCol1);
+                    $(tblRow).append(tblRowCol2);
+                    $(tblRow).append(tblRowCol3);
+
+                    correctiveCount++;
                 };
             };
-        };/*FUCNTION FOR RADIO BUTTON CHECKING ENDS HERE!*/
+            //     // </ END OF LOOP
+        };// </END OF CHECKING IF DATA IS NULL   
+    };
+    // CHECK IF THERE IS A CORRECTIVE ATTACHED 
+    // REQUEST FOR CORRECTIVE DETAILS (request 12)
+    let exeFuncCorrective = checkID => {
+        $.ajax({
+            type: 'POST',
+            url: "./php/getDetails.php",
+            data: { matchedCorrective: checkID, request: 12 },
+            cache: false,
+            dataType: "json",
+            success: (data) => {
+                correctiveData (data, checkID);
+            },
+        });
+    };/*FUNCTION FOR CORRECTIVE ACTION ITEMS ENDS HERE!*/
+    // FUNCTION TO CHECK WHAT RADIO BUTTON SHOULD BE 
+    // SELECTED BASE ON THE DATABASE
+    let checkIfnotNUll2Db = (arr, arrLen, toCheck) => {
+        for (var i = 0; i < arrLen; i++){
+            var fromDbVal = arr[i].val();
+            if (toCheck == fromDbVal){
+                arr[i].prop("checked", true);
+            };
+        };
+    };/*FUNCTION FOR RADIO BUTTON CHECKING ENDS HERE!*/
     //**FUNCTION TO SET THE VALUE TO BLANK WHEN NO QDN NUMBER
     // MATCHED ON SEARCH EVENT
-        let makeItBlank = () => {
-            let toBeBlank = [$("#ibName"),$("#ibTeam"),$("#itName"),$("#itTeam"),$("#customer"),$("#machine"),$("#pkgType"),$("#partName"),$("#station"),$("#lotId"),$("#teamResp"),$("#dateTime"),$("#classification"),$("#defects"),$("#failureMode")];
-            for (var i = 0; i < toBeBlank.length; i++){
-                toBeBlank[i].html("");
-            };
+    let makeItBlank = () => {
+        let toBeBlank = [$("#ibName"),$("#ibTeam"),$("#itName"),$("#itTeam"),$("#customer"),$("#machine"),$("#pkgType"),$("#partName"),$("#station"),$("#lotId"),$("#teamResp"),$("#dateTime"),$("#classification"),$("#defects"),$("#failureMode")];
+        for (var i = 0; i < toBeBlank.length; i++){
+            toBeBlank[i].html("");
         };
-    //**FUNCITON RESPOSIBLE FOR RADIO BUTTON VALUES
-        let checkTheRadio = (des, COD, CODDes, failure_mode) =>{
-            // PARSE THE DATA FROM DB TO HTML PAGE
-            if (des || COD || CODDes || failure_mode) {
-                //**CODE FOR DISPOSITION 
-                var failureMode = [$("#man"), $("#MaChine"), $("#material"), $("#method"), $("#environment")];
-                var failureModeLen = failureMode.length;
-                checkIfnotNUll2Db(failureMode, failureModeLen, failure_mode);
-                /*Failure mode code ends here!*/
-                //**CODE FOR DISPOSITION 
-                var dispo = [$("#useAsIs"), $("#mcmr"), $("#rework"), $("#splitLot"), $("#shutdown"), $("#shipBack")];
-                var dispoLen = dispo.length;
-                checkIfnotNUll2Db(dispo, dispoLen, des);
-                /*Disposition code Ends here!*/
+    };
+    //**FUNCTION RESPONSIBLE FOR RADIO BUTTON VALUES
+    let checkTheRadio = (des, COD, CODDes, failure_mode) =>{
+        // PARSE THE DATA FROM DB TO HTML PAGE
+        if (des || COD || CODDes || failure_mode) {
+            //**CODE FOR DISPOSITION 
+            var failureMode = [$("#man"), $("#MaChine"), $("#material"), $("#method"), $("#environment")];
+            var failureModeLen = failureMode.length;
+            checkIfnotNUll2Db(failureMode, failureModeLen, failure_mode);
+            /*Failure mode code ends here!*/
+            //**CODE FOR DISPOSITION 
+            var dispo = [$("#useAsIs"), $("#mcmr"), $("#rework"), $("#splitLot"), $("#shutdown"), $("#shipBack")];
+            var dispoLen = dispo.length;
+            checkIfnotNUll2Db(dispo, dispoLen, des);
+            /*Disposition code Ends here!*/
 
-                //** CODE FOR CAUSE OF DEFECTS 
-                var causeOfDefects = [$("#production"),$("#process"),$("#Maintenance"),$("#Facilities"),$("#QA"),$("#Others")];
-                var causeOfDefectsLen = causeOfDefects.length;
-                checkIfnotNUll2Db(causeOfDefects, causeOfDefectsLen, COD);
-                /*Cause of defects code ends here!*/
-                if (CODDes) {
-                    $("#CODstatement").val(CODDes);
-                };
+            //** CODE FOR CAUSE OF DEFECTS 
+            var causeOfDefects = [$("#production"),$("#process"),$("#Maintenance"),$("#Facilities"),$("#QA"),$("#Others")];
+            var causeOfDefectsLen = causeOfDefects.length;
+            checkIfnotNUll2Db(causeOfDefects, causeOfDefectsLen, COD);
+            /*Cause of defects code ends here!*/
+            if (CODDes) {
+                $("#CODstatement").val(CODDes);
             };
         };
+    };
     //=====================================================>
     // ALL ABOUT FUNCTIONS END'S HERE  🔼
     //=====================================================>
@@ -528,7 +529,7 @@ $(document).ready(function () {//*✅*/
             $("#submitUpdate").remove();
             var reAssignmentInputs = "<div id='reAssignment'><div  class='row'><div class='col-4'><label for='reAssignTo' class='col-form-label'>ReassignTo</label><input id='reAssignTo' type='number' class='form-control' placeholder='Employee #...' required/></div><div class='col-5'><label class='col-form-label' for='reAssignToName'>Emp. Name:</label><input id='reAssignToName' type='text' class='form-control' required/></div><div class='col-3'><label class='col-form-label'>Team:</label><input id='reAssignToTeam' type='text' class='form-control' required/></div></div><div class='row'><div class = 'col-4'></div><div class = 'col-5'><label class='col-form-label' for='dept' >Department:</label><input id='dept' type='text' class='form-control' required/></div><div class = 'col-3'></div></div><div class='row col-form-label-lg mt-3'><div class='col'><label class='col-form-label'>Reassignment Description:</label><textarea id='reAssignmentDes' class='form-control text-center w-50' rows='2' required></textarea></div></div></div>";
 
-            var forReAssBtn = "<button class='w-100 btn btn-primary btn-lg mt-3' id='submitReassignment'>Submit for Reassignment</button>";
+            var forReAssBtn = "<button class='submitReassignment w-100 btn btn-primary btn-lg mt-3' id='submitReassignment'>Submit for Reassignment</button>";
 
             $("#reAssignDiv").after(reAssignmentInputs, forReAssBtn);
             $(".analysisSection").remove();
@@ -863,8 +864,8 @@ $(document).ready(function () {//*✅*/
                 // CHECK IF THE DATA PARAMETER IS NOT NULL
                 if ( data ){
                     // RESULTS FROM REQUEST STORED IN VARIABLES
-                    div1 ? $("#reAssignDiv").after(analysisSectionTemplate):
-                    $(".issueDetails").after(analysisSectionTemplate);
+                    // div1 ? $("#reAssignDiv").after(analysisSectionTemplate):
+                    // $(".issueDetails").after(analysisSectionTemplate);
                     var checkID = data[0]["id"];
                     var dataLen = data.length;
                     var des = data[0]["disposition"];
@@ -891,7 +892,7 @@ $(document).ready(function () {//*✅*/
                     // CHECKING THE EXISTENCE OF THE QDN ID 
                     if ((checkID) && ($(".fromDbData").length === 0)) {
                         // $("#reAssignDiv").after(analysisSectionTemplate);
-                        // EXECUTION OF FUCNTIONS Reassignment,
+                        // EXECUTION OF FUNCTIONS Reassignment,
                         // Containment, Correction, Corrective
                         exeFuncReass(checkID);
                         exeFuncContain(checkID);

@@ -53,7 +53,7 @@ switch ($request) {
 
             $data[] = array("machines" => $machines, "package_type" => $pkg_type);
         }
-        if ( $ddata ){
+        if ( $data ){
             echo json_encode($data);
         };
     break;
@@ -189,7 +189,15 @@ switch ($request) {
     //===========================================
     case 8:
         $matchedQdnNum = $_POST["matchedQdnNum"];
-        $dataRequest = "SELECT * FROM analysis_tbl WHERE qdnNo = '$matchedQdnNum' ORDER BY id DESC LIMIT 5";
+        $dataRequest = "SELECT * FROM 
+                            analysis_tbl 
+                        WHERE 
+                            qdnNo = '$matchedQdnNum'  
+                        AND 
+                            `status` = 0  
+                        ORDER BY 
+                            id 
+                        DESC LIMIT 5";
         $dataFromDatabase = $db->prepare($dataRequest);
         $dataFromDatabase -> execute();
 
