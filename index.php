@@ -84,10 +84,8 @@
         <div class="row col-md-12">
           <div class="col-sm-4">
           <label for="qdnNumber" class="form-label">QDN #:</label>
-          <input type="text" class="form-control" id="qdnNumber" >
+          <span type="text" class="form-control" id="qdnNumber" ></span>
         </div>
-
-
          <!--
         ================
           ROW #2

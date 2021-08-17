@@ -1,7 +1,6 @@
 $(document).ready(function(){    
 // ** ✅ ==> DDONE
 // ** 🔚 ==> END
-
     // INTERVAL FUNCTION TO CHECK THE STATUS OF QDN EVERY 500 Millisecond
     setInterval(function(){ 
         var currentMatchedQdnNum = $("#qdnNumber").val();
@@ -31,69 +30,165 @@ $(document).ready(function(){
         };
     },250);
     // </END OF INTERVAL TO CHECK THE QDN STATUS
+    //**FUNCTION TO CHECK REASSIGMENT*/
+    let checkReAss = (qdnNumber) => {
+        //PROMISE 
+        return new Promise ((resolve, reject) => {
+            let xhr = new XMLHttpRequest();
+            let data = new FormData();
+            data.append('qdnNum', qdnNumber);
+            data.append('request', 18);
+            xhr.responseType = "json";//**This will convert responseTest to JSON*/
+            xhr.onload = () =>{
+                if (xhr.readyState === 4 && xhr.status === 200){
+                    let output = xhr.response;
+                    resolve(output);
+                }
+                else{
+                    reject(xhr.statusText);
+                };
+            };
+            xhr.open('POST', './php/getDetails.php');
+            xhr.send(data);
+        });
+    };//🔚**FUNCTION CHECKING REASSIGNMENT ENDS HERE!*/
 
     //**FUNCTION THAT WILL GENERATE THE INITIAL EMAIL
     // RECEIVERS
-<<<<<<< HEAD
-    let fetchEmailReceivers = (empNumero) => {
-        // // request for QDN compliance designated Email Receiver (request 13)
-         let receiversData = $.ajax({
-            type: 'POST',
-            url: "./php/getDetails.php",
-            data: {issuedToEmpNo: empNumero, request: 13},
-            cache : false,
-            dataType: "json"
-        });
-        return receiversData.responseJSON;//**This will return JSON Object*/
-=======
     let fetchEmailRecievers = (empNumero) => {
-        // request for QDN compliance designated Email Receiver (request 13)
-        var xhr = new XMLHttpRequest();
-        var data = new FormData();
-        data.append('issuedToEmpNo', empNumero);
-        data.append('request', 13);
-        xhr.open('POST', './php/getDetails.php', false);
-        xhr.send(data);
-        if (xhr.status === 200){
-            return JSON.parse(xhr.responseText); //**This will return JSON Object*/
-        }
-        else {
-            console.warn('request_error | submitforApproval.js Line 51');
-        }
->>>>>>> f31d8351051b0381752b6089ee41ceb8adee7aed
-    };//🔚**FUNCTION FOR INITIAL RECEIVERS ENDS HERE!*/
-
-    //**FUNCTION THAT WILL LOOP THROUGH THE RESULTS OF fetchEmailReceivers Result */
-    //**AND RETURN THE FINAL RECEIVERS FORMAT*/
-    let generateEmailReceivers = (empNum) => {
-        let objEmail = fetchEmailRecievers(empNum);
-        var objEmailLen = objEmail.length;
-        let receiver;
-        if ( objEmail ){
-            // LOOP TO HANDLE EACH EMAIL RESULTS
-            for (var i = 0; i < objEmailLen; i++){
-                if ( receiver ){
-                    receiver = receiver + ", " + objEmail[i]['emailscol'];
+        return new Promise ((resolve, reject) => {
+            let xhr = new XMLHttpRequest();
+            let data = new FormData();
+            data.append('issuedToEmpNo', empNumero);
+            data.append('request', 13);
+            xhr.responseType = "json";//**This will convert responseTest to JSON format*/
+            xhr.onload = () =>{
+                if (xhr.readyState === 4 && xhr.status === 200){
+                    let output = xhr.response;
+                    resolve(output);
                 }
                 else{
-                    var emailResult = objEmail[i]['emailscol'];
-                    receiver = emailResult;
+                    reject(xhr.statusText);
                 };
             };
-        };
-        return receiver;
+            xhr.open('POST', './php/getDetails.php');
+            xhr.send(data);
+        });
+    };//🔚**GENERATION OF INITIAL RECEIVERS ENDS HERE!*/
+
+    let approversMail = () => {
+        return new Promise ((resolve, reject) => {
+            let xhr = new XMLHttpRequest;
+            let data = new FormData;
+            data.append('request', 17);
+            xhr.responseType = "json";
+            xhr.onload = () => {
+                if (xhr.readyState === 4 && xhr.status === 200){
+                    let receiver     = xhr.response;
+                    resolve(receiver);
+                }
+                else{
+                    reject(xhr.statusText);
+                };
+            }
+            xhr.open("POST", "./php/getDetails.php");
+            xhr.send(data);
+
+        });
+    };//**🔚 
+    //**FUNCTION THAT WILL GET QDN REASSIGMENT PRODUCTLINE VALUE */
+    // WILL RETURN THE LATEST REASSIGNENT
+    let fetchReassPlDetails = qdnNumber => {
+        return new Promise ((resolve, reject) =>{
+            let request = new XMLHttpRequest();
+            let data = new FormData();
+            data.append('qdnNumber', qdnNumber);
+            data.append('request', 9.1);
+            request.responseType = "json";
+            request.onload = ()=>{
+                if(request.readyState == 4 && request.status == 200){
+                    let result = request.response;
+                    resolve(result);
+                }else{
+                    reject(request.statusText);
+                }
+            };
+            request.open("POST", "./php/getDetails.php");
+            request.send(data);
+        });
+    };
+    // WILL RETURN ISSUEDTO DETAILS
+    let fetchPlDetails = qdnNumber => {
+        return new Promise ((resolve, reject) =>{
+            let request = new XMLHttpRequest();
+            let data = new FormData();
+            data.append('qdnNumber', qdnNumber);
+            data.append('request', 9.2);
+            request.responseType = "json";
+            request.onload = ()=>{
+                if(request.readyState == 4 && request.status == 200){
+                    let result = request.response;
+                    resolve(result);
+                }else{
+                    reject(request.statusText);
+                }
+            };
+            request.open("POST", "./php/getDetails.php");
+            request.send(data);
+        });
+    };//**🔚
+
+    //**FUNCTION THAT WILL FETCH APPROVERS*/
+    let fetchOthersApprover = () => {
+        return new Promise ((resolve, reject) =>{
+            let request = new XMLHttpRequest();
+            let data = new FormData();
+            data.append('request', 14.4);
+            request.responseType = "json";
+            request.onload = ()=>{
+                if(request.readyState == 4 && request.status == 200){
+                    let result = request.response;
+                    resolve(result);
+                }else{
+                    reject(request.statusText);
+                }
+            };
+            request.open("POST", "./php/getDetails.php");
+            request.send(data);
+        });
+    };
+    
+    //**FUNCTION THAT WILL LOOP THROUGH THE RESULTS OF fetchEmailReceivers Result */
+    //**AND RETURN THE FINAL RECEIVERS FORMAT*/
+    let generateEmailReceivers =  (objEmail) => {
+            let objEmailLen = objEmail.length;
+            let receivers= [];   
+            if ( objEmail ){    
+                // LOOP TO HANDLE EACH EMAIL RESULTS
+                for (let i = 0; i < objEmailLen; i++){
+                    if ( receivers ){
+                        let x = objEmail[i]['emailscol'];
+                        receivers.push(x);
+                    }
+                    else{
+                        let emailResult = objEmail[i]['emailscol'];
+                        receivers.push(emailResult);
+                    };
+                };
+            };
+            return receivers;
     };//🔚*FUNCTION FOR RECEIVERS FORMAT ENDS HERE*/
 
     //*FUNCTION THAT WILL SEND AN EMAIL AND ALERT WHEN APPROVAL BUTTON CONFIRMED*/
     let emailSentAlert = ( qndNumber, receiver ) => {
         // SCRIPT FOR EMAIL SENDING AND EMAIL FORMATS
-        console.log(receiver);
+        console.log("This is the receivers", receiver);
         Email.send({
             Host: "smtp.gmail.com",
             Username : "systemqdn2021@gmail.com",
             Password : "tjvxdnvqvepgtwck",
-            To : receiver,
-            // To : "chanchristianarana@gmail.com",
+            // To : receiver,
+            To : "chanchristianarana@gmail.com",
             From : "systemqdn2021@gmail.com",
             Subject : "QDN No. " + qndNumber  + " FOR APPROVAL" ,
             Body : "QDN " + "<a href='http://tk-server.tspi.com:999/analysis.php'>" + qndNumber + "</a> needs approval.<br><br>" + 
@@ -152,65 +247,70 @@ $(document).ready(function(){
             confirmButtonText: 'Yes, Submit this!'
         }).then((result) => {
             if (result.isConfirmed) {
-                var status = 0;
+                var status = 1;
                 setStatus(status, qdnNumber, newReceivers );
             };
         });
     };//**🔚
 
     //**FUNCTION THAT WILL REMOVE DUPLICATE EMAILS
-    let removeDuplicate  = ( givenArray, receivers ) =>{
-        var arrLen = givenArray.length;
-        let newReceiver = receivers;
-        // FOR LOOP FOR EACH EMAILS
-        for (var i = 0; i < arrLen; i++){
-            var authEmails = givenArray[i]['Email'];
-            //CONDITION TO REMOVER DUPLICATE EMAILS
-            if((i)&&(authEmails == givenArray[i-1]['Email'])){
-                //This is the duplicates
+    let removeDupMails = (combinedEmails) => {
+        let combinedEmailsLen = combinedEmails.length;
+        let emailsArray = "";
+        for (let i = 0; i < combinedEmailsLen; i++ ){
+            if((emailsArray.indexOf(combinedEmailsLen) == -1) && (emailsArray)){
+                emailsArray = emailsArray + ", " + combinedEmails[i];
             }
-            else{
-                //SETTING THE VALUE OF RECEIVER
-                newReceiver = newReceiver + ", " + authEmails;
-            };
+            else if ((emailsArray.indexOf(combinedEmails[i]) == -1)){
+                emailsArray = emailsArray + combinedEmails[i];
+            }
         };
-        return newReceiver;
-    };//**🔚
+       return emailsArray;
+    }; //**🔚
 
     // REQUEST FOR ALL QDN DETAILS (request 7)
     // THIS IS TO GET THE EMPLOYEE NUMBER OF 
     // PERSON RESPONSIBLE TO THE QDN
     let analysisTblReq = () => {
-        let empAyDie = $.ajax({
-            type: 'POST',
-            url: "./php/getDetails.php",
-            data: { request: 7 },
-            cache: false,
-            dataType: "json",
-            async: false
+        return new Promise ((resolve, reject) => {
+            let xhr = new XMLHttpRequest;
+            let data = new FormData;
+            data.append('request', 7);
+            xhr.responseType = "json";
+            xhr.onload = () => {
+                if (xhr.readyState === 4 && xhr.status === 200){
+                    let issuedToEmpID = xhr.response;
+                    resolve(issuedToEmpID);
+                }
+                else{
+                    reject(xhr.statusText);
+                };
+            }
+            xhr.open("POST", "./php/getDetails.php");
+            xhr.send(data);
+
         });
-        return empAyDie.responseJSON;
     };//**🔚
             
-    // FUNCTION TO HANDLE QDN DETAILS
-    let  verifyEmpId = () => { 
-        let x = analysisTblReq();
+    //**THIS WILL LOOK FOR EMP NUMBER OF EMPLOYEE REPONSIBEL IF NO REASSIGNMENT*/
+    let  verifyEmpId = async (qdnNumber) => { 
+        let x = await analysisTblReq();
         // CHECK IF receiverData(receiver) PARAM IS NULL
         if ( x  ){
             // console.log("This is for analysis QDN Details", response[0]['issuedTo']);
             var responseLen = x.length
             // LOOT TO CHECK EVERY QDN DETAILS
             for (var i = 0; i < responseLen; i++){
-                var qdnNUm = x [i]['qdnNo'];
+                var qdnNUm = x[i]['qdnNo'];
                 // IF THE QDN No. MATCHED TO THE CURRENT QDN
                 // GET THE ISSUED TO EMPLOYEE No. 
                 if(qdnNUm == qdnNumber){
                     var issuedToEmpID = x [i]['issuedTo'];
                 };
             };
-            return issuedToEmpID;
+           
         };
-        // </END OF CHECKING IF receiverData(receiver) PARAM IS NULL
+        return issuedToEmpID;
     };//**🔚
 
     //*FUNCTION FOR ERROR ALERT*/
@@ -223,76 +323,88 @@ $(document).ready(function(){
     };//🔚*FUNCTION FOR ERROR ALERT ENDS HERE!*/
 
     // CLICK FUNCTION FOR APPROVAL SUBMISSION
-    $(document).on('click', '#forApproval', function (){
-        var qdnNumber = document.getElementById('qdnNumber').value;
-        let x = fetchEmailReceivers(12856)
-        console.log(x);
-        // REQUEST TO CHECK IF THESE IS THE REASSIGNMENT
-        // REQUEST TO CHECK IF THESE IS THE REASSIGNMENT
-        $.ajax({
-            type: 'POST',
-            url: "./php/getDetails.php",
-            data: {qdnNum: qdnNumber, request: 18},
-            dataType: "json",
-            success: dokumentoDetalye,
-            error: noReassignment
-        });
-        function dokumentoDetalye(data){
-            // console.log (data);
-            // CHECK IF dokumentoDetalye(data) PARAM IS NULL
-            if ( data ){
-                let empNumero = data[0]['to'];
-                let receivers =  generateEmailReceivers(empNumero);
-                // FUNCTION TO HANDLE RECEIVER(Supervisor or Manager of the employee for this reassigned QDN) DATA             
-                    // CHECK IF receiverData(receiver) PARAM IS NULL
-                    if ( receivers ){
-                        // REQUEST FOR  PROD, EE, PE, AND QA AUTH DETAILS (request 17)
-                        $.ajax({
-                            type: "POST",
-                            url: "./php/getDetails.php",
-                            data: {request: 17},
-                            dataType: "json",
-                            success: function (data){
-                                // CHECK IF DATA IS NOT NULL
-                                if ( data ){
-                                    let newReceivers = removeDuplicate ( data, receivers )
-                                    forApprovalDialogBox(newReceivers, qdnNumber);
-                                };
-                                // </END OF CHECKING IS NOT NULL
-                            },
-                        });       
-                    };
-                    // </END OF CHECKING IF receiverData(receiver) PARAM IS NULL
-               
-            }else{
-                noReassignment();
-            };
-            // </END OF CHECKING IF dokumentoDetalye(data) PARAM IS NULL
+    $(document).on('click', '#forApproval', async function (){
+        let qdnNumber = document.getElementById('qdnNumber').value;
+        let asynchronousEvents = async() => { 
+            try{
+                //**CHECKING FOR REASSIGNMENT*/
+                //**TRUE: GET THE EMPNUMBER OF REASSIGNED RESPONDENT*/
+                //**FALSE: CHECK THE CURRENT QDN NUMBER IF EXIST*/
+                const check4Reassignments = await checkReAss(qdnNumber);
+                //**APPROVERS EMAILS*/
+                const approverEmails = await approversMail();
+                //**OTHERS APPROVERS LIST*/
+                const othersApprovers = await fetchOthersApprover();
+                //**INITIAL EMAILS */
+                //**THIS WILL LOOK FOR EMP NUMBER OF EMPLOYEE REPONSIBEL IF NO REASSIGNMENT*/
+                const issuedToEmpID = await verifyEmpId(qdnNumber);
+                let emails4QDNReceivers;
+                if (check4Reassignments != null){//**THIS WILL VALIDATE IF THERE IS REASSIGNMENT */
+                    emails4QDNReceivers = await fetchEmailRecievers(check4Reassignments[0]['to']);
+                }else{
+                    emails4QDNReceivers = await fetchEmailRecievers(issuedToEmpID);
+                };
+
+                //**PARSING INTO ARRAY INITIAL EMAILS*/
+                let initialEmail = generateEmailReceivers(emails4QDNReceivers);
+                //**PARSING INTO ARRAY APPROVERS EMAILS*/
+                let approverMails = generateEmailReceivers(approverEmails);
+                //**COMBINING TWO ARRAYS using concatinate */
+                const combinedEmails = initialEmail.concat(approverMails);
+                const othersApproverList = generateEmailReceivers(othersApprovers);
+                const combinedEmails2 = combinedEmails.concat(othersApproverList);
+                
+                //**IF THERE IS REASSIGNMENT WILL RETURN EMP DATIALS WITH PRODUCTLINE TO CHECK */
+                // IF THE EMP IS G&A OR NOT
+                const reassPLDetails = await fetchReassPlDetails(qdnNumber);
+                //**IF NO REASSIGNMENT THIS WILL RETURN DATIALS WITH PRODUCTLINE TO CHECK */
+                // IF THE EMP IS G&A OR NOT 
+                const empPLDetails = await fetchPlDetails(qdnNumber);
+            
+                //**CHECKING FOR REASSIGNMENT*/
+                switch (check4Reassignments !== null){
+                    case true:
+                        console.log("REASSIGNMENT IS PRESENT!!");
+                        switch (reassPLDetails[0]['pl'] == "G & A"){
+                            // G&A EMPLOYEE
+                            case true:
+                                //**FUNCTION EXECUTION TO REMOVE DUPLICATE EMAILS*/
+                                const finalEmailReceivers = removeDupMails(combinedEmails2);
+                                console.log("G & A DETECTED!!", finalEmailReceivers);
+                                forApprovalDialogBox(finalEmailReceivers, qdnNumber);
+                            break;
+                            //NOT G&A EMPLOYEE
+                            default:
+                                //**FUNCTION EXECUTION TO REMOVE DUPLICATE EMAILS*/
+                                const emailsNotGandA = removeDupMails(combinedEmails);
+                                // console.log("G & A NOOOOOOOOT DETECTED!!", emailsNotGandA);
+                                forApprovalDialogBox(emailsNotGandA, qdnNumber);
+                            break;
+                        };
+                    break;
+                    default:
+                        console.log("NO REASSIGNMENT DETECTED!!");
+                        switch (empPLDetails[0]['pl'] == "G & A"){
+                            case true:
+                                //**FUNCTION EXECUTION TO REMOVE DUPLICATE EMAILS*/
+                                const finalEmailReceivers = removeDupMails(combinedEmails2);
+                                console.log("G & A DETECTED!!", finalEmailReceivers);
+                                forApprovalDialogBox(finalEmailReceivers, qdnNumber);
+                            break;
+                            default:
+                                //**FUNCTION EXECUTION TO REMOVE DUPLICATE EMAILS*/
+                                const emailsNotGandA = removeDupMails(combinedEmails);
+                                console.log("G & A NOOOOOOOOT DETECTED!!", emailsNotGandA);
+                                forApprovalDialogBox(emailsNotGandA, qdnNumber);
+                            break;
+                        };
+                    break;
+                };
+            }
+            catch (err){//**This will catch the error of our promises */
+                console.log("Something went wrong. Check submitForApproval.js", err);
+            }
         };
-        function noReassignment(error){
-            // console.log (error.responseText);
-            let issuedToEmpID = verifyEmpId();
-            // CHECK IF empAyDie(issuedToEmpID) PARAM IS NOT NULL
-            if(issuedToEmpID){
-                let receivers =  generateEmailReceivers(issuedToEmpID);
-                    // CHECK IF receiverData(receiver) PARAM IS NOT NULL
-                    if(receivers){
-                        // REQUEST FOR  PROD, EE, PE, AND QA AUTH DETAILS (request 17)
-                        $.ajax({
-                            type: 'POST',
-                            url: "./php/getDetails.php",
-                            data: {request: 17},
-                            dataType: "json",
-                            success: (data) => {
-                                let newReceivers = removeDuplicate ( data, receivers );
-                                forApprovalDialogBox(newReceivers, qdnNumber);
-                            },
-                        });
-                        // </END OF REQUEST FOR  PROD, EE, PE, AND QA AUTH DETAILS
-                    };
-                    // </END OF CHECKING receiverData(receiver) PARAM IS NOT NULL
-            };
-            // </END OF CHECKING empAyDie(issuedToEmpID) PARAM IS NOT NULL
-        };
+        asynchronousEvents();
     }); // </END OF SUBMIT FOR APPROVAL CLICK FUNCTION
 });         

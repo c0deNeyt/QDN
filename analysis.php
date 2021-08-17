@@ -41,11 +41,11 @@
   <!--CORE JS-->
   <script type="text/javascript" src="./js/jquery-3.6.0.min.js"></script>
   <!------------------------------------------------------------------>   
-  <script defer src="./js/analysis.js"></script>
+  <script src="./js/analysis.js" defer></script>
   <!------------------------------------------------------------------>
   <script src="./js/analysisFormValidation.js" defer></script>
   <!------------------------------------------------------------------>
-  <script defer src = "./js/submitForApproval.js"></script>
+  <script src = "./js/submitForApproval.js" defer></script>
   <!------------------------------------------------------------------>
   <script src="https://smtpjs.com/v3/smtp.js"></script>
   <!------------------------------------------------------------------>

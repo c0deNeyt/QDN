@@ -1,4 +1,4 @@
-$(document).ready(function () {/*✅*/
+$(document).ready(function () {//*✅*/
     //ALERT CODE ON PAGE LOAD
     Swal.fire({
         title: 'PLEASE READ ME!',
@@ -23,125 +23,125 @@ $(document).ready(function () {/*✅*/
     // ALL ABOUT FUNCTIONS  🔽
     //=====================================================>
     //FUNCTION RESPONSIBLE FOR HANDLING EACH REASSIGNMENT 
-        let reassignments = (data, checkID) =>{
-            if (data){
-                var dataLen = data.length;
-                var count = 0;
-                // LOOP TO CHECK IF THERE IS A MATCHED ID BETWEEN ANALYSIS AND REASSIGNMENT TABLE
-                for (var i = 0; i < dataLen; i++) {
-                    var fetchedData = data[i]['analysis_tbl_id'];
+    let reassignments = (data, checkID) =>{
+        if (data){
+            var dataLen = data.length;
+            var count = 0;
+            // LOOP TO CHECK IF THERE IS A MATCHED ID BETWEEN ANALYSIS AND REASSIGNMENT TABLE
+            for (var i = 0; i < dataLen; i++) {
+                var fetchedData = data[i]['analysis_tbl_id'];
 
-                    // FORMAT OF CUSTOM ELEMENT TO APPEND IF THERE IS A REASSIGNMENT
-                    const colDiv = document.createElement("div");
-                    const row1Div = document.createElement("div");
-                    const row2Div = document.createElement("div");
-                    const row3Div = document.createElement("div");
-                    const row4Div = document.createElement("div");
-                    const row1Lbl = document.createElement("label");
-                    const row2Lbl = document.createElement("label");
+                // FORMAT OF CUSTOM ELEMENT TO APPEND IF THERE IS A REASSIGNMENT
+                const colDiv = document.createElement("div");
+                const row1Div = document.createElement("div");
+                const row2Div = document.createElement("div");
+                const row3Div = document.createElement("div");
+                const row4Div = document.createElement("div");
+                const row1Lbl = document.createElement("label");
+                const row2Lbl = document.createElement("label");
 
-                    colDiv.className = "fromDbData row";
-                    colDiv.id = count;
-                    row1Div.className = "col-sm-2";
-                    row2Div.className = "col";
-                    row3Div.className = "col-sm-2";
-                    row4Div.className = "col";
+                colDiv.className = "fromDbData row";
+                colDiv.id = count;
+                row1Div.className = "col-sm-2";
+                row2Div.className = "col";
+                row3Div.className = "col-sm-2";
+                row4Div.className = "col";
 
-                    row1Lbl.className = "telfordRed col-form-label";
-                    row1Lbl.id = "labelSpanName" + count;
-                    row1Lbl.innerText = "Reassigned To: "
+                row1Lbl.className = "telfordRed col-form-label";
+                row1Lbl.id = "labelSpanName" + count;
+                row1Lbl.innerText = "Reassigned To: "
 
-                    row2Lbl.className = "telfordRed col-form-label";
-                    row2Lbl.id = "labelSpanTeam" + count;
-                    row2Lbl.innerText = "Team: ";
-                    // END OF FORMAT 
+                row2Lbl.className = "telfordRed col-form-label";
+                row2Lbl.id = "labelSpanTeam" + count;
+                row2Lbl.innerText = "Team: ";
+                // END OF FORMAT 
 
-                    // CHECKING EACH DATA IF IT IS MATCHED ID 
-                    // BETWEEN ANALYSIS AND REASSIGNMENT TABLE
-                    if ((fetchedData == checkID) && (count == 0)) {
+                // CHECKING EACH DATA IF IT IS MATCHED ID 
+                // BETWEEN ANALYSIS AND REASSIGNMENT TABLE
+                if ((fetchedData == checkID) && (count == 0)) {
 
-                        var reAssEmpName = data[i]["reAssignedName"];
-                        var reAssignedTeam = data[i]["reAssignedTeam"];
+                    var reAssEmpName = data[i]["reAssignedName"];
+                    var reAssignedTeam = data[i]["reAssignedTeam"];
 
-                        const span = document.createElement("span");
-                        const span2 = document.createElement("span");
-
-
-                        span.className = "fromdbResutl";
-                        span.id = "reAssignToNameSpan" + count;
-                        span.innerText = " " + reAssEmpName;
-
-                        span2.className = "fromdbResutl";
-                        span2.id = "reAssignToTeamSpan" + count;
-                        span2.innerText = " " + reAssignedTeam;
+                    const span = document.createElement("span");
+                    const span2 = document.createElement("span");
 
 
-                        $("#issuedToDiv").after(colDiv);
-                        $(colDiv).append(row1Div);
-                        $(colDiv).append(row2Div);
-                        $(colDiv).append(row3Div);
-                        $(colDiv).append(row4Div);
-                        //Reass Label
-                        $(row1Div).append(row1Lbl);
-                        //Team Label
-                        $(row3Div).append(row2Lbl);
-                        // Reass Span
-                        $(row2Div).append(span);
-                        // Team Span
-                        $(row4Div).append(span2);
+                    span.className = "fromdbResutl";
+                    span.id = "reAssignToNameSpan" + count;
+                    span.innerText = " " + reAssEmpName;
 
-                        count++;
-                    }
-                    else if ((fetchedData == checkID) && (count >= 1)) {
-                        var reAssEmpName = data[i]["reAssignedName"];
-                        var reAssignedTeam = data[i]["reAssignedTeam"];
-                        var newId = document.getElementById(count - 1);
+                    span2.className = "fromdbResutl";
+                    span2.id = "reAssignToTeamSpan" + count;
+                    span2.innerText = " " + reAssignedTeam;
 
-                        const span = document.createElement("span");
-                        const span2 = document.createElement("span");
 
-                        span.className = "fromdbResutl";
-                        span.id = "reAssignToNameSpan" + count;
-                        span.innerText = " " + reAssEmpName;
+                    $("#issuedToDiv").after(colDiv);
+                    $(colDiv).append(row1Div);
+                    $(colDiv).append(row2Div);
+                    $(colDiv).append(row3Div);
+                    $(colDiv).append(row4Div);
+                    //Reass Label
+                    $(row1Div).append(row1Lbl);
+                    //Team Label
+                    $(row3Div).append(row2Lbl);
+                    // Reass Span
+                    $(row2Div).append(span);
+                    // Team Span
+                    $(row4Div).append(span2);
 
-                        span2.className = "fromdbResutl";
-                        span2.id = "reAssignToTeamSpan" + count;
-                        span2.innerText = " " + reAssignedTeam;
+                    count++;
+                }
+                else if ((fetchedData == checkID) && (count >= 1)) {
+                    var reAssEmpName = data[i]["reAssignedName"];
+                    var reAssignedTeam = data[i]["reAssignedTeam"];
+                    var newId = document.getElementById(count - 1);
 
-                        // console.log("MORE REASS", reAssEmpName, reAssignedTeam, newId)
+                    const span = document.createElement("span");
+                    const span2 = document.createElement("span");
 
-                        $(newId).after(colDiv);
-                        $(colDiv).append(row1Div);
-                        $(colDiv).append(row2Div);
-                        $(colDiv).append(row3Div);
-                        $(colDiv).append(row4Div);
-                        //Reass Label
-                        $(row1Div).append(row1Lbl);
-                        //Team Label
-                        $(row3Div).append(row2Lbl);
-                        // Reass Span
-                        $(row2Div).append(span);
-                        // Team Span
-                        $(row4Div).append(span2);
+                    span.className = "fromdbResutl";
+                    span.id = "reAssignToNameSpan" + count;
+                    span.innerText = " " + reAssEmpName;
 
-                        count++;
-                    };
+                    span2.className = "fromdbResutl";
+                    span2.id = "reAssignToTeamSpan" + count;
+                    span2.innerText = " " + reAssignedTeam;
+
+                    // console.log("MORE REASS", reAssEmpName, reAssignedTeam, newId)
+
+                    $(newId).after(colDiv);
+                    $(colDiv).append(row1Div);
+                    $(colDiv).append(row2Div);
+                    $(colDiv).append(row3Div);
+                    $(colDiv).append(row4Div);
+                    //Reass Label
+                    $(row1Div).append(row1Lbl);
+                    //Team Label
+                    $(row3Div).append(row2Lbl);
+                    // Reass Span
+                    $(row2Div).append(span);
+                    // Team Span
+                    $(row4Div).append(span2);
+
+                    count++;
                 };
             };
-        }; 
-        // AJAX REQUEST FOR QND REASSIGNMENT DATA (request 9)
-        let exeFuncReass = checkID => {
-            $.ajax({
-                type: 'POST',
-                url: "./php/getDetails.php",
-                data: { matchedReAss: checkID, request: 9 },
-                cache: false,
-                dataType: "json",
-                success:(data) => { /*FUNCTION TO PROCESS REASSIGNMENT DATA*/ 
-                    reassignments(data, checkID);
-                },
-            });
-        };/*Function Reassignmen Ends here!*/
+        };
+    }; 
+    // AJAX REQUEST FOR QND REASSIGNMENT DATA (request 9)
+    let exeFuncReass = checkID => {
+        $.ajax({
+            type: 'POST',
+            url: "./php/getDetails.php",
+            data: { matchedReAss: checkID, request: 9 },
+            cache: false,
+            dataType: "json",
+            success:(data) => { /*FUNCTION TO PROCESS REASSIGNMENT DATA*/ 
+                reassignments(data, checkID);
+            },
+        });
+    };/*Function Reassignmen Ends here!*/
     // FUNCTION TO PROCESS CONTAINMENT DATA
         let containmentData = (data, checkID) => {
             //**Check if parm data is not null
@@ -855,23 +855,7 @@ $(document).ready(function () {/*✅*/
                     $(".errorSpan").append(errorSpan);
                     $("#reAssignDiv").css("visibility", "hidden");
                     $(".analysisSection").remove();
-
-                    $("#ibName").html("");
-                    $("#ibTeam").html("");
-                    $("#itName").html("");
-                    $("#itTeam").html("");
-                    $("#customer").html("");
-                    $("#machine").html("");
-                    $("#pkgType").html("");
-                    $("#partName").html("");
-                    $("#station").html("");
-                    $("#lotId").html("");
-                    $("#teamResp").html("");
-                    $("#dateTime").html("");
-                    $("#classification").html("");
-                    $("#defects").html("");
-                    $("#failureMode").html("");
-                    $(".fromDbData").remove();
+                    makeItBlank();
                 }
             });
             //FUNCTION TO HANDLE QND DETAILS
@@ -906,7 +890,7 @@ $(document).ready(function () {/*✅*/
 
                     // CHECKING THE EXISTENCE OF THE QDN ID 
                     if ((checkID) && ($(".fromDbData").length === 0)) {
-                        $("#reAssignDiv").after(analysisSectionTemplate);
+                        // $("#reAssignDiv").after(analysisSectionTemplate);
                         // EXECUTION OF FUCNTIONS Reassignment,
                         // Containment, Correction, Corrective
                         exeFuncReass(checkID);
@@ -1018,7 +1002,7 @@ $(document).ready(function () {/*✅*/
 
                     // CHECKING THE EXISTENCE OF THE QDN ID
                     if ((checkID) && ($(".fromDbData").length === 0)) {
-                        $("#reAssignDiv").after(analysisSectionTemplate);
+                        // $("#reAssignDiv").after(analysisSectionTemplate);
                         // EXECUTION OF FUCNTIONS Reassignment,
                         // Containment, Correction, Corrective
                         exeFuncReass(checkID);
