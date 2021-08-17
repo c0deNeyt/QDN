@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- <html lang="en" oncontextmenu="return false"> -->
-  <html lang="en">
+<html lang="en" oncontextmenu="return false">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -87,11 +87,11 @@
           <label for="qdnNumber" class="form-label">QDN #:</label>
           <span type="text" class="form-control" id="qdnNumber" ></span>
         </div>
-         <!--
+        <!--
         ================
           ROW #2
         ================  
-        -->  
+        -->
         <div class="row col-md-12 ">
           <div class="col-md-4">
             <label for="Issued By Employee Number" class="col-form-label">Issued By:</label>
@@ -110,7 +110,7 @@
         ================
             ROW #3
         ================  
-        -->  
+        -->
         <div id="issuedToDiv" class="row col-md-12">
           <div class="col-md">
             <label for="Issued To Employee Number" class="col-form-label">Issued To:</label>
@@ -151,7 +151,7 @@
         ================
             ROW #5
         ================  
-        -->  
+        --> 
         <div class="row col-md-12">
           <div class="col-md-4">
             <label class="col-form-label">Customer:</label>
@@ -175,7 +175,7 @@
         ================
             ROW #6
         ================  
-        -->  
+        -->
         <div class="row col-md-12">
           <div class="col-md-4">
             <label for="deviceName" class="col-form-label">Part Name:</label>
@@ -190,7 +190,7 @@
         ================
             ROW #7
         ================  
-        -->  
+        -->
         <label class="col-md-3   mt-4 col-form-label-lg">Classification:</label>
         <div class="row col-md-12 mb-4">
           <div class="col-md-6 ml-4">
@@ -211,7 +211,7 @@
             <textarea id="defects"  rows="4" class="form-control" inputName = "Nonconformity Defects" required></textarea>
           </div>
         </div>  
-        <button id="submit" class="w-100 btn btn-success btn-lg mt-3" type="submit">Send for Review & Analysis</button>
+        <button id="issuanceSubmit" class="w-100 btn btn-success btn-lg mt-3" type="submit">Send for Review & Analysis</button>
       </form>
     </div>  
 

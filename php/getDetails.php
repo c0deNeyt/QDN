@@ -53,7 +53,7 @@ switch ($request) {
 
             $data[] = array("machines" => $machines, "package_type" => $pkg_type);
         }
-        if ( $ddata ){
+        if ( $data ){
             echo json_encode($data);
         };
     break;

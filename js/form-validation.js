@@ -1,6 +1,6 @@
 
 // Example starter JavaScript for disabling form submissions if there are invalid fields
-(function () {
+(async function () {
   'use strict'
   let successAlert  = async(qdnNumber) => {
     const Toast = Swal.mixin({
@@ -12,7 +12,7 @@
       },
       allowEscapeKey: false,
       showConfirmButton: false,
-      timer: 3500,
+      timer: 2000,
       timerProgressBar: true,
       didOpen: (toast) => {
         toast.addEventListener('mouseenter', Swal.stopTimer)
@@ -27,16 +27,71 @@
     }).then(()=>{
       window.location.replace("index.php");
     });
-  
   };
+  let x = () => {
+    var qdnNumber         = $("#qdnNumber").html();
+    var qdnIBENo          = $("#issuedByEmpNumber").val();
+    var qdnIBEN           = $("#issuedByEmpName").val();
+    var qdnIBET           = $("#issuedByEmpTeam").val();
+    var qdnITENo          = $("#issuedToEmpNumber").val();
+    var qdnITEN           = $("#issuedToEmpName").val();
+    var qdnITET           = $("#issuedToEmpTeam").val();
+    var qdnCustomer       = $("#customer").val();
+    var qdnMachine        = $("#machine").val();
+    var qdnPkgtype        = $("#packageType").val();
+    var qdnDeviceName     = $("#partName").val();
+    var qdnStation        = $("#station").val();
+    var qdnLotId          = $("#lotId").val();
+    var qdnTeamResp       = $("#teamResp").val();
+    var qdnDateTime       = $("#dateTime").val();
+    var qdnClassification = $("input[name = 'classification']:checked").val();
+    var qdnDefects        = $("#defects").val();
+    var qdnFailureMode    = $("input[name = 'failureMode']:checked").val();
+    //*request url
+    let url = './php/process.php';
+    //Setting up body parameter using FromData
+    let formData = new FormData();
+    formData.append('qdnNumber2Db',         qdnNumber);
+    formData.append('qdnIBENo2Db',          qdnIBENo);
+    formData.append('qdnIBEN2Db',           qdnIBEN);
+    formData.append('qdnIBET2Db',           qdnIBET);
+    formData.append('qdnITENo2Db',          qdnITENo);
+    formData.append('qdnITEN2Db',           qdnITEN);
+    formData.append('qdnITET2Db',           qdnITET);
+    formData.append('qdncustomer2Db',       qdnCustomer);
+    formData.append('qdnmachine2Db',        qdnMachine);
+    formData.append('qdnpkgtype2Db',        qdnPkgtype);
+    formData.append('qdnDeviceName2Db',     qdnDeviceName);
+    formData.append('qdnStation2Db',        qdnStation);
+    formData.append('qdnLotId2Db',          qdnLotId);
+    formData.append('qdnTeamResp2Db',       qdnTeamResp);
+    formData.append('qdnDateTime2Db',       qdnDateTime);
+    formData.append('qdnClassification2Db', qdnClassification);
+    formData.append('qdnDefects2Db',        qdnDefects);
+    formData.append('qdnFailureMode2Db',    qdnFailureMode);
+    return fetch(url, { method: 'POST', body: formData })
+    .then(function (response) {
+      //converting format to JSON DATA
+      if (response.status == 200 && response.ok){
+        return response;
+      };
+    })
+    // .then(function (finalOutput) {
+    //   console.log("This is finalOutput inside the fetch", finalOutput);
+    //   return finalOutput;
+    // });
+  };
+  let z  = await x();
+  console.log("This is x return!!", z);
   // Fetch all the forms we want to apply custom Bootstrap validation styles 
   var forms = document.querySelectorAll('.needs-validation')
 
   // Loop over them and prevent submission
   Array.prototype.slice.call(forms)
     .forEach(function (form) {
-      form.addEventListener('submit', function (event) {
+      form.addEventListener('submit', async function (event) {
         if (!form.checkValidity()) {
+          //**This will stop page from reloading faster*/
           event.preventDefault();
           event.stopPropagation();
           let invalids = $(".form-control:invalid, .form-control.is-invalid, .form-select:invalid, .form-select.is-invalid, input[inputName].form-check-input:invalid");
@@ -52,8 +107,7 @@
             };
           };/*Loop Ends here!*/
           // ** SweetAlert to show each item 
-          //store in invalid list when loop is 
-          //finished.
+          // store in invalid list when loop is finished.
           Swal.fire({
             icon: 'error',
             title: 'User error check input(s)!',
@@ -66,6 +120,7 @@
         else{
           event.preventDefault();
           event.stopPropagation();
+          $(":input[id ='issuanceSubmit']").prop('disabled', true)
           var qdnNumber         = $("#qdnNumber").html();
           var qdnIBENo          = $("#issuedByEmpNumber").val();
           var qdnIBEN           = $("#issuedByEmpName").val();
@@ -84,10 +139,24 @@
           var qdnClassification = $("input[name = 'classification']:checked").val();
           var qdnDefects        = $("#defects").val();
           var qdnFailureMode    = $("input[name = 'failureMode']:checked").val();
-           
           const noIdea = document.getElementById('issuedToEmpNumber').value;
           var trimVal = (noIdea.trim());
           var plainEmpNum = trimVal;
+
+          // let url = './php/process.php';
+          // //Setting up body parameter using FromData
+          // let formData = new FormData();
+        
+          // return fetch(url, { method: 'POST', body: formData })
+          // .then(function (response) {
+          //  if (response.status == 200 && response.ok){
+          //    
+          // };
+          // })
+          // .then(function (finalOutput) {
+          //   console.log("This is finalOutput inside the fetch", finalOutput);
+          //   return finalOutput;
+          // });
           $.ajax({
             url: './php/process.php',
             type: 'POST',
@@ -171,7 +240,9 @@
 
                 //  console.log("Email are SENT!");
               };
+            
               successAlert(qdnNumber);
+              return false;
             }
           });
         };

@@ -529,7 +529,7 @@ $(document).ready(function () {//*✅*/
             $("#submitUpdate").remove();
             var reAssignmentInputs = "<div id='reAssignment'><div  class='row'><div class='col-4'><label for='reAssignTo' class='col-form-label'>ReassignTo</label><input id='reAssignTo' type='number' class='form-control' placeholder='Employee #...' required/></div><div class='col-5'><label class='col-form-label' for='reAssignToName'>Emp. Name:</label><input id='reAssignToName' type='text' class='form-control' required/></div><div class='col-3'><label class='col-form-label'>Team:</label><input id='reAssignToTeam' type='text' class='form-control' required/></div></div><div class='row'><div class = 'col-4'></div><div class = 'col-5'><label class='col-form-label' for='dept' >Department:</label><input id='dept' type='text' class='form-control' required/></div><div class = 'col-3'></div></div><div class='row col-form-label-lg mt-3'><div class='col'><label class='col-form-label'>Reassignment Description:</label><textarea id='reAssignmentDes' class='form-control text-center w-50' rows='2' required></textarea></div></div></div>";
 
-            var forReAssBtn = "<button class='w-100 btn btn-primary btn-lg mt-3' id='submitReassignment'>Submit for Reassignment</button>";
+            var forReAssBtn = "<button class='submitReassignment w-100 btn btn-primary btn-lg mt-3' id='submitReassignment'>Submit for Reassignment</button>";
 
             $("#reAssignDiv").after(reAssignmentInputs, forReAssBtn);
             $(".analysisSection").remove();
