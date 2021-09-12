@@ -402,7 +402,7 @@ $(document).ready(function(){
                             default:
                                 //**FUNCTION EXECUTION TO REMOVE DUPLICATE EMAILS*/
                                 const emailsNotGandA = removeDupMails(combinedEmails);
-                                console.log("G & A NOOOOOOOOT DETECTED!!", emailsNotGandA);
+                                // console.log("G & A NOOOOOOOOT DETECTED!!", emailsNotGandA);
                                 forApprovalDialogBox(emailsNotGandA, qdnNumber);
                             break;
                         };
@@ -413,13 +413,13 @@ $(document).ready(function(){
                             case true:
                                 //**FUNCTION EXECUTION TO REMOVE DUPLICATE EMAILS*/
                                 const finalEmailReceivers = removeDupMails(combinedEmails2);
-                                console.log("G & A DETECTED!!", finalEmailReceivers);
+                                // console.log("G & A DETECTED!!", finalEmailReceivers);
                                 forApprovalDialogBox(finalEmailReceivers, qdnNumber);
                             break;
                             default:
                                 //**FUNCTION EXECUTION TO REMOVE DUPLICATE EMAILS*/
                                 const emailsNotGandA = removeDupMails(combinedEmails);
-                                console.log("G & A NOOOOOOOOT DETECTED!!", emailsNotGandA);
+                                // console.log("G & A NOOOOOOOOT DETECTED!!", emailsNotGandA);
                                 forApprovalDialogBox(emailsNotGandA, qdnNumber);
                             break;
                         };
@@ -428,7 +428,7 @@ $(document).ready(function(){
             }
             catch (err){//**This will catch the error of our promises */
                 errorAlert(err);
-                console.log("Something went wrong. Check submitForApproval.js", err);
+                // console.log("Something went wrong. Check submitForApproval.js", err);
             }
         };
         asynchronousEvents();
