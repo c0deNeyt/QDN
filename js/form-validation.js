@@ -2,6 +2,33 @@
 // Example starter JavaScript for disabling form submissions if there are invalid fields
 (async function () {
   'use strict'
+  //**INITIALIZING VARIABLES*/
+  let qdnNumber         = $("#qdnNumber").html();
+  let qdnIBENo          = $("#issuedByEmpNumber").val();
+  let qdnIBEN           = $("#issuedByEmpName").val();
+  let qdnIBET           = $("#issuedByEmpTeam").val();
+  let qdnITENo          = $("#issuedToEmpNumber").val();
+  let qdnITEN           = $("#issuedToEmpName").val();
+  let qdnITET           = $("#issuedToEmpTeam").val();
+  let qdnCustomer       = $("#customer").val();
+  let qdnMachine        = $("#machine").val();
+  let qdnPkgtype        = $("#packageType").val();
+  let qdnDeviceName     = $("#partName").val();
+  let qdnStation        = $("#station").val();
+  let qdnLotId          = $("#lotId").val();
+  let qdnTeamResp       = $("#teamResp").val();
+  let qdnDateTime       = $("#dateTime").val();
+  let qdnClassification = $("input[name = 'classification']:checked").val();
+  let qdnDefects        = $("#defects").val();
+
+  //*FUNCTION FOR ERROR ALERT*/
+  let errorAlert = errorCode => {
+    Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: "Something went wrong on " + errorCode + "!", 
+    });
+  };//🔚*FUNCTION FOR ERROR ALERT ENDS HERE!*/
   let successAlert  = async(qdnNumber) => {
     const Toast = Swal.mixin({
       toast: true,
@@ -28,25 +55,79 @@
       window.location.replace("index.php");
     });
   };
-  let x = () => {
-    var qdnNumber         = $("#qdnNumber").html();
-    var qdnIBENo          = $("#issuedByEmpNumber").val();
-    var qdnIBEN           = $("#issuedByEmpName").val();
-    var qdnIBET           = $("#issuedByEmpTeam").val();
-    var qdnITENo          = $("#issuedToEmpNumber").val();
-    var qdnITEN           = $("#issuedToEmpName").val();
-    var qdnITET           = $("#issuedToEmpTeam").val();
-    var qdnCustomer       = $("#customer").val();
-    var qdnMachine        = $("#machine").val();
-    var qdnPkgtype        = $("#packageType").val();
-    var qdnDeviceName     = $("#partName").val();
-    var qdnStation        = $("#station").val();
-    var qdnLotId          = $("#lotId").val();
-    var qdnTeamResp       = $("#teamResp").val();
-    var qdnDateTime       = $("#dateTime").val();
-    var qdnClassification = $("input[name = 'classification']:checked").val();
-    var qdnDefects        = $("#defects").val();
-    var qdnFailureMode    = $("input[name = 'failureMode']:checked").val();
+  //**FUNCTION TO CHECK REASSIGNMENT*/
+  let fetchEmail = (plainEmpNum) => {
+    //PROMISE 
+    return new Promise ((resolve, reject) => {
+        let xhr = new XMLHttpRequest();
+        let data = new FormData();
+        data.append('issuedToEmpNo', plainEmpNum);
+        data.append('request', 13);
+        xhr.responseType = "json";//**This will convert responseTest to JSON*/
+        xhr.onload = () =>{
+            if (xhr.readyState === 4 && xhr.status === 200){
+                let output = xhr.response;
+                resolve(output);
+            }
+            else{
+                reject(xhr.statusText);
+            };
+        };
+        xhr.open('POST', './php/getDetails.php');
+        xhr.send(data);
+    });
+  };//🔚**FUNCTION CHECKING REASSIGNMENT ENDS HERE!*/
+
+  // FUNCTION TO HANDLE EMAIL DETAILS
+  function emailDetails (data){
+    var dataLen = data.length;
+    var receiver = "";
+    // LOOP TO HANDLE EACH EMAIL RESULTS
+    for (var i = 0; i < dataLen; i++){
+      if ( receiver.length == 0){
+          var emailResult = data[i]['emailscol'];
+          receiver = emailResult;
+      }
+      else if (receiver.length > 0){
+          receiver = receiver + ", " + data[i]['emailscol'];
+      }; 
+      
+    };
+    return receiver;
+  };
+  //🔚**FUNCTION TO HANDLE EMAIL DETAILS ENDS HERE*/
+
+  // FUNCTION THAT WILL SEND AN EMAIL
+  let sendEmail = receivers => {
+    console.log("This is the email receivers", receivers);
+    Email.send({
+      Host: "smtp.gmail.com",
+      Username : "systemqdn2021@gmail.com",
+      Password : "tjvxdnvqvepgtwck",
+      // To : receiver,
+      To : "chanchristianarana@gmail.com",
+      From : "systemqdn2021@gmail.com",
+      Subject : "QDN Issuance",
+      Body : "Good Day," + "<br>" + "<br>" +
+      "Please see below issuance under your respective area." + "<br>" + "<br>" +
+      "<b>QDN No.:</b> "      + "<a href='http://tk-server.tspi.com:999/analysis.php'>" + qdnNumber + "</a>" + "<br>" +
+      "<b>Discrepancy:</b> "  + qdnDefects + "<br>" + 
+      "<b>Issued To:</b> "    + qdnITEN + "<br>" +
+      "<b>Issued By:</b> "    + qdnIBEN + "<br>" +
+      "<b>Station:</b> "      + qdnStation + "<br>" + 
+      "<b>Date/Time:</b> "    + qdnDateTime + "<br>" + "<br>" +
+      "<pre><b>Lot Details</b><br>" +
+      "   <b>Lot ID No.:</b> "   + qdnLotId + "<br>" +
+      "   <b>Package Type:</b> " + qdnPkgtype + "<br>" +
+      "   <b>Part Name:</b> "    + qdnDeviceName +  "<br>" +
+      "   <b>Machine No.:</b> "  + qdnMachine + "<br>" +
+      "</pre>" +  
+      "<strong>Note:</strong>" + "<br>" +
+      "<pre>  This notification is an automated message. Please do not reply directly to this email.</pre>"
+    });
+  };
+  // function to insert into the database;
+  let insertToDatabase = () => {
     //*request url
     let url = './php/process.php';
     //Setting up body parameter using FromData
@@ -68,21 +149,22 @@
     formData.append('qdnDateTime2Db',       qdnDateTime);
     formData.append('qdnClassification2Db', qdnClassification);
     formData.append('qdnDefects2Db',        qdnDefects);
-    formData.append('qdnFailureMode2Db',    qdnFailureMode);
     return fetch(url, { method: 'POST', body: formData })
     .then(function (response) {
       //converting format to JSON DATA
       if (response.status == 200 && response.ok){
         return response;
+      }
+      else{
+        // error inserting to the database.
+        errorAlert(response.statusText);
       };
-    })
-    // .then(function (finalOutput) {
-    //   console.log("This is finalOutput inside the fetch", finalOutput);
-    //   return finalOutput;
-    // });
+    });
   };
-  let z  = await x();
-  console.log("This is x return!!", z);
+  // let test = await fetchEmail(12856);
+  // let z = emailDetails(test);
+  
+  // console.log("This is x return!!", sendEmail(z));
   // Fetch all the forms we want to apply custom Bootstrap validation styles 
   var forms = document.querySelectorAll('.needs-validation')
 
@@ -120,131 +202,23 @@
         else{
           event.preventDefault();
           event.stopPropagation();
-          $(":input[id ='issuanceSubmit']").prop('disabled', true)
-          var qdnNumber         = $("#qdnNumber").html();
-          var qdnIBENo          = $("#issuedByEmpNumber").val();
-          var qdnIBEN           = $("#issuedByEmpName").val();
-          var qdnIBET           = $("#issuedByEmpTeam").val();
-          var qdnITENo          = $("#issuedToEmpNumber").val();
-          var qdnITEN           = $("#issuedToEmpName").val();
-          var qdnITET           = $("#issuedToEmpTeam").val();
-          var qdnCustomer       = $("#customer").val();
-          var qdnMachine        = $("#machine").val();
-          var qdnPkgtype        = $("#packageType").val();
-          var qdnDeviceName     = $("#partName").val();
-          var qdnStation        = $("#station").val();
-          var qdnLotId          = $("#lotId").val();
-          var qdnTeamResp       = $("#teamResp").val();
-          var qdnDateTime       = $("#dateTime").val();
-          var qdnClassification = $("input[name = 'classification']:checked").val();
-          var qdnDefects        = $("#defects").val();
-          var qdnFailureMode    = $("input[name = 'failureMode']:checked").val();
+          // WILL DISABLE THE BUTTON TEMPORARILY TO AVOID MULTIPLE SENT 
+          // REQUEST TO DATABASE.
+          $(":input[id ='issuanceSubmit']").prop('disabled', true);
+  
           const noIdea = document.getElementById('issuedToEmpNumber').value;
-          var trimVal = (noIdea.trim());
-          var plainEmpNum = trimVal;
-
-          // let url = './php/process.php';
-          // //Setting up body parameter using FromData
-          // let formData = new FormData();
-        
-          // return fetch(url, { method: 'POST', body: formData })
-          // .then(function (response) {
-          //  if (response.status == 200 && response.ok){
-          //    
-          // };
-          // })
-          // .then(function (finalOutput) {
-          //   console.log("This is finalOutput inside the fetch", finalOutput);
-          //   return finalOutput;
-          // });
-          $.ajax({
-            url: './php/process.php',
-            type: 'POST',
-            data:{qdnNumber2Db:         qdnNumber,
-                  qdnIBENo2Db:          qdnIBENo,
-                  qdnIBEN2Db:           qdnIBEN,
-                  qdnIBET2Db:           qdnIBET,
-                  qdnITENo2Db:          qdnITENo,
-                  qdnITEN2Db:           qdnITEN,
-                  qdnITET2Db:           qdnITET,
-                  qdncustomer2Db:       qdnCustomer,
-                  qdnmachine2Db:        qdnMachine,
-                  qdnpkgtype2Db:        qdnPkgtype,
-                  qdnDeviceName2Db:     qdnDeviceName,
-                  qdnStation2Db:        qdnStation,
-                  qdnLotId2Db:          qdnLotId,
-                  qdnTeamResp2Db:       qdnTeamResp,
-                  qdnDateTime2Db:       qdnDateTime,
-                  qdnClassification2Db: qdnClassification,
-                  qdnDefects2Db:        qdnDefects,
-                  qdnFailureMode2Db:    qdnFailureMode 
-                },
-            cache : false, 
-            success: function(){
-
-               // request for QDN compliance designated Email Receiver (request 13)
-              $.ajax({
-                type: 'POST',
-                url: "./php/getDetails.php",
-                data: {issuedToEmpNo: plainEmpNum, request: 13},
-                cache : false,
-                dataType: "json",
-                success:  emailDetails,
-                error: function (){
-                  alert("Something went wrong when saving! Line 98 FormValidation.js")
-                },
-              });
-
-              // FUNCTION TO HANDLE EMAIL DETAILS
-              function emailDetails (data){
-                var dataLen = data.length;
-                var receiver = "";
-                // LOOP TO HANDLE EACH EMAIL RESULTS
-                for (var i = 0; i < dataLen; i++){
-                  if ( receiver.length == 0){
-                      var emailResult = data[i]['emailscol'];
-                      receiver = emailResult;
-                  }
-                  else if (receiver.length > 0){
-                      receiver = receiver + ", " + data[i]['emailscol'];
-                  };  
-                };
-
-                // console.log ("This is the Receivers >", receiver);
-                // CODE TO SEND EMAILS 
-                Email.send({
-                    Host: "smtp.gmail.com",
-                    Username : "systemqdn2021@gmail.com",
-                    Password : "tjvxdnvqvepgtwck",
-                    // To : receiver,
-                    To : "chanchristianarana@gmaill.com",
-                    From : "systemqdn2021@gmail.com",
-                    Subject : "QDN Issuance",
-                    Body : "Good Day," + "<br>" + "<br>" +
-                    "Please see below issuance under your respective area." + "<br>" + "<br>" +
-                    "<b>QDN No.:</b> "      + "<a href='http://tk-server.tspi.com:999/analysis.php'>" + qdnNumber + "</a>" + "<br>" +
-                    "<b>Discrepancy:</b> "  + qdnDefects + "<br>" + 
-                    "<b>Issued To:</b> "    + qdnITEN + "<br>" +
-                    "<b>Issued By:</b> "    + qdnIBEN + "<br>" +
-                    "<b>Station:</b> "      + qdnStation + "<br>" + 
-                    "<b>Date/Time:</b> "    + qdnDateTime + "<br>" + "<br>" +
-                    "<pre><b>Lot Details</b><br>" +
-                    "   <b>Lot ID No.:</b> "   + qdnLotId + "<br>" +
-                    "   <b>Package Type:</b> " + qdnPkgtype + "<br>" +
-                    "   <b>Part Name:</b> "    + qdnDeviceName +  "<br>" +
-                    "   <b>Machine No.:</b> "  + qdnMachine + "<br>" +
-                    "</pre>" +  
-                    "<strong>Note:</strong>" + "<br>" +
-                    "<pre>  This notification is an automated message. Please do not reply directly to this email.</pre>"
-                });
-
-                //  console.log("Email are SENT!");
-              };
-            
-              successAlert(qdnNumber);
-              return false;
-            }
-          });
+          let trimVal = (noIdea.trim());
+          let plainEmpNum = trimVal;
+          try{
+            const insertingData = await insertToDatabase();
+            const rawEmail = await fetchEmail(plainEmpNum);
+            let receivers = emailDetails(rawEmail);
+            sendEmail(receivers);
+            successAlert(qdnNumber);
+          }
+          catch (err){
+            errorAlert(err);
+          }
         };
         
         form.classList.add('was-validated')

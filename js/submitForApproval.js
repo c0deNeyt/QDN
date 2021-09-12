@@ -429,6 +429,7 @@ $(document).ready(function(){
                 };
             }
             catch (err){//**This will catch the error of our promises */
+                errorAlert(err);
                 console.log("Something went wrong. Check submitForApproval.js", err);
             }
         };
