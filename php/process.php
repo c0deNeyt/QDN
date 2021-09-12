@@ -32,6 +32,7 @@ if(isset($_POST)){
 						VALUES (?)"; 
 			$stmtinsertTwo = $db->prepare($anotherInsert);
 			$result2 = $stmtinsertTwo->execute([$qdnNumber2Db]);
+			echo $result;
 		};
 };
 
