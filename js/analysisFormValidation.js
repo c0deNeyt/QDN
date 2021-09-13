@@ -10,16 +10,95 @@
 //** WRITE CODE ROR QDN UPDATES✅
 //** INSET TO CORRECTION TABLE */
 //-----------------------------------------------------------------------
-(function () {
+(async function () {
   'use strict'
+  class analysisFormValidation {
+    constructor (){
+      this.currentQdnNum = $("#qdnNumber").val();
+      this.qdnFailureMode    = $("input[name = 'failureMode']:checked").val();
+      this.disposition       = $("input[name = 'disposition']:checked").val();
+      this.COD               = $("input[name = 'COD']:checked").val();
+      this.CODstatement      = $("#CODstatement").val(); 
+      //CONTAINMENT 
+      this.containment       = $("#containment").text();
+      this.containmentResp   = $("#containmentResp").text();
+      this.containmentWhen   = $("#containmentWhen").text();
+      this.containmentStatus = $("#containmentStatus").text();
+      // CORRECTION  
+      this.correction        = $("#correction").text();
+      this.correctionResp    = $("#correctionResp").text();
+      this.correctionWhen    = $("#correctionWhen").text();
+      this.correctionStatus  = $("#correctionStatus").text();
+      // CORRECTIVE ACTION 
+      this.corrective        = $("#corrective").text();
+      this.correctiveResp    = $("#correctiveResp").text();
+      this.correctiveWhen    = $("#correctiveWhen").text();
+      this.correctiveStatus  = $("#correctiveStatus").text();
+    };
+     // ALERT WHEN INSERTING TO THE DATABASE
+    SuccessAlert = async() =>{
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-right',
+        iconColor: 'white',
+        customClass: {
+          popup: 'colored-toast'
+        },
+        allowEscapeKey: false,
+        showConfirmButton: false,
+        timer: 500000,
+        timerProgressBar: true,
+        //**This will let you pause and play the alert loading*/
+        didOpen: (toast) => { 
+          toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+      })
+      await Toast.fire({
+        icon: 'success',
+        title: 'Update Success!',
+      }).then(()=>{
+        // window.location.href = "analysis.php";
+      });
+    };
+    // </END OF ALERT WHEN INSERTING TO THE DATABASE
+
+    //METHOD REQUEST FOR QDN DETAILS
+    checkForQDNDetails () {
+      let url = "./php/getDetails.php";
+      //Setting up body parameter using FromData
+      let formData = new FormData();
+      formData.append('request', 7);
+      fetch(url, { method: 'POST', body: formData,
+       headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data), })
+      .then(function (response) {
+        //converting format to JSON DATA
+        if (response.status == 200 && response.ok){
+          return response;
+        }
+        else{
+          // error inserting to the database.
+          errorAlert(response.statusText);
+        };
+      });
+ 
+    }
+
+  }
+
+  const mainObject = new analysisFormValidation();
+  // mainObject.SuccessAlert();
+  const fetchQDNDetails =  await mainObject.checkForQDNDetails();
+  console.log (fetchQDNDetails);
   // Fetch all the forms we want to apply custom Bootstrap validation styles 
   var forms = document.querySelectorAll('.needs-validation');
- 
-
   // Loop over them and prevent submission 
   Array.prototype.slice.call(forms)
     .forEach(function (form) {
-      form.addEventListener('submit', function (event) {
+      form.addEventListener('submit', async function (event) {
         if (!form.checkValidity()) {
           event.preventDefault();
           event.stopPropagation();
@@ -443,25 +522,11 @@
                 success : alert,
                
               }); // </END OF REQUEST
-              // ALERT WHEN INSERTING TO THE DATABASE
-              function alert (){
-                Swal.fire({
-                  position: 'top-end',
-                  icon: 'success',
-                  title: 'Update Success!',
-                  allowOutsideClick: false,
-                  allowEscapeKey: false,
-                  allowEnterKey: false,
-                  allowOutsideClick: false,
-                  showConfirmButton: false,
-                  timer: 2500
-                })
-                .then (function (){  
-                  window.location.href = "analysis.php";
-                });
-                // console.log("Update Sent!!");
-              };
-              // </END OF ALERT WHEN INSERTING TO THE DATABASE
+              const mainObject = new analysisFormValidation();
+              // // mainObject.SuccessAlert();
+              // const fetchQDNDetails = mainObject.checkForQDNDetails();
+              // console.log (fetchQDNDetails);
+             
 
             };// </ // END OF FUNCTION TO HANDLE THE QDN(S) DETAILS
             

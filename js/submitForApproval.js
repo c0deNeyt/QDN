@@ -158,7 +158,6 @@ $(document).ready(function(){
             request.send(data);
         });
     };//**🔚
-
     //**FUNCTION THAT WILL FETCH APPROVERS*/
     let fetchOthersApprover = () => {
         return new Promise ((resolve, reject) =>{

@@ -531,23 +531,23 @@
               <div class="col-md-10 ml-4">
                 <label for="classification" class="form-check-label">
                 <div class="form-check form-check-inline">
-                  <input required name="failureMode" class="form-check-input" inputName = "Failure Mode" type="radio" value="Man" id="man" >
+                  <input name="failureMode" class="form-check-input" inputName = "Failure Mode" type="radio" value="Man" id="man" >
                   <label class="form-check-label" for="man">Man</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input required name="failureMode" class="form-check-input" type="radio" value="Machine" id="MaChine">
+                  <input name="failureMode" class="form-check-input" type="radio" value="Machine" id="MaChine">
                   <label class="form-check-label" for="MaChine">Machine</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input required name="failureMode" class="form-check-input" type="radio" value="Material" id="material">
+                  <input name="failureMode" class="form-check-input" type="radio" value="Material" id="material">
                   <label class="form-check-label" for="material">Material</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input required name="failureMode" class="form-check-input" type="radio" value="Method" id="method">
+                  <input name="failureMode" class="form-check-input" type="radio" value="Method" id="method">
                   <label class="form-check-label" for="method">Method</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input required name="failureMode" class="form-check-input" type="radio" value="Environment" id="environment">
+                  <input name="failureMode" class="form-check-input" type="radio" value="Environment" id="environment">
                   <label class="form-check-label" for="environment">Environment</label>
                 </div>
               </div>
@@ -588,32 +588,32 @@
               <div class="col-md-12 ml-4">
                 <label for="classification" class="form-check-label">
                 <div class="form-check form-check-inline">
-                  <input required name="COD" class="form-check-input" type="radio" value="Production" id="production" >
+                  <input  name="COD" class="form-check-input" type="radio" value="Production" id="production" >
                   <label class="form-check-label" for="production">PRODUCTION</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input required name="COD" class="form-check-input" type="radio" value="Process" id="process">
+                  <input  name="COD" class="form-check-input" type="radio" value="Process" id="process">
                   <label class="form-check-label" for="process">PROCESS</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input required name="COD" class="form-check-input" type="radio" value="Maintenance" id="Maintenance">
+                  <input  name="COD" class="form-check-input" type="radio" value="Maintenance" id="Maintenance">
                   <label class="form-check-label" for="Maintenance">MAINTENANCE</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input required name="COD" class="form-check-input" type="radio" value="Facilities" id="Facilities">
+                  <input  name="COD" class="form-check-input" type="radio" value="Facilities" id="Facilities">
                   <label class="form-check-label" for="Facilities">FACILITIES</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input required name="COD" class="form-check-input" type="radio" value="QA" id="QA">
+                  <input  name="COD" class="form-check-input" type="radio" value="QA" id="QA">
                   <label class="form-check-label" for="QA">QA</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input required name="COD" class="form-check-input" type="radio" value="Others" id="Others">
+                  <input  name="COD" class="form-check-input" type="radio" value="Others" id="Others">
                   <label class="form-check-label" for="Others">Others</label>
                 </div>
 
                 <div class="row col-md-12">
-                  <textarea id="CODstatement" class="form-control mt-3 text-center w-100" rows="3" required></textarea>
+                  <textarea id="CODstatement" class="form-control mt-3 text-center w-100" rows="3"></textarea>
                 </div>
               </div>
             </div>

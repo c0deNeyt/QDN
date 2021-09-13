@@ -1,4 +1,5 @@
-
+// ** ✅ ==> DONE
+// ** 🔚 ==> END
 // Example starter JavaScript for disabling form submissions if there are invalid fields
 (async function () {
   'use strict'
@@ -69,7 +70,7 @@
         },
         allowEscapeKey: false,
         showConfirmButton: false,
-        timer: 2000,
+        timer: 5000,
         timerProgressBar: true,
         //**This will let you pause and play the alert loading*/
         didOpen: (toast) => { 
@@ -132,7 +133,6 @@
     //🔚** METHOD TO CONVERT EMAIL DETAILS INTO STRING ENDS HERE*/
     // METHOD THAT WILL SEND AN EMAIL
     sendEmail = receivers => {
-      console.log(receivers);
       Email.send({
         Host: "smtp.gmail.com",
         Username : "systemqdn2021@gmail.com",
@@ -169,9 +169,7 @@
         text: "Something went wrong on " + errorCode + "!", 
     });
   };//🔚*FUNCTION FOR ERROR ALERT ENDS HERE!*/
- 
   var forms = document.querySelectorAll('.needs-validation')
-
   // Loop over them and prevent submission
   Array.prototype.slice.call(forms)
     .forEach(function (form) {
@@ -210,11 +208,17 @@
           // REQUEST TO DATABASE.
           $(":input[id ='issuanceSubmit']").prop('disabled', true);
           try{
+            //Instantiating the object
             const initiateMainObj = new mainObject();
+            // Fetch the initial emails from db.
             const fetchRawEmails = await initiateMainObj.fetchEmail();
+            // Convert the object into a string format
             const receivers = initiateMainObj.emailDetails(fetchRawEmails);
+            // execute the insert event to the database
             initiateMainObj.insertToDatabase();
+            // This will send an emails
             initiateMainObj.sendEmail(receivers);
+            // This will execute the success alert method
             initiateMainObj.successAlert();
           }
           catch (err){
