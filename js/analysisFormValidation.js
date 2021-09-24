@@ -1,4 +1,5 @@
-
+// ** ✅ ==> DONE
+// ** 🔚 ==> END
 // TO DO : -------------------------------------------------------------- 
 //** IDENTIFY IF THERE IS NA NEW INSERTED ROW   ✅*/
 //** IF THE ROWS ARE BLANK DO NOT SUBMIT INTO DATA BASE */
@@ -12,9 +13,10 @@
 //-----------------------------------------------------------------------
 (async function () {
   'use strict'
+  // MAIN OBJECT
   class analysisFormValidation {
     constructor (){
-      this.currentQdnNum = $("#qdnNumber").val();
+      this.currentQdnNum     = $("#qdnNumber").val();
       this.qdnFailureMode    = $("input[name = 'failureMode']:checked").val();
       this.disposition       = $("input[name = 'disposition']:checked").val();
       this.COD               = $("input[name = 'COD']:checked").val();
@@ -36,7 +38,34 @@
       this.correctiveStatus  = $("#correctiveStatus").text();
     };
      // ALERT WHEN INSERTING TO THE DATABASE
-    SuccessAlert = async() =>{
+    successAlert = async(msg) =>{
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-right',
+        iconColor: 'white',
+        customClass: {
+          popup: 'colored-toast'
+        },
+        background: 'gray',
+        allowEscapeKey: false,
+        showConfirmButton: false,
+        timer: 5000,
+        timerProgressBar: true,
+        //**This will let you pause and play the alert loading*/
+        didOpen: (toast) => { 
+          toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+      })
+      await Toast.fire({
+        icon: 'success',
+        title: msg + "! " +'Update Success!',
+      }).then(()=>{
+        // window.location.href = "analysis.php?";
+      });
+    };
+    //**🔚</END OF ALERT WHEN INSERTING TO THE DATABASE
+    errorAlert = async (errorVar) => {
       const Toast = Swal.mixin({
         toast: true,
         position: 'top-right',
@@ -55,45 +84,51 @@
         }
       })
       await Toast.fire({
-        icon: 'success',
-        title: 'Update Success!',
-      }).then(()=>{
-        // window.location.href = "analysis.php";
+        icon: 'error',
+        title: 'Something Went Wrong!',
+        html:"<b style ='color:red;'>"+  errorVar +"</b>",
       });
     };
-    // </END OF ALERT WHEN INSERTING TO THE DATABASE
-
-    //METHOD REQUEST FOR QDN DETAILS
-    checkForQDNDetails () {
-      let url = "./php/getDetails.php";
-      //Setting up body parameter using FromData
-      let formData = new FormData();
-      formData.append('request', 7);
-      fetch(url, { method: 'POST', body: formData,
-       headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data), })
-      .then(function (response) {
-        //converting format to JSON DATA
-        if (response.status == 200 && response.ok){
-          return response;
+    //**METHOD THAT WILL FIND THE CURRENT QND ID */
+    findCurrentQdnId () {
+      let toSearch = `${this.currentQdnNum}`;
+      return $.ajax({
+        type: 'POST',
+        url: "./php/getDetails.php",
+        data: {request: 7.2, 
+        searchForThisQdnNo: toSearch},
+        cache : false,
+        dataType: "json ",
+        error: (xhr)=>{
+          this.errorAlert(xhr.responseText);
         }
-        else{
-          // error inserting to the database.
-          errorAlert(response.statusText);
-        };
       });
- 
-    }
+    };
+    //**🔚
+    //** METHOD THAT WILL UPDATE THE DATABASE OF FailureMode, */
+    //** disposition, cause of defects, cause of defects description*/
+    updateRadioButton (currentQdnId){
+      const formData = new FormData();
+      formData.append('qdnFailureMode2Db', `${this.qdnFailureMode}`);
+      formData.append('disposition2Db', `${this.disposition}`);
+      formData.append('COD2Db', `${this.COD}`);
+      formData.append('CODstatement2Db',`${this.CODstatement}`);
+      formData.append('id', currentQdnId);
 
-  }
-
-  const mainObject = new analysisFormValidation();
-  // mainObject.SuccessAlert();
-  const fetchQDNDetails =  await mainObject.checkForQDNDetails();
-  console.log (fetchQDNDetails);
-  // Fetch all the forms we want to apply custom Bootstrap validation styles 
+      fetch('./php/update_analysis.php', {
+        method: 'PUT',
+        body: formData
+      })
+      .then(result => {
+        this.successAlert(result.statusText);
+      })
+      .catch(error => {
+        this.errorAlert(error);
+      });
+    };
+    //**🔚
+  };
+  // Fetch all the forms we want to apply custom Bootstrap validation styles
   var forms = document.querySelectorAll('.needs-validation');
   // Loop over them and prevent submission 
   Array.prototype.slice.call(forms)
@@ -103,11 +138,12 @@
           event.preventDefault();
           event.stopPropagation();
           // console.log("ok this is invalid");
-        }// End of checking Form 
-
+        }
+        //**🔚 End of checking Form 
         // CONDITION IF THE CHECKING OF INPUTS ARE VALID
         else{
           event.preventDefault();
+          event.stopPropagation();
           // @ HANDLES REASSIGNMENT STATE 
           if(document.getElementById('submitReassignment')){
               var findThis         = $("#qdnNumber").val();
@@ -245,66 +281,43 @@
 
             // VARIABLE TO INITIALIZE THE CURRENT QND NUMBER
             // FROM USE INPUTS
-            var currentQdnNum = $("#qdnNumber").val();
 
-            var qdnFailureMode    = $("input[name = 'failureMode']:checked").val();
-            var disposition       = $("input[name = 'disposition']:checked").val();
-            var COD               = $("input[name = 'COD']:checked").val();
-            var CODstatement      = $("#CODstatement").val();
+            try{
+              // Instantiating Main Object
+              const mainObject = new analysisFormValidation();
+              // FETCH THE ID OF CURRENT QDN
+              const fetchQDNDetails =  await mainObject.findCurrentQdnId();
+              // CURRENT QDN ID 
+              let currentQdnId = fetchQDNDetails[0].id;
+              // POSTING UPDATE TO THE DATABASE
+              const radioButtonsInsert = await mainObject.updateRadioButton(currentQdnId);
+             
+              //CONTAINMENT VARIABLES
+              var containment       = $("#containment").text();
+              var containmentResp   = $("#containmentResp").text();
+              var containmentWhen   = $("#containmentWhen").text();
+              var containmentStatus = $("#containmentStatus").text();
+              var newContainment    = document.getElementById('conTblRow');
+              var newContainmentVal = newContainment.innerText;
+              var newContainmentLen = $.trim(newContainmentVal).length;
 
-            //CONTAINMENT VARIABLES
-            var containment       = $("#containment").text();
-            var containmentResp   = $("#containmentResp").text();
-            var containmentWhen   = $("#containmentWhen").text();
-            var containmentStatus = $("#containmentStatus").text();
-            var newContainment    = document.getElementById('conTblRow');
-            var newContainmentVal = newContainment.innerText;
-            var newContainmentLen = $.trim(newContainmentVal).length;
+              // CORRECTION VARIABLES 
+              var correction        = $("#correction").text();
+              var correctionResp    = $("#correctionResp").text();
+              var correctionWhen    = $("#correctionWhen").text();
+              var correctionStatus  = $("#correctionStatus").text();
+              var newCorrection     = document.getElementById('correctionTblRow');
+              var newCorrectionVal  = newCorrection.innerText;
+              var newCorrectionLen  = $.trim(newCorrectionVal).length;
 
-            // CORRECTION VARIABLES 
-            var correction        = $("#correction").text();
-            var correctionResp    = $("#correctionResp").text();
-            var correctionWhen    = $("#correctionWhen").text();
-            var correctionStatus  = $("#correctionStatus").text();
-            var newCorrection     = document.getElementById('correctionTblRow');
-            var newCorrectionVal  = newCorrection.innerText;
-            var newCorrectionLen  = $.trim(newCorrectionVal).length;
-
-            // CORRECTIVE ACTION VARIABLES
-            var corrective        = $("#corrective").text();
-            var correctiveResp    = $("#correctiveResp").text();
-            var correctiveWhen    = $("#correctiveWhen").text();
-            var correctiveStatus  = $("#correctiveStatus").text();
-            var newCorrective     = document.getElementById('correctiveTblRow');
-            var newCorrectiveVal  = newCorrective.innerText;
-            var newCorrectiveLen  = $.trim(newCorrectiveVal).length;
-
-            var currentQdnId;
-
-            // REQUEST FOR QDN(S) DETAILS (request 7)
-            $.ajax({
-              type: 'POST',
-              url: "./php/getDetails.php",
-              data: {request: 7},
-              cache : false,
-              dataType: "json",
-              success: dataFromAnalysisTbl,
-            });
-
-            // FUNCTION TO HANDLE THE QDN(S) DETAILS
-            function dataFromAnalysisTbl (data){
-              var dataLen = data.length;
-
-              //LOOP TO FIND THE ID OF CURRENT QDN
-              for (var i = 0; i < dataLen; i++){
-                  var qdnNumber = data[i]['qdnNo'];
-                  var id =  data[i]['id'];
-                  if(qdnNumber == currentQdnNum ){
-                    // console.log("This is the Matched QDN NO. From Database ", qdnNumber);
-                    currentQdnId = id;
-                   
-                  };
-              };
+              // CORRECTIVE ACTION VARIABLES
+              var corrective        = $("#corrective").text();
+              var correctiveResp    = $("#correctiveResp").text();
+              var correctiveWhen    = $("#correctiveWhen").text();
+              var correctiveStatus  = $("#correctiveStatus").text();
+              var newCorrective     = document.getElementById('correctiveTblRow');
+              var newCorrectiveVal  = newCorrective.innerText;
+              var newCorrectiveLen  = $.trim(newCorrectiveVal).length;
 
               // REQUEST FOR CONTAINMENT DETAILS (request 10)
               $.ajax({
@@ -316,220 +329,209 @@
                 success: containmentInfo,
               });
               // </ END OF REQUEST 
-              // FUNCTION TO HANDLE CONTAINMENT DETAILS
-              function containmentInfo(data){
-                  var containDataLen = data.length;
-                  for (var i = 0; i < containDataLen; i++ ){
-                      var containmentId = data[i]['id'];
+                // FUNCTION TO HANDLE CONTAINMENT DETAILS
+                function containmentInfo(data){
+                    var containDataLen = data.length;
+                    for (var i = 0; i < containDataLen; i++ ){
+                        var containmentId = data[i]['id'];
+                        var action  = data[i]['actions'];
+                        var resp    = data[i]['responsible'];
+                        var when    = data[i]['when'];
+                        var status  = data[i]['status']; 
+                        var combine = action + resp + when + status;
+        
+                        var containAct          = document.getElementById('containAct' + i);
+                        var containResp         = document.getElementById('containResp' + i);
+                        var containWhen         = document.getElementById('containWhen' + i);
+                        var containStatus       = document.getElementById('containStatus' + i);
+                        var containActVal       = containAct.innerText ;
+                        var containRespVal      = containResp.innerText;
+                        var containWhenVal      = containWhen.innerText;
+                        var containStatusVal    = containStatus.innerText;
+                        var newCombine   = containActVal + containRespVal + containWhenVal + containStatusVal;
+                        // IF STATEMENT TO CHECK IF THERE IS A CHANGES
+                        if (combine != newCombine){
+                          $.ajax({
+                            url: './php/update_containments.php',
+                            type: 'POST',
+                            data:{id:               containmentId,
+                                containAct2Db:      containActVal,
+                                containResp2Db:     containRespVal,
+                                containWhen2Db:     containWhenVal,
+                                containStatus2Db:   containStatusVal 
+                            },
+                            cache : false
+                          });
+                        };
+                    };
+                };
+
+                // REQUEST FOR CORRECTION DETAILS (request 11)
+                $.ajax({
+                  type: 'POST',
+                  url: "./php/getDetails.php",
+                  data: {matchedCorrection: currentQdnId, request: 11},
+                  cache : false,
+                  dataType: "json",
+                  success: correctionInfo,
+                });
+                // </ END OF REQUEST 
+
+                // FUNCTION TO HANDLE CORRECTION DETAILS
+                function correctionInfo(data){
+                    var correctionDataLen = data.length;
+                    for (var i = 0; i < correctionDataLen; i++ ){
+                      var correctionId = data[i]['id'];
                       var action  = data[i]['actions'];
                       var resp    = data[i]['responsible'];
                       var when    = data[i]['when'];
                       var status  = data[i]['status']; 
-                      var combine = action + resp + when + status;
-      
-                      var containAct          = document.getElementById('containAct' + i);
-                      var containResp         = document.getElementById('containResp' + i);
-                      var containWhen         = document.getElementById('containWhen' + i);
-                      var containStatus       = document.getElementById('containStatus' + i);
-                      var containActVal       = containAct.innerText ;
-                      var containRespVal      = containResp.innerText;
-                      var containWhenVal      = containWhen.innerText;
-                      var containStatusVal    = containStatus.innerText;
-                      var newCombine   = containActVal + containRespVal + containWhenVal + containStatusVal;
-                      // IF STATEMENT TO CHECK IF THERE IS A CHANGES
-                      if (combine != newCombine){
+                      var correctionCombine = action + resp + when + status;
+
+                      var correctionAct          = document.getElementById('correctionAct' + i);
+                      var correctionResp         = document.getElementById('correctionResp' + i);
+                      var correctionWhen         = document.getElementById('correctionWhen' + i);
+                      var correctionStatus       = document.getElementById('correctionStatus' + i);
+                      var correctionActVal       = correctionAct.innerText;
+                      var correctionRespVal      = correctionResp.innerText;
+                      var correctionWhenVal      = correctionWhen.innerText;
+                      var correctionStatusVal    = correctionStatus.innerText;
+
+                      var newCorrectionCombine   = correctionActVal + correctionRespVal + correctionWhenVal + correctionStatusVal;
+                    
+                      if (correctionCombine != newCorrectionCombine){
                         $.ajax({
-                          url: './php/update_containments.php',
+                          url: './php/update_correction.php',
                           type: 'POST',
-                          data:{id:               containmentId,
-                              containAct2Db:      containActVal,
-                              containResp2Db:     containRespVal,
-                              containWhen2Db:     containWhenVal,
-                              containStatus2Db:   containStatusVal 
+                          data:{id:                  correctionId,
+                              correctionAct2Db:      correctionActVal,
+                              correctionResp2Db:     correctionRespVal,
+                              correctionWhen2Db:     correctionWhenVal,
+                              correctionStatus2Db:   correctionStatusVal 
                           },
-                          cache : false
+                          cache : false,
                         });
                       };
-                  };
-              };
-
-              // REQUEST FOR CORRECTION DETAILS (request 11)
-              $.ajax({
-                type: 'POST',
-                url: "./php/getDetails.php",
-                data: {matchedCorrection: currentQdnId, request: 11},
-                cache : false,
-                dataType: "json",
-                success: correctionInfo,
-              });
-              // </ END OF REQUEST 
-
-              // FUNCTION TO HANDLE CORRECTION DETAILS
-              function correctionInfo(data){
-                  var correctionDataLen = data.length;
-                  for (var i = 0; i < correctionDataLen; i++ ){
-                    var correctionId = data[i]['id'];
-                    var action  = data[i]['actions'];
-                    var resp    = data[i]['responsible'];
-                    var when    = data[i]['when'];
-                    var status  = data[i]['status']; 
-                    var correctionCombine = action + resp + when + status;
-
-                    var correctionAct          = document.getElementById('correctionAct' + i);
-                    var correctionResp         = document.getElementById('correctionResp' + i);
-                    var correctionWhen         = document.getElementById('correctionWhen' + i);
-                    var correctionStatus       = document.getElementById('correctionStatus' + i);
-                    var correctionActVal       = correctionAct.innerText;
-                    var correctionRespVal      = correctionResp.innerText;
-                    var correctionWhenVal      = correctionWhen.innerText;
-                    var correctionStatusVal    = correctionStatus.innerText;
-
-                    var newCorrectionCombine   = correctionActVal + correctionRespVal + correctionWhenVal + correctionStatusVal;
-                  
-                    if (correctionCombine != newCorrectionCombine){
-                      $.ajax({
-                        url: './php/update_correction.php',
-                        type: 'POST',
-                        data:{id:                  correctionId,
-                            correctionAct2Db:      correctionActVal,
-                            correctionResp2Db:     correctionRespVal,
-                            correctionWhen2Db:     correctionWhenVal,
-                            correctionStatus2Db:   correctionStatusVal 
-                        },
-                        cache : false,
-                      });
                     };
-                  };
-              };
-              // </END OF FUNCTION TO HANDLE CORRECTION DETAILS
+                };
+                // </END OF FUNCTION TO HANDLE CORRECTION DETAILS
 
-               // REQUEST FOR CORRECTIVE DETAILS (request 12)
-               $.ajax({
-                type: 'POST',
-                url: "./php/getDetails.php",
-                data: {matchedCorrective: currentQdnId, request: 12},
-                cache : false,
-                dataType: "json",
-                success: correctiveInfo,
-              });
-              // </ END OF REQUEST 
-
-              // FUNCTION TO HANDLE CORRECTIVE DETAILS
-              function correctiveInfo(data){
-                  var correctiveDataLen = data.length;
-                  for (var i = 0; i < correctiveDataLen; i++ ){
-                    var correctiveId = data[i]['id'];
-                    var action  = data[i]['actions'];
-                    var resp    = data[i]['responsible'];
-                    var when    = data[i]['when'];
-                    var status  = data[i]['status']; 
-                    var correctiveCombine = action + resp + when + status;
-
-                    var correctiveAct          = document.getElementById('correctiveAct' + i);
-                    var correctiveResp         = document.getElementById('correctiveResp' + i);
-                    var correctiveWhen         = document.getElementById('correctiveWhen' + i);
-                    var correctiveStatus       = document.getElementById('correctiveStatus' + i);
-                    var correctiveActVal       = correctiveAct.innerText;
-                    var correctiveRespVal      = correctiveResp.innerText;
-                    var correctiveWhenVal      = correctiveWhen.innerText;
-                    var correctiveStatusVal    = correctiveStatus.innerText;
-
-                    var newCorrectiveCombine   = correctiveActVal + correctiveRespVal + correctiveWhenVal + correctiveStatusVal;
-                  
-                    if (correctiveCombine != newCorrectiveCombine){
-                      $.ajax({
-                        url: './php/update_correctives.php',
-                        type: 'POST',
-                        data:{id:                  correctiveId,
-                            correctiveAct2Db:      correctiveActVal,
-                            correctiveResp2Db:     correctiveRespVal,
-                            correctiveWhen2Db:     correctiveWhenVal,
-                            correctiveStatus2Db:   correctiveStatusVal 
-                        },
-                        cache : false,
-                      });
-                    };
-                  };
-              };
-              // </END OF FUNCTION TO HANDLE CORRECTIVE DETAILS
-
-
-              // CONDITION TO SEND NEW DATA TO CONTAINMENT DATABASE TBL 
-              // IF THERE IS A VALUE INSIDE
-              if (newContainmentLen > 0){
-                // CONTAINMENT INSERT REQUEST
+                // REQUEST FOR CORRECTIVE DETAILS (request 12)
                 $.ajax({
                   type: 'POST',
-                  url: "./php/insertToContain.php",
-                  cache : true,
-                  data: {containment2DB:       containment,
-                        containmentResp2DB:   containmentResp,
-                        containmentWhen2DB:   containmentWhen,
-                        containmentStatus2DB: containmentStatus,
-                        id:                   currentQdnId
-                  }
+                  url: "./php/getDetails.php",
+                  data: {matchedCorrective: currentQdnId, request: 12},
+                  cache : false,
+                  dataType: "json",
+                  success: correctiveInfo,
                 });
-                // console.log("CONTAINMENT INSERT SUCCESS!");
-                // </END OF REQUEST
-              };
-              // CONDITION TO SEND NEW DATA TO CORRECTION DATABASE TBL 
-              // IF THERE IS A VALUE INSIDE
-              if (newCorrectionLen > 0){
-                 // CORRECTION INSERT REQUEST
-                 $.ajax({
-                  type: 'POST',
-                  url: "./php/insertToCorrection.php",
-                  cache : true,
-                  data: {correction2DB:       correction,
-                        correctionResp2DB:   correctionResp,
-                        correctionWhen2DB:   correctionWhen,
-                        correctionStatus2DB: correctionStatus,
-                        id:                   currentQdnId
-                  }
-                });
-                // console.log("CORRECTION INSERT SUCCESS!");
-                // </END OF REQUEST
-              };
-              // CONDITION TO SEND NEW DATA TO CORRECTIVE DATABASE TBL 
-              // IF THERE IS A VALUE INSIDE
-              if (newCorrectiveLen > 0){
-                // CORRECTIVE INSERT REQUEST
-                $.ajax({
-                 type: 'POST',
-                 url: "./php/insertToCorrective.php",
-                 cache : true,
-                 data: {corrective2DB:       corrective,
-                        correctiveResp2DB:   correctiveResp,
-                        correctiveWhen2DB:   correctiveWhen,
-                        correctiveStatus2DB: correctiveStatus,
-                        id:                  currentQdnId
-                 }
-               });
-              //  console.log("CORRECTIVE INSERT SUCCESS!");
-               // </END OF REQUEST
-              };
-              // DISPOSITION, DEFECTS & DESCRIPTION UPDATE REQUEST
-              $.ajax({
-                url: './php/update_analysis.php',
-                type: 'POST',
-                data:{id:                   currentQdnId,
-                      qdnFailureMode2Db:    qdnFailureMode,
-                      disposition2Db:       disposition,
-                      COD2Db:               COD,
-                      CODstatement2Db:      CODstatement  
-                },
-                cache : true,
-                success : alert,
-               
-              }); // </END OF REQUEST
-              const mainObject = new analysisFormValidation();
-              // // mainObject.SuccessAlert();
-              // const fetchQDNDetails = mainObject.checkForQDNDetails();
-              // console.log (fetchQDNDetails);
-             
+                // </ END OF REQUEST 
 
-            };// </ // END OF FUNCTION TO HANDLE THE QDN(S) DETAILS
+                // FUNCTION TO HANDLE CORRECTIVE DETAILS
+                function correctiveInfo(data){
+                    var correctiveDataLen = data.length;
+                    for (var i = 0; i < correctiveDataLen; i++ ){
+                      var correctiveId = data[i]['id'];
+                      var action  = data[i]['actions'];
+                      var resp    = data[i]['responsible'];
+                      var when    = data[i]['when'];
+                      var status  = data[i]['status']; 
+                      var correctiveCombine = action + resp + when + status;
+
+                      var correctiveAct          = document.getElementById('correctiveAct' + i);
+                      var correctiveResp         = document.getElementById('correctiveResp' + i);
+                      var correctiveWhen         = document.getElementById('correctiveWhen' + i);
+                      var correctiveStatus       = document.getElementById('correctiveStatus' + i);
+                      var correctiveActVal       = correctiveAct.innerText;
+                      var correctiveRespVal      = correctiveResp.innerText;
+                      var correctiveWhenVal      = correctiveWhen.innerText;
+                      var correctiveStatusVal    = correctiveStatus.innerText;
+
+                      var newCorrectiveCombine   = correctiveActVal + correctiveRespVal + correctiveWhenVal + correctiveStatusVal;
+                    
+                      if (correctiveCombine != newCorrectiveCombine){
+                        $.ajax({
+                          url: './php/update_correctives.php',
+                          type: 'POST',
+                          data:{id:                  correctiveId,
+                              correctiveAct2Db:      correctiveActVal,
+                              correctiveResp2Db:     correctiveRespVal,
+                              correctiveWhen2Db:     correctiveWhenVal,
+                              correctiveStatus2Db:   correctiveStatusVal 
+                          },
+                          cache : false,
+                        });
+                      };
+                    };
+                };
+                // </END OF FUNCTION TO HANDLE CORRECTIVE DETAILS
+
+                // CONDITION TO SEND NEW DATA TO CONTAINMENT DATABASE TBL 
+                // IF THERE IS A VALUE INSIDE
+                if (newContainmentLen > 0){
+                  // CONTAINMENT INSERT REQUEST
+                  $.ajax({
+                    type: 'POST',
+                    url: "./php/insertToContain.php",
+                    cache : true,
+                    data: {containment2DB:       containment,
+                          containmentResp2DB:   containmentResp,
+                          containmentWhen2DB:   containmentWhen,
+                          containmentStatus2DB: containmentStatus,
+                          id:                   currentQdnId
+                    }
+                  });
+                  // console.log("CONTAINMENT INSERT SUCCESS!");
+                  // </END OF REQUEST
+                };
+                // CONDITION TO SEND NEW DATA TO CORRECTION DATABASE TBL 
+                // IF THERE IS A VALUE INSIDE
+                if (newCorrectionLen > 0){
+                  // CORRECTION INSERT REQUEST
+                  $.ajax({
+                    type: 'POST',
+                    url: "./php/insertToCorrection.php",
+                    cache : true,
+                    data: {correction2DB:       correction,
+                          correctionResp2DB:   correctionResp,
+                          correctionWhen2DB:   correctionWhen,
+                          correctionStatus2DB: correctionStatus,
+                          id:                   currentQdnId
+                    }
+                  });
+                  // console.log("CORRECTION INSERT SUCCESS!");
+                  // </END OF REQUEST
+                };
+                // CONDITION TO SEND NEW DATA TO CORRECTIVE DATABASE TBL 
+                // IF THERE IS A VALUE INSIDE
+                if (newCorrectiveLen > 0){
+                  // CORRECTIVE INSERT REQUEST
+                  $.ajax({
+                  type: 'POST',
+                  url: "./php/insertToCorrective.php",
+                  cache : true,
+                  data: {corrective2DB:       corrective,
+                          correctiveResp2DB:   correctiveResp,
+                          correctiveWhen2DB:   correctiveWhen,
+                          correctiveStatus2DB: correctiveStatus,
+                          id:                  currentQdnId
+                  }
+                });
+                //  console.log("CORRECTIVE INSERT SUCCESS!");
+                // </END OF REQUEST
+                };
+              // const parameter = (new URL(document.location)).searchParams;
+              // const urlParam = parameter.get('qndNo');
+              // document.getElementById("qdnNumber").value = urlParam;
+            }
+            catch (error){
+              const newInstantObject = new analysisFormValidation();
+              newInstantObject.errorAlert(error);
+              console.log(error);
+            }
             
+           
+
           };// @ END OF HANDLING UPDATE FOR CURRENT QDN
 
         };// </END OF CONDITION IF THE CHECKING OF INPUTS ARE VALID

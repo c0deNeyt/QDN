@@ -613,7 +613,7 @@
                 </div>
 
                 <div class="row col-md-12">
-                  <textarea id="CODstatement" class="form-control mt-3 text-center w-100" rows="3"></textarea>
+                  <textarea required id="CODstatement" class="form-control mt-3 text-center w-100" rows="3"></textarea>
                 </div>
               </div>
             </div>

@@ -1,8 +1,78 @@
 $(document).ready(function(){    
-// ** ✅ ==> DONE
-// ** 🔚 ==> END
+    // ** ✅ ==> DONE
+    // ** 🔚 ==> END
+    class objectForUpdatingValue {
+        constructor(){
+            this.currentQdnNum     = $("#qdnNumber").val();
+            this.qdnFailureMode    = $("input[name = 'failureMode']:checked").val();
+        };
+        // METHOD FOR ERROR ALERT
+        errorAlert = async (errorVar) => {
+            const Toast = Swal.mixin({
+              toast: true,
+              position: 'top-right',
+              iconColor: 'white',
+              customClass: {
+                popup: 'colored-toast'
+              },
+              allowEscapeKey: false,
+              showConfirmButton: false,
+              timer: 500000,
+              timerProgressBar: true,
+              //**This will let you pause and play the alert loading*/
+              didOpen: (toast) => { 
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+              }
+            })
+            await Toast.fire({
+              icon: 'error',
+              title: 'Something Went Wrong!',
+              html:"<b style ='color:red;'>"+  errorVar +"</b>",
+            });
+        };
+        //**🔚
+        //**METHOD THAT WILL FIND THE CURRENT QND ID */
+        findCurrentQdnId () {
+            let toSearch = `${this.currentQdnNum}`;
+            return $.ajax({
+                type: 'POST',
+                url: "./php/getDetails.php",
+                data: {request: 7.2, 
+                searchForThisQdnNo: toSearch},
+                cache : false,
+                dataType: "json ",
+                // error: (xhr)=>{
+                //     this.errorAlert(xhr.responseText);
+                // }
+            });
+        };
+        //**🔚
+        // METHOD TO GET CONTAINMENT DETAILS
+        getContainmentDetails(currentQdnId){
+            return $.ajax({
+                type: 'POST',
+                url: "./php/getDetails.php",
+                data: {matchedContainment: currentQdnId, request: 10},
+                cache : false,
+                dataType: "json",
+                error: (xhr)=>{
+                    this.errorAlert(xhr.responseText);
+                }
+            });
+        };
+        // ** 🔚 
+        //METHOD TO UPDATE THE ANALYSIS DATA FROM TIME TO TIME
+        dataUpdate = async() =>{
+            const rawQdnDetails =  await this.findCurrentQdnId();
+            let  qdnId = rawQdnDetails[0].id;
+            // const containmentDetails = await this.getContainmentDetails(qdnId);
+            // console.log("This is the", containmentDetails);
+        };
+
+    };
     // INTERVAL FUNCTION TO CHECK THE STATUS OF QDN EVERY 500 Millisecond
-    setInterval(function(){ 
+    setInterval( function(){ 
         var currentMatchedQdnNum = $("#qdnNumber").val();
         // REQUEST TO GET THE CURRENT STATUS OF QDN (request 8.1)
         let checkStatus  = currentMatchedQdnNum => {
@@ -42,13 +112,32 @@ $(document).ready(function(){
                             $(reAssBtn).remove();
                         };
                     };
+                    const checkForUpdate = new objectForUpdatingValue();
+                     checkForUpdate.dataUpdate();
                 };//**</ END OF CHECKING IF loadDataFromDb(response) IS NULL*/
+                
             }
             catch(err){
                 console.log("Something went wrong. Check submitForApproval.js", err);
             }
+
+            //========================================================
+            // INTEGRATION OF URL SEARCH
+            //========================================================
+            // const test = (new URL(document.location)).searchParams;
+            // const test2 = test.get('qndNo');
+            // if(test2){
+            //     console.log(true, test2);
+            // }
+            // else{
+            //     console.log(false, "from else")
+            // }
+           
+            // document.getElementById("qdnNumber").value = test2;
+
         }
         exec();
+        
     }, 500);
     // </END OF INTERVAL TO CHECK THE QDN STATUS
     //**FUNCTION TO CHECK REASSIGNMENT*/
@@ -202,7 +291,6 @@ $(document).ready(function(){
     //*FUNCTION THAT WILL SEND AN EMAIL AND ALERT WHEN APPROVAL BUTTON CONFIRMED*/
     let emailSentAlert = ( qndNumber, receiver ) => {
         // SCRIPT FOR EMAIL SENDING AND EMAIL FORMATS
-        console.log("This is the receivers", receiver);
         Email.send({
             Host: "smtp.gmail.com",
             Username : "systemqdn2021@gmail.com",

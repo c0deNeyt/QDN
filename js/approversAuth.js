@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    'use strict'    
     //==============================================================
     // FUNCTIONS TO HANDLE APPROVERS AUTH EVENT
     //==============================================================
@@ -657,12 +658,12 @@ $(document).ready(function () {
         data: { request: 14 },
         cache: false,
         dataType: "json",
-        success: prodAuthDetils
+        success: prodAuthDetails
     });
     // </END OF PRODUCTION APPROVERS LIST REQUEST 
 
     //FUNCTION TO HANDLE PRODUCTION APPROVERS DETAILS 
-    function prodAuthDetils(data) {
+    function prodAuthDetails(data) {
         var dataLen = data.length;
 
         // LOOP TO HANDLE EACH APPROVER NAMES
@@ -677,7 +678,92 @@ $(document).ready(function () {
         };
     };
     // </END FUNCTION TO HANDLE PRODUCTION APPROVERS DETAILS 
-
+    class prodAuthentication {
+        constructor(){
+            this.result = "S3cret";
+            this.empId = "751";
+            this.approverName = "Leila Ungson";
+            this.prodApproversList = $("#productionAuth").selectmenu;
+        };
+        test (){
+            console.log("This is result", `${this.result}`, " ", `${this.empId}`, " ", `${this.approverName}`);
+        };
+        setRes (){
+            
+        }
+        getRes (){
+            
+        }
+        valOthersCred(){
+            return $.ajax({
+                type: 'POST',
+                url: './php/getDetails.php',
+                data: { userPassInput: `${this.result}`, empId: `${this.empId}`, request: 15},
+                dataType: 'json',
+                success: function (response) {
+                    if (response){
+                        // PASSWORD MATCHED CHANGE THE PLACE HOLDER TO OR INNER TEXT
+                        // OF SELECT OPTION INTO SELECTED NAME OF APPROVER
+                        // authEvtEe(approverName);
+                        // $('#EEAuth-button span.ui-selectmenu-text').html(approverName);
+                        // alert();
+                        console.log("Success!!", response);
+                    }else{
+                        // ERROR HANDLING ALERT WHEN PASSWORD NOT MATCHED
+                        Swal.showValidationMessage(`Invalid approver or password`);
+                    };
+                },
+                error: function (error) {
+                    // ERROR HANDLING ALERT WHEN PASSWORD NOT MATCHED
+                    // Swal.showValidationMessage(`Invalid approver or password`);
+                    console.log("Something went wrong!", error);
+                }
+            });
+        };
+    };
+    class alerts extends prodAuthentication {
+        test (){
+            console.log("This is result",`${this.prodApproversList}`);
+        };
+        credentialAlert (){
+            Swal.fire({
+                title: 'Enter your password',
+                input: 'password',
+                inputPlaceholder: 'Enter your password',
+                inputAttributes: {
+                    maxlength: 20,
+                    autocapitalize: 'off',
+                    autocorrect: 'off'
+                },
+                showCancelButton: true,
+                showLoaderOnConfirm: true,
+                preConfirm: function (result) { // OK BUTTON
+                    return new Promise(function (resolve) {
+                        var empId = data.item.value;// SELECTED EMP ID OF APPROVER
+                        var approverName = data.item.label; // SELECTED NAME OF APPROVER
+                        // REQUEST TO VALIDATE DATE APPROVER PASSWORD 
+                        // BASED ON THE PASSWORD INPUT (result parameter)
+                        productionAuth.valProdCred ();
+                        // console.log("This is the previous value", prev, test );
+                        setTimeout(function () {
+                            resolve();
+                        }, 250);
+                    });
+                },
+                didDestroy: function (result) {
+                    $('#productionAuth-button span.ui-selectmenu-text').html(prev);
+                }
+            });
+        };
+    }
+    let myFunc = async()=>{
+        const testExec = new prodAuthentication();
+        const alertExec = new alerts();
+        let y = alertExec.test();
+        let x  = await testExec.valOthersCred();
+        console.log(y);
+    };
+    myFunc();
     // PRODUCTION AUTHENTICATION SELECT MENU
     $("#productionAuth")
     .selectmenu({
@@ -686,6 +772,8 @@ $(document).ready(function () {
             // THIS WILL SET AS A PLACE HOLDER WHEN ITEM IN THE MENU IS CLICKED 
             // INSTEAD OF APPROVERS NAME
             $('#productionAuth-button span.ui-selectmenu-text').html("Needs Approval...");
+            // let test = $(".swal2-cancel.swal2-styled").html();
+           
             // PASSWORD ALERT POPUP WHEN YOU CLICK THE ITEM (approver name)
             //IN PRODUCTION APPROVER LIST
             Swal.fire({
@@ -706,19 +794,21 @@ $(document).ready(function () {
                         // REQUEST TO VALIDATE DATE APPROVER PASSWORD 
                         // BASED ON THE PASSWORD INPUT (result parameter)
                         valProdCred (result, empId, approverName);
+                        // console.log("This is the previous value", prev, test );
                         setTimeout(function () {
                             resolve();
                         }, 250);
                     });
                 },
+                didDestroy: function (result) {
+                    $('#productionAuth-button span.ui-selectmenu-text').html(prev);
+                }
             });
         },
         position: {
             my: "top center",
             at: "top", of: ".approvalDiv"
         },
-
-
     })
     .selectmenu("menuWidget")
     .addClass("overflow");
@@ -1040,23 +1130,23 @@ $(document).ready(function () {
     //==============================================================
 
 
-    document.onkeydown = function (e) {
-        if (e.keyCode == 123) {
-            return false;
-        }
-        if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
-            return false;
-        }
-        if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) {
-            return false;
-        }
-        if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
-            return false;
-        }
-        if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
-            return false;
-        }
-    }
+    // document.onkeydown = function (e) {
+    //     if (e.keyCode == 123) {
+    //         return false;
+    //     }
+    //     if (e.ctrlKey && e.shiftKey && e.s == 'I'.charCodeAt(0)) {
+    //         return false;
+    //     }
+    //     if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) {
+    //         return false;
+    //     }
+    //     if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
+    //         return false;
+    //     }
+    //     if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
+    //         return false;
+    //     }
+    // }
 
 });
 

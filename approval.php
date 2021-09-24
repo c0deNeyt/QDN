@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" oncontextmenu="return false">
+<html lang="en" oncontextmenu="return true">
 <!-- <html lang="en"> -->
   <head>  
     <meta charset="utf-8">
@@ -361,7 +361,7 @@
 
     </style>
   </head>
-  <body oncontextmenu="return false">
+  <body oncontextmenu="return true">
     <div class="sidebar">
       <div class="sysName">
         <img src="./images/TELFORDmd.jpg" alt="TELFORD_LOGO">

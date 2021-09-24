@@ -160,6 +160,9 @@ switch ($request) {
         }
         if ( $data ){
             echo json_encode($data);
+        }
+        else{
+            echo "ERROR FETCHING DATA!";
         };
     break;
     case 7.1:
@@ -171,6 +174,26 @@ switch ($request) {
                         LIKE '%$searchForThisQdnNo%'
                         AND `status` = 0 
                         LIMIT 5";
+        $dataFromDatabase = $db->prepare($dataRequest);
+        $dataFromDatabase -> execute();
+
+        while($row = $dataFromDatabase->fetch(PDO::FETCH_ASSOC)){
+            $id      = $row['id'];
+            $qdnNo   = $row['qdnNo'];
+
+            $data[] = array("id" => $id, "qdnNo" => $qdnNo);
+        }
+        if ( $data ){
+            echo json_encode($data);
+        };
+    break;
+    case 7.2:
+        $searchForThisQdnNo = $_POST["searchForThisQdnNo"];
+        $dataRequest = "SELECT `id`, 
+                                `qdnNo`
+                        FROM `analysis_tbl`
+                        WHERE `qdnNo` = '$searchForThisQdnNo'
+                        AND `status` = 0";
         $dataFromDatabase = $db->prepare($dataRequest);
         $dataFromDatabase -> execute();
 
@@ -766,11 +789,9 @@ switch ($request) {
                 $EMP_NAME   = $row['EMP_NAME'];
                 $data[] = array("id" =>   $approversId, "EMP_NAME" => $EMP_NAME
                 );
+                echo json_encode($data);
             } 
         }
-        if ( $data ){
-            echo json_encode($data);
-        };
     break;
     //=========================================
     // UPDATE REQUEST FOR STATUS 

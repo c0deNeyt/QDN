@@ -5,7 +5,7 @@
   'use strict'
   class mainObject  {
     constructor (){
-      this.qdnNumber         = $("#qdnNumber").html();;
+      this.qdnNumber         = $("#qdnNumber").html();
       this.qdnIBENo          = $("#issuedByEmpNumber").val();
       this.qdnIBEN           = $("#issuedByEmpName").val();
       this.qdnIBET           = $("#issuedByEmpTeam").val();
@@ -159,16 +159,34 @@
         "<pre>  This notification is an automated message. Please do not reply directly to this email.</pre>"
       });
     };
+    //**METHOD OF ERROR ALERT */
+    errorAlert = async (errorVar) => {
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-right',
+        iconColor: 'white',
+        customClass: {
+          popup: 'colored-toast'
+        },
+        allowEscapeKey: false,
+        showConfirmButton: false,
+        timer: 25000,
+        timerProgressBar: true,
+        //**This will let you pause and play the alert loading*/
+        didOpen: (toast) => { 
+          toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+      })
+      await Toast.fire({
+        icon: 'error',
+        title: 'Something Went Wrong!',
+        html:"<b style ='color:red;'>"+  errorVar +"</b>",
+      });
+    };
+    //🔚** Method of error alert ends here!
   
   };
-  //*FUNCTION FOR ERROR ALERT*/
-  let errorAlert = errorCode => {
-    Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: "Something went wrong on " + errorCode + "!", 
-    });
-  };//🔚*FUNCTION FOR ERROR ALERT ENDS HERE!*/
   var forms = document.querySelectorAll('.needs-validation')
   // Loop over them and prevent submission
   Array.prototype.slice.call(forms)
@@ -222,10 +240,10 @@
             initiateMainObj.successAlert();
           }
           catch (err){
-            errorAlert(err);
+            const newInstantObject = new mainObject();
+            newInstantObject.errorAlert(err);
           }
         };
-        
         form.classList.add('was-validated')
       }, false)
     });
