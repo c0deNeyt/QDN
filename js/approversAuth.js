@@ -1,5 +1,4 @@
-$(document).ready(function () {
-    'use strict'    
+'use strict'    
     //==============================================================
     // FUNCTIONS TO HANDLE APPROVERS AUTH EVENT
     //==============================================================
@@ -677,54 +676,34 @@ $(document).ready(function () {
             $("#productionAuth").append(option);
         };
     };
-    // </END FUNCTION TO HANDLE PRODUCTION APPROVERS DETAILS 
-    class prodAuthentication {
-        constructor(){
-            this.result = "S3cret";
-            this.empId = "751";
-            this.approverName = "Leila Ungson";
-            this.prodApproversList = $("#productionAuth").selectmenu;
-        };
-        test (){
-            console.log("This is result", `${this.result}`, " ", `${this.empId}`, " ", `${this.approverName}`);
-        };
-        setRes (){
-            
+
+    class alerts {
+        constructor() {
+            this.data;
         }
-        getRes (){
-            
-        }
-        valOthersCred(){
-            return $.ajax({
-                type: 'POST',
-                url: './php/getDetails.php',
-                data: { userPassInput: `${this.result}`, empId: `${this.empId}`, request: 15},
-                dataType: 'json',
-                success: function (response) {
-                    if (response){
-                        // PASSWORD MATCHED CHANGE THE PLACE HOLDER TO OR INNER TEXT
-                        // OF SELECT OPTION INTO SELECTED NAME OF APPROVER
-                        // authEvtEe(approverName);
-                        // $('#EEAuth-button span.ui-selectmenu-text').html(approverName);
-                        // alert();
-                        console.log("Success!!", response);
-                    }else{
-                        // ERROR HANDLING ALERT WHEN PASSWORD NOT MATCHED
-                        Swal.showValidationMessage(`Invalid approver or password`);
-                    };
-                },
-                error: function (error) {
-                    // ERROR HANDLING ALERT WHEN PASSWORD NOT MATCHED
-                    // Swal.showValidationMessage(`Invalid approver or password`);
-                    console.log("Something went wrong!", error);
+        inputCredentials () {
+            Swal.fire({
+                title: 'Login Form',
+                html: `<input type="text" id="login" class="swal2-input" placeholder="Username">
+                <input type="password" id="password" class="swal2-input" placeholder="Password">`,
+                confirmButtonText: 'Sign in',
+                focusConfirm: false,
+                showLoaderOnConfirm: true,
+                preConfirm: () => {
+                    const login = Swal.getPopup().querySelector('#login').value
+                    const password = Swal.getPopup().querySelector('#password').value
+                    if (!login || !password) {
+                        Swal.showValidationMessage(`Please enter login and password`)
+                    }
+                    return { login: login, password: password }
                 }
-            });
-        };
-    };
-    class alerts extends prodAuthentication {
-        test (){
-            console.log("This is result",`${this.prodApproversList}`);
-        };
+            }).then((result) => {
+            Swal.fire(`
+                Login: ${result.value.login}
+                Password: ${result.value.password}
+                `.trim())
+            })
+        }
         credentialAlert (){
             Swal.fire({
                 title: 'Enter your password',
@@ -739,71 +718,72 @@ $(document).ready(function () {
                 showLoaderOnConfirm: true,
                 preConfirm: function (result) { // OK BUTTON
                     return new Promise(function (resolve) {
-                        var empId = data.item.value;// SELECTED EMP ID OF APPROVER
-                        var approverName = data.item.label; // SELECTED NAME OF APPROVER
+                        // var empId = data.item.value;// SELECTED EMP ID OF APPROVER
+                        // var approverName = data.item.label; // SELECTED NAME OF APPROVER
                         // REQUEST TO VALIDATE DATE APPROVER PASSWORD 
                         // BASED ON THE PASSWORD INPUT (result parameter)
-                        productionAuth.valProdCred ();
-                        // console.log("This is the previous value", prev, test );
+                        console.log("This is the previous value", result);
+                        Swal.showValidationMessage(`Please enter login and password`)
                         setTimeout(function () {
                             resolve();
                         }, 250);
                     });
                 },
                 didDestroy: function (result) {
-                    $('#productionAuth-button span.ui-selectmenu-text').html(prev);
+                    Swal.showValidationMessage(`Please enter login and password`)
+                    // $('#productionAuth-button span.ui-selectmenu-text').html();
                 }
             });
         };
     }
-    let myFunc = async()=>{
-        const testExec = new prodAuthentication();
-        const alertExec = new alerts();
-        let y = alertExec.test();
-        let x  = await testExec.valOthersCred();
-        console.log(y);
-    };
-    myFunc();
-    // PRODUCTION AUTHENTICATION SELECT MENU
-    $("#productionAuth")
-    .selectmenu({
-        // HANDLE SELECT EVENT WHEN APPROVER NAME IS CLICKED
-        select: function (click, data) {
-            // THIS WILL SET AS A PLACE HOLDER WHEN ITEM IN THE MENU IS CLICKED 
-            // INSTEAD OF APPROVERS NAME
-            $('#productionAuth-button span.ui-selectmenu-text').html("Needs Approval...");
-            // let test = $(".swal2-cancel.swal2-styled").html();
-           
-            // PASSWORD ALERT POPUP WHEN YOU CLICK THE ITEM (approver name)
-            //IN PRODUCTION APPROVER LIST
-            Swal.fire({
-                title: 'Enter your password',
-                input: 'password',
-                inputPlaceholder: 'Enter your password',
-                inputAttributes: {
-                    maxlength: 20,
-                    autocapitalize: 'off',
-                    autocorrect: 'off'
-                },
-                showCancelButton: true,
-                showLoaderOnConfirm: true,
-                preConfirm: function (result) { // OK BUTTON
-                    return new Promise(function (resolve) {
-                        var empId = data.item.value;// SELECTED EMP ID OF APPROVER
-                        var approverName = data.item.label; // SELECTED NAME OF APPROVER
-                        // REQUEST TO VALIDATE DATE APPROVER PASSWORD 
-                        // BASED ON THE PASSWORD INPUT (result parameter)
-                        valProdCred (result, empId, approverName);
-                        // console.log("This is the previous value", prev, test );
-                        setTimeout(function () {
-                            resolve();
-                        }, 250);
-                    });
-                },
-                didDestroy: function (result) {
-                    $('#productionAuth-button span.ui-selectmenu-text').html(prev);
-                }
-            });
+
+    class approverAuth extends alerts {
+        constructor() {
+            super();
+            this.credentialAlert;
+            this.data;
+        }
+        credValidation (newdata) {
+            return $("#productionAuth").selectmenu({
+            // HANDLE SELECT EVENT WHEN APPROVER NAME IS CLICKED
+                select: function  select(click, data) {
+                // THIS WILL SET AS A PLACE HOLDER WHEN ITEM IN THE MENU IS CLICKED 
+                // INSTEAD OF APPROVERS NAME
+                // $('#productionAuth-button span.ui-selectmenu-text').html("Needs Approval...");
+                // let test = $(".swal2-cancel.swal2-styled")
+                console.log("setting the data to the constructor....", data);
+                this.data = data;
+                // inputCredAlert.credentialAlert();
+                // PASSWORD ALERT POPUP WHEN YOU CLICK THE ITEM (approver name)
+                //IN PRODUCTION APPROVER LIST
+                // Swal.fire({
+                //     title: 'Enter your password',
+                //     input: 'password',
+                //     inputPlaceholder: 'Enter your password',
+                //     inputAttributes: {
+                //         maxlength: 20,
+                //         autocapitalize: 'off',
+                //         autocorrect: 'off'
+                //     },
+                //     showCancelButton: true,
+                //     showLoaderOnConfirm: true,
+                //     preConfirm: function (result) { // OK BUTTON
+                //         return new Promise(function (resolve) {
+                //             var empId = data.item.value;// SELECTED EMP ID OF APPROVER
+                //             var approverName = data.item.label; // SELECTED NAME OF APPROVER
+                //             // REQUEST TO VALIDATE DATE APPROVER PASSWORD 
+                //             // BASED ON THE PASSWORD INPUT (result parameter)
+                //             valProdCred (result, empId, approverName);
+                //             // console.log("This is the previous value", prev, test );
+                //             setTimeout(function () {
+                //                 resolve();
+                //             }, 250);
+                //         });
+                //     },
+                //     didDestroy: function (result) {
+                //         $('#productionAuth-button span.ui-selectmenu-text').html(prev);
+                //     }
+                // });
         },
         position: {
             my: "top center",
@@ -812,6 +792,117 @@ $(document).ready(function () {
     })
     .selectmenu("menuWidget")
     .addClass("overflow");
+        }
+        
+
+    };
+    
+    // </END FUNCTION TO HANDLE PRODUCTION APPROVERS DETAILS 
+    class prodAuthentication extends approverAuth{
+        constructor(){
+            super();
+            this.result = "S3cret";
+            this.empId = "751";
+            this.approverName = "Leila Ungson";
+            this.data;
+        };
+       
+        setRes (){
+            this.result = result;
+        }
+        getRes (){
+           return this.data;
+        }
+        valOthersCred(){
+            return $.ajax({
+                type: 'POST',
+                url: './php/getDetails.php',
+                data: { userPassInput: `${this.result}`, empId: `${this.empId}`, request: 15},
+                dataType: 'json',
+                success: function (response) {
+                    if (response){
+                        // PASSWORD MATCHED CHANGE THE PLACE HOLDER TO OR INNER TEXT
+                        // OF SELECT OPTION INTO SELECTED NAME OF APPROVER
+                        // authEvtEe(approverName);
+                        // $('#EEAuth-button span.ui-selectmenu-text').html(approverName);
+                        // alert();
+                        console.log("Success!!", response);                                                                                         
+                    }else{
+                        // ERROR HANDLING ALERT WHEN PASSWORD NOT MATCHED
+                        Swal.showValidationMessage(`Invalid approver or password`);
+                    };
+                },
+                error: function (error) {
+                    // ERROR HANDLING ALERT WHEN PASSWORD NOT MATCHED
+                    // Swal.showValidationMessage(`Invalid approver or password`);
+                    console.log("Something went wrong!", error);
+                }
+            });
+        };
+    };
+  
+    (async function () {
+        const alertExec = new alerts();
+        const prodAuthenticationExec = new prodAuthentication();
+        const approversProd = new approverAuth();
+        approversProd.credValidation();
+        let n = prodAuthenticationExec.getRes();
+        // approversProd.credentialAlert();
+        console.log("This is the N", n);
+    })();
+    
+
+    // PRODUCTION AUTHENTICATION SELECT MENU
+    // $("#productionAuth")
+    // .selectmenu({
+    //     // HANDLE SELECT EVENT WHEN APPROVER NAME IS CLICKED
+    //     select: function (click, data) {
+    //         // THIS WILL SET AS A PLACE HOLDER WHEN ITEM IN THE MENU IS CLICKED 
+    //         // INSTEAD OF APPROVERS NAME
+    //         // $('#productionAuth-button span.ui-selectmenu-text').html("Needs Approval...");
+    //         // let test = $(".swal2-cancel.swal2-styled").html();
+    //         const inputCredAlert = new alerts();
+    //         const approversProd = new approverAuth();
+    //         approversProd.credValidation();
+    //         // inputCredAlert.credentialAlert();
+    //         // PASSWORD ALERT POPUP WHEN YOU CLICK THE ITEM (approver name)
+    //         //IN PRODUCTION APPROVER LIST
+    //         // Swal.fire({
+    //         //     title: 'Enter your password',
+    //         //     input: 'password',
+    //         //     inputPlaceholder: 'Enter your password',
+    //         //     inputAttributes: {
+    //         //         maxlength: 20,
+    //         //         autocapitalize: 'off',
+    //         //         autocorrect: 'off'
+    //         //     },
+    //         //     showCancelButton: true,
+    //         //     showLoaderOnConfirm: true,
+    //         //     preConfirm: function (result) { // OK BUTTON
+    //         //         return new Promise(function (resolve) {
+    //         //             var empId = data.item.value;// SELECTED EMP ID OF APPROVER
+    //         //             var approverName = data.item.label; // SELECTED NAME OF APPROVER
+    //         //             // REQUEST TO VALIDATE DATE APPROVER PASSWORD 
+    //         //             // BASED ON THE PASSWORD INPUT (result parameter)
+    //         //             valProdCred (result, empId, approverName);
+    //         //             // console.log("This is the previous value", prev, test );
+    //         //             setTimeout(function () {
+    //         //                 resolve();
+    //         //             }, 250);
+    //         //         });
+    //         //     },
+    //         //     didDestroy: function (result) {
+    //         //         $('#productionAuth-button span.ui-selectmenu-text').html(prev);
+    //         //     }
+    //         // });
+    //     },
+    //     position: {
+    //         my: "top center",
+    //         at: "top", of: ".approvalDiv"
+    //     },
+    // })
+    // .selectmenu("menuWidget")
+    // .addClass("overflow");
 
     //==============================================================
     // EQUIPMENT ENGINEERING APPROVERS LIST REQUEST (request 14.1)
@@ -1148,5 +1239,4 @@ $(document).ready(function () {
     //     }
     // }
 
-});
 

@@ -43,11 +43,11 @@
     <!------------------------------------------------------------------>   
     <script defer src="./js/approvers.js"></script>
     <!------------------------------------------------------------------>
-    <script defer src="./js/approversAuth.js"></script>
+    <script defer src="./js/approversAuth_1.js"></script>
     <!------------------------------------------------------------------>
     <script src="./js/analysisFormValidation.js" defer></script>
     <!------------------------------------------------------------------>
-    <script src="./js/sweetalert2.all.min.js" ></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js" ></script>
     <!------------------------------------------------------------------>
     <!-- JQUERY UI -->
     <!------------------------------------------------------------------>
@@ -59,7 +59,7 @@
     <script src="./js/j_ui/jquery-ui.js"></script>
     <!------------------------------------------------------------------>
     <script src="./js/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-    <!------------------------------------------------------------------>
+    <!-- -------------------------------------------------------------- -->
     <style>
       *{
         margin: 0;

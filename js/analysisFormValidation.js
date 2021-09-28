@@ -16,7 +16,7 @@
   // MAIN OBJECT
   class analysisFormValidation {
     constructor (){
-      this.currentQdnNum     = $("#qdnNumber").val();
+      this.currentQdnNum     = $("#+").val();
       this.qdnFailureMode    = $("input[name = 'failureMode']:checked").val();
       this.disposition       = $("input[name = 'disposition']:checked").val();
       this.COD               = $("input[name = 'COD']:checked").val();
