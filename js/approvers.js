@@ -666,7 +666,7 @@ $(document).ready(function () {
             }
         });
         // AC SUGGESTION
-        qdnNumber.autocomplete({
+        $(this).autocomplete({
             source: qdnNumbers,
             select: function (event, ui) {
                 //"selectedValue" variable is to identify the 

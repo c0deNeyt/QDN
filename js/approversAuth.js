@@ -793,10 +793,7 @@
     .selectmenu("menuWidget")
     .addClass("overflow");
         }
-        
-
     };
-    
     // </END FUNCTION TO HANDLE PRODUCTION APPROVERS DETAILS 
     class prodAuthentication extends approverAuth{
         constructor(){
@@ -806,7 +803,6 @@
             this.approverName = "Leila Ungson";
             this.data;
         };
-       
         setRes (){
             this.result = result;
         }
@@ -1049,7 +1045,6 @@
             my: "top center",
             at: "top", of: ".PEAuth"
         },
-
 
     })
     .selectmenu("menuWidget")
