@@ -1,1237 +1,363 @@
-'use strict'    
-    //==============================================================
-    // FUNCTIONS TO HANDLE APPROVERS AUTH EVENT
-    //==============================================================
-    function authEvtProd(approverName){
-        var qdnNumber = document.getElementById('qdnNumber').value;
+'use strict'
+
+// CONSTRUCTOR FUNCTION
+function Approval(){
+    this.userInputPass;
+    this.empId;
+    this.approverName;
+    this.userReqId;
+    this.qdnNumber;
+};
+/** THIS FUNCTION WILL CREAT AN OBJECT */
+Approval.prototype.getVal = function() {
+    const initObj = {
+        pass: this.userInputPass,
+        id: this.empId,
+        empName: this.approverName,
+        requestId: this.userReqId,
+        qdnNumber:  this.qdnNumber,
+    }
+    return initObj;
+};
+Approval.prototype.getQdnNum = function () {
+    let e = document.getElementById('qdnNumber');
+    this.qdnNumber = e.value;
+    let r = this.qdnNumber
+    return r;
+}
+
+function FetchApprover(qndNumber){
+    this.fetching = new Promise (function (resolve, reject) {
+        const formData = new FormData();
+        formData.append('qdnNum', qndNumber);
+        formData.append('request', 19.1);
+        fetch('./php/getDetails.php', {
+        method: 'POST',
+        body: formData
+        })
+        .then(response => response.json())
+        .then(result => {
+            resolve(result);
+        })
+        .catch(error => {
+            const alert = new alerts();
+            reject(reject)
+            alert.errorAlert(error);
+        });
+    });
+};
+function SetSelectDefaultVal(selectorId, approversArray) {
+    this.fetchApproverNow = function() {
+        // return approversArray;
+    }
+    $(`#${selectorId}-button`).html(`${approversArray}`);
+}
+
+/** CLASS FOR THE REQUEST */
+class approverReq {
+    // constructor(qndNo){
+    //     this.qdnNumber = qndNo;
+    // }
+    /** REQUEST FOR APPROVERS LIST METHOD */
+    approversListReq(reqNum) {
+        return $.ajax({
+            type: 'POST',
+            url: './php/getDetails.php',
+            data: {request: `${reqNum}`},
+            cache: false,
+            dataType:'json'
+        });
+    }
+    /** Method to verify the approvers
+     * credentials*/
+    checkCredsDetails(){
+        const initVal = new Approval();
+        initVal.setCredsVal();
+        const credObj = initVal.getVal();
+        console.log(this);
+        return $.ajax({
+            type: 'POST',
+            url: './php/getDetails.php',
+            data: { userPassInput: credObj.pass, empId: credObj.id, request: 15},
+            dataType: 'json',
+            success: function () {
+                /** INSTANTIATING THE approverReq class or object
+                 * inside the scope of success this function*/
+                const alert = new alerts();
+                this.initUpdate = new approverReq();
+                /** This will execute the updateApprover method */
+                this.initUpdate.updateApprover();
+                alert.successAlert();
+            },
+            error: function (error) {
+                // ERROR HANDLING ALERT WHEN PASSWORD NOT MATCHED
+                Swal.showValidationMessage(`Invalid password.`);
+            }
+        });
+    }
+    /** The valid credential will execute this method
+     * Update the Approver to the DB*/
+    updateApprover() {
+        const iniCreds = new Approval();
+        iniCreds.setCredsVal();
+        const n = iniCreds.getVal();
         $.ajax({
             type: 'POST',
             url: "./php/authUpdate.php",
-            data: { prod_auth_col: approverName, qdnNumber: qdnNumber, request: 1 },
-            cache: false,
-            dataType: "json"
-        });
-    };
-    function authEvtEe(approverName){
-        var qdnNumber = document.getElementById('qdnNumber').value;
-        $.ajax({
-            type: 'POST',
-            url: "./php/authUpdate.php",
-            data: { ee_auth_col: approverName, qdnNumber: qdnNumber, request: 2 },
-            cache: false,
-            dataType: "json"
-        });
-    };
-    function authEvtPe(approverName){
-        var qdnNumber = document.getElementById('qdnNumber').value;
-        $.ajax({
-            type: 'POST',
-            url: "./php/authUpdate.php",
-            data: { pe_auth_col: approverName, qdnNumber: qdnNumber, request: 3 },
-            cache: false,
-            dataType: "json"
-        });
-    };
-    function authEvtQa(approverName){
-        var qdnNumber = document.getElementById('qdnNumber').value;
-        $.ajax({
-            type: 'POST',
-            url: "./php/authUpdate.php",
-            data: {qa_auth_col: approverName, qdnNumber: qdnNumber, request: 4 },
-            cache: false,
-            dataType: "json"
-        });
-    };
-    function authEvtOthers(approverName){
-        var qdnNumber = document.getElementById('qdnNumber').value;
-        $.ajax({
-            type: 'POST',
-            url: "./php/authUpdate.php",
-            data: {others_auth_col: approverName, qdnNumber: qdnNumber, request: 5 },
-            cache: false,
-            dataType: "json"
-        });
-    };
-    //==============================================================
-    // en FUNCTIONS TO HANDLE APPROVERS AUTH EVENT
-    //==============================================================
-    // FUNCTION TO SEARCH EMPLOYEE
-    function searchResult(empNumber, srchResp){
-        $.ajax({
-            type: "POST",
-            url: "./php/getDetails.php",
-            data: { empNumero: empNumber, request: 23 },
+            data: { approverName : n.empName, qdnNumber: n.qdnNumber, request: n.requestId },
             cache: false,
             dataType: "json",
-            success: srchResp,
-        }); 
-      
-    }; 
-    // FUNCTION TO UPDATE STATUS WHEN 
-    // CLOSING QND BUTTON IS TRIGGRD
-    function saveAsClosedQdn(status, qndNumber, authPerson, receiver){
-        // REQUEST TO UPDATE THE STUTUS
-        $.ajax({
-            type: 'POST',
-            url: "./php/authUpdate.php",
-            data: {status: status, status_resp: authPerson, qndNumber: qndNumber, request: 6},
-            success: function(response){
-                if (response){
-                    // SCRIPT FOR EMAIL SENDING AND EMAIL FORMATS
-                    Email.send({
-                        Host: "smtp.gmail.com",
-                        Username : "systemqdn2021@gmail.com",
-                        Password : "tjvxdnvqvepgtwck",
-                        To : receiver,
-                        // To : "chanchristianarana@gmail.com",
-                        From : "systemqdn2021@gmail.com",
-                        Subject : "APPROVED QDN No. " + qndNumber ,
-                        Body : "Accomplished QDN    " + "<a href='http://tk-server.tspi.com:999/analysis.php'>" + qndNumber + "</a> <br><br>" + 
-                        "<strong>Note:</strong><br>" +
-                        "<i>  This notification is an automated message. Please do not reply directly to this email.</i>" 
-                    });
-                }
-            },
-            error: function(){
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Something went wrong!'
+        });
+    }
+    /** REQUEST FOR QND DETAILS */
+    getQdnDetails() {
+        return new Promise (function (resolve, reject) {
+            const formData = new FormData();
+            formData.append('qdnNum', "T8321-137");
+            formData.append('request', 19.1);
+            fetch('./php/getDetails.php', {
+            method: 'POST',
+            body: formData
+            })
+            .then(response => response.json())
+            .then(result => {
+                resolve(result);
+            })
+            .catch(error => {
+                const alert = new alerts();
+                reject(reject)
+                alert.errorAlert(error);
+            });
+        })
+
+    }
+};
+/** CLASS FOR ALL ALERTS */
+class alerts {
+    /** APPROVAL PASSWORD MODAL */
+    credentialAlert (data, selectorID){
+        Swal.fire({
+            title: 'Enter your password',
+            html: `<input type="password" id="password" class="swal2-input" placeholder="Password">`,
+            inputPlaceholder: 'Enter your password',
+            focusConfirm: false,
+            showCancelButton: true,
+            showLoaderOnConfirm: true,
+            preConfirm: function () { // OK BUTTON
+                return new Promise(function (resolve, reject) {
+                    /**Setting the value of a factory function Approval*/
+                    Approval.prototype.setCredsVal = function() {
+                        const inputCreds = {
+                            empId : data.item.value,
+                            approverName: data.item.label,
+                            password : Swal.getPopup().querySelector('#password').value.trim()
+                        }
+                        switch (selectorID) {
+                            case "productionAuth":
+                                this.userReqId=1;
+                            break;
+                            case "EEAuth":
+                                this.userReqId=2;
+                            break;
+                            case "PEAuth":
+                                this.userReqId=3
+                            break;
+                            case "qaAuth":
+                                this.userReqId=4;
+                            break;
+                            case "othersAuth":
+                                this.userReqId=5;
+                            break;
+                        }
+                        this.empId = inputCreds.empId;
+                        this.approverName = inputCreds.approverName;
+                        this.userInputPass = inputCreds.password;
+                        this.qdnNumber = document.getElementById('qdnNumber').value;
+                    };
+                    const appReq = new approverReq();
+                    /** This will validate the user input */
+                    appReq.checkCredsDetails();
+                    setTimeout(function () {
+                        resolve();
+                    }, 1000);
                 });
             },
+            didDestroy: function (result) {
+                // HANDLE THE CANCEL EVENT HERE
+                console.log("You canCeled the alert!!");
+            }
         });
     };
-    // FUNCTION TO UPDATE STATUS WHEN 
-    // REPROCESS EVENT OCCUR
-    function statusAndEmail(status, qndNumber, authPerson, receiver){
-         // REQUEST TO UPDATE THE STUTUS
-         $.ajax({
-            type: 'POST',
-            url: "./php/authUpdate.php",
-            data: {status: status, qndNumber: qndNumber, request: 7},
-            success: function(response){
-                if (response){
-                    // SCRIPT FOR EMAIL SENDING AND EMAIL FORMATS
-                    Email.send({
-                        Host: "smtp.gmail.com",
-                        Username : "systemqdn2021@gmail.com",
-                        Password : "tjvxdnvqvepgtwck",
-                        To : receiver,
-                        // To : "chanchristianarana@gmail.com",
-                        From : "systemqdn2021@gmail.com",
-                        Subject : "Reanalysis Granted QDN No. " + qndNumber ,
-                        Body : "Need to Reprocess QDN Number " + "<a href='http://127.0.0.1/sandbox/QDN/approval.php'>" + qndNumber + "</a> <br>" + "Requested by: " + authPerson +   "<br><br>" +
-                        "<strong>Note:</strong><br>" +
-                        "<i>  This notification is an automated message. Please do not reply directly to this email.</i>" 
-                    });
-                }
-                else{
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Something went wrong updating the QDN status!'
-                    });
-                };
-            },
-            error: function(response){
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Something went wrong!'
-                });
-            },
-        });
-        // </END OF REQUEST TO UPDATE THE STUTUS
-    };
-    // SUCCESS ALERT (sweet alert 2)
-    async function alert() {
+    /** ERROR ALERT */
+    async errorAlert(errorVar) {
         const Toast = Swal.mixin({
             toast: true,
             position: 'top-right',
             iconColor: 'white',
             customClass: {
-                popup: 'colored-toast'
+              popup: 'colored-toast'
             },
+            allowEscapeKey: false,
             showConfirmButton: false,
-            timer: 2000,
-            timerProgressBar: true
+            timer: 500000,
+            timerProgressBar: true,
+            //**This will let you pause and play the alert loading*/
+            didOpen: (toast) => { 
+              toast.addEventListener('mouseenter', Swal.stopTimer)
+              toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+          })
+          await Toast.fire({
+            icon: 'error',
+            title: 'Something Went Wrong!',
+            html:"<b style ='color:red;'>"+  errorVar +"</b>",
+          });
+    }
+    /** SUCCESS ALERT */
+    async successAlert() {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-right',
+            iconColor: 'white',
+            customClass: {
+              popup: 'colored-toast'
+            },
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            timer: 10000,
+            timerProgressBar: true,
+            //**This will let you pause and play the alert loading*/
+            didOpen: (toast) => { 
+              toast.addEventListener('mouseenter', Swal.stopTimer)
+              toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
         })
         await Toast.fire({
             icon: 'success',
-            title: 'Access Granted!'
-        }).then(function() {
-            window.location.href = "approval.php";
+            title: 'Access Granted!',
+        }).then(()=>{
+            window.location.replace("approval.php?qdnNumber=T71221-1");
         });
-    };
-    // FUNCTION TO FETCH RECIEVER SEND EMAIL(S)
-    function closeTheQdn(){
-        var qndNumber = document.getElementById('qdnNumber').value;
-        // REQUEST TO CHECK IF THERE IS A REASSIGNMENT 
-        $.ajax({
-            type: 'POST',
-            url: "./php/getDetails.php",
-            data: {qdnNum: qndNumber, request: 18},
-            dataType: "json",
-            success:  dokumentoDetalye, 
-            error: noReassignment
-        });
-        function dokumentoDetalye(data){
-            // CHECK IF dokumentoDetalye(data) PARAM IS NULL
-            if ( data ){
-                var empNumero = data[0]['to'];
-                // request for QDN compliance designated Email Receiver (request 13)
-                $.ajax({
-                    type: 'POST',
-                    url: "./php/getDetails.php",
-                    data: {issuedToEmpNo: empNumero, request: 13},
-                    cache : false,
-                    dataType: "json",
-                    success:  emailDetails
-                });
-                // FUNCTION TO HANDLE EMAIL DETAILS
-                function emailDetails (data){
-                    // CHECK IF emailDetails (data) PARAM IS NULL
-                    if ( data ){
-                        var dataLen = data.length;
-                       //  LOOP FOR EVERY EMAIL ...
-                        for (var i = 0; i < dataLen; i++){
-                            if (receiver){
-                                var emailResult = data[i]['emailscol'];
-                                receiver = receiver + ", " + emailResult;
-                            }
-                            else{
-                                var emailResult = data[i]['emailscol'];
-                                receiver = emailResult;
-                            };
-                        };
-                        // console.log("Receivers no reass|", receiver);
-                        var status = 2;
-                        var int = empNumero;
-                        searchResult(int, function(response){
-                            var z = response[0]['EMP_NAME'];
-                            var authPerson = z;
-                            saveAsClosedQdn(status, qndNumber, authPerson, receiver);
-                        });
-                        // </END OF REQUEST TO UPDATE THE STUTUS
-                    };
-                    // </END OF CHEKING IF emailDetails (data) PARAM IS NULL
-                };
-            }
-            else{
-                noReassignment();
-            };
-            // </END OF CHEKING IF dokumentoDetalye(data) PARAM IS NULL
-        };
-        function noReassignment(){
-            // REQUEST FOR ALL QDN DETAILS (request 7)
-            // THIS IS TO GET THE EMPLOYEE NUMBER OF 
-            // PERSON RESPONSIBLE TO THE QDN
-            $.ajax({
-                type: 'POST',
-                url: "./php/getDetails.php",
-                data: {qdnNum: qndNumber, request: 20},
-                cache: false,
-                dataType: "json",
-                success: analysisDetails
-            });
-            // FUNCTION TO HANDLE QDN DETAILS
-            function analysisDetails(data){ 
-                // CHECK IF receiverData(receiver) PARAM IS NULL
-                if ( data ){
-                    // console.log("This is for anlysis QDN Details", data[0]['issuedTo']);
-                    var dataLen = data.length
-                    // LOOT TO CHECK EVERY QDN DETAILS
-                    for (var i = 0; i < dataLen; i++){
-                        var qdnNUm = data[i]['qdnNo'];
-                        // IF THE QDN No. MATCHED TO THE CURRENT QDN
-                        // GET THE ISSUED TO EMPLOYEE No. 
-                        if(qdnNUm == qndNumber){
-                            var issuedToEmpID = data[i]['issuedTo'];
-                            // code to use the variable outside of  "analysisDetails" function
-                            empAyDie(issuedToEmpID);
-                        };
-                    };
-                };
-                // </END OF CHEKING IF receiverData(receiver) PARAM IS NULL
-            };
-            function empAyDie(issuedToEmpID){
-                // CHECK IF empAyDie(issuedToEmpID) PARAM IS NOT NULL
-                if(issuedToEmpID){
-                    // console.log("I need this Id >>", issuedToEmpID);
-                    // request for QDN compliance designated Email Receiver (request 13)
-                    $.ajax({
-                        type: 'POST',
-                        url: "./php/getDetails.php",
-                        data: {issuedToEmpNo: issuedToEmpID, request: 13},
-                        cache : false,
-                        dataType: "json",
-                        success:  emailDetails
-                    });
-                    // FUNCTION TO HANDLE EMAIL DETAILS
-                    function emailDetails (data){
-                        // CHECK IF empAyDie(issuedToEmpID) PARAM IS NOT NULL
-                        if(data){
-                            var dataLen = data.length;
-                            //  LOOP FOR EVERY EMAIL ...
-                            for (var i = 0; i < dataLen; i++){
-                                if (receiver){
-                                    var emailResult = data[i]['emailscol'];
-                                    receiver = receiver + ", " + emailResult;
-                                }
-                                else{
-                                    var emailResult = data[i]['emailscol'];
-                                    receiver = emailResult;
-                                };
-                            };
-                            // console.log("Receivers no reass|", receiver);
-                            var status = 2;
-                            var int = issuedToEmpID;
-                            searchResult(int, function(response){
-                                var z = response[0]['EMP_NAME'];
-                                var authPerson = z;
-                                console.log("NO reasss REceirver", receiver);
-                                saveAsClosedQdn(status, qndNumber, authPerson, receiver);
-                            });
-                            // </END OF REQUEST TO UPDATE THE STUTUS
-                        };
-                        // </END OF CHECKING empAyDie(issuedToEmpID) PARAM IS NOT NULL
-                    };
-                };
-                // END OF CHECKING IF empAyDie(issuedToEmpID) PARAM IS NOT NULL
-            };
-        };
-    };
-    // FUNCTION TO REPROCESS QDN
-    function reprocessTheQdn(){
-        var qndNumber = document.getElementById('qdnNumber').value;
-        // REQUEST TO CHECK IF THERE IS A REASSIGNMENT 
-        $.ajax({
-            type: 'POST',
-            url: "./php/getDetails.php",
-            data: {qdnNum: qndNumber, request: 18},
-            dataType: "json",
-            success:  reprocessDetails, 
-            error: noReass
-        });
-        function reprocessDetails(data){
-            // CHECK IF dokumentoDetalye(data) PARAM IS NULL
-            if ( data ){
-                var empNumero = data[0]['to'];
-                // request for QDN compliance designated Email Receiver (request 13)
-                $.ajax({
-                    type: 'POST',
-                    url: "./php/getDetails.php",
-                    data: {issuedToEmpNo: empNumero, request: 13},
-                    cache : false,
-                    dataType: "json",
-                    success:  emailDetails
-                });
-                // FUNCTION TO HANDLE EMAIL DETAILS
-                function emailDetails (data){
-                    // CHECK IF emailDetails (data) PARAM IS NULL
-                    if ( data ){
-                        var dataLen = data.length;
-                       //  LOOP FOR EVERY EMAIL ...
-                        for (var i = 0; i < dataLen; i++){
-                            if (receiver){
-                                var emailResult = data[i]['emailscol'];
-                                receiver = receiver + ", " + emailResult;
-                            }
-                            else{
-                                var emailResult = data[i]['emailscol'];
-                                receiver = emailResult;
-                            };
-                        };
-                        // console.log("Receivers|", receiver);
-                        var status = 0;
-                        var int = empNumero;
-                        searchResult(int, function(response){
-                            var z = response[0]['EMP_NAME'];
-                            var authPerson = z;
-                            statusAndEmail(status, qndNumber, authPerson, receiver);
-                        });
-                    };
-                    // </END OF CHEKING IF emailDetails (data) PARAM IS NULL
-                };
-            }
-            else{
-                noReass();
-            };
-            // </END OF CHEKING IF dokumentoDetalye(data) PARAM IS NULL
-        };
-        function noReass(){
-            // REQUEST FOR ALL QDN DETAILS (request 7)
-            // THIS IS TO GET THE EMPLOYEE NUMBER OF 
-            // PERSON RESPONSIBLE TO THE QDN
-            $.ajax({
-                type: 'POST',
-                url: "./php/getDetails.php",
-                data: {qdnNum: qndNumber, request: 20},
-                cache: false,
-                dataType: "json",
-                success: analysisDetails
-            });
-            // FUNCTION TO HANDLE QDN DETAILS
-            function analysisDetails(data){ 
-                // CHECK IF receiverData(receiver) PARAM IS NULL
-                if ( data ){
-                    // console.log("This is for anlysis QDN Details", data[0]['issuedTo']);
-                    var dataLen = data.length
-                    // LOOT TO CHECK EVERY QDN DETAILS
-                    for (var i = 0; i < dataLen; i++){
-                        var qdnNUm = data[i]['qdnNo'];
-                        // IF THE QDN No. MATCHED TO THE CURRENT QDN
-                        // GET THE ISSUED TO EMPLOYEE No. 
-                        if(qdnNUm == qndNumber){
-                            var issuedToEmpID = data[i]['issuedTo'];
-                            // code to use the variable outside of  "analysisDetails" function
-                            empAyDie(issuedToEmpID);
-                        };
-                    };
-                };
-                // </END OF CHEKING IF receiverData(receiver) PARAM IS NULL
-            };
-            function empAyDie(issuedToEmpID){
-                // CHECK IF empAyDie(issuedToEmpID) PARAM IS NOT NULL
-                if(issuedToEmpID){
-                    // console.log("I need this Id >>", issuedToEmpID);
-                    // request for QDN compliance designated Email Receiver (request 13)
-                    $.ajax({
-                        type: 'POST',
-                        url: "./php/getDetails.php",
-                        data: {issuedToEmpNo: issuedToEmpID, request: 13},
-                        cache : false,
-                        dataType: "json",
-                        success:  emailDetails
-                    });
-                    // FUNCTION TO HANDLE EMAIL DETAILS
-                    function emailDetails (data){
-                        // CHECK IF empAyDie(issuedToEmpID) PARAM IS NOT NULL
-                        console.log (data);
-                        if(data){
-                            var dataLen = data.length;
-                            var receiver = "";
-                            //  LOOP FOR EVERY EMAIL ...
-                            for (var i = 0; i < dataLen; i++){
-                                if (receiver){
-                                    var emailResult = data[i]['emailscol'];
-                                    receiver = receiver + ", " + emailResult;
-                                }
-                                else{
-                                    var emailResult = data[i]['emailscol'];
-                                    receiver = emailResult;
-                                };
-                            };
-                            console.log("Receivers no reass|", receiver);
-                            var status = 0;
-                            var int = issuedToEmpID;
-                            searchResult(int, function(response){
-                                var z = response[0]['EMP_NAME'];
-                                var authPerson = z;
-                                statusAndEmail(status, qndNumber, authPerson, receiver);
-                            });
-                        };
-                        // </END OF CHECKING empAyDie(issuedToEmpID) PARAM IS NOT NULL
-                    };
-                };
-            };
-            // console.log("something went wrong!");
-        };
-    };
-    // FUNCTION FOR CASE CLOSED EVENT 
-    // RESPONSIBLE FOR LOGIN CREDENTIAL POPUP
-    function caseClosedEvt(){
-        Swal.fire({
-            title: 'Granting to close the QDN',
-            html: `<input type="text" id="login" class="swal2-input" placeholder="Username">
-            <input type="password" id="password" class="swal2-input" placeholder="Password">`,
-            confirmButtonText: 'Submit!',
-            focusConfirm: false,
-            preConfirm: () => {
-                return new Promise(function (resolve) {
-                    const empId = Swal.getPopup().querySelector('#login').value
-                    const password = Swal.getPopup().querySelector('#password').value
-
-                    var employeeId = $.trim(empId);
-                    var empPass = $.trim(password);
-                    // REQUEST TO VALIDATE DATE APPROVER PASSWORD 
-                    // BASED ON THE PASSWORD INPUT (result parameter)  
-                    $.ajax({
-                        type: 'POST',
-                        url: './php/getDetails.php',
-                        data: { userPassInput: empPass, empId: employeeId, request: 22},
-                        dataType: 'json',
-                        success: function (response) {
-                            if(response){
-                                closeTheQdn();
-                                alert();
-                            }
-                            else{
-                                Swal.showValidationMessage(`Invalid approver or password`);
-                            };
-                        },
-                        error: function () {
-                            // ERROR HANDLING ALERT WHEN PASSWORD NOT MATCHED
-                            Swal.showValidationMessage(`Invalid approver or password`);
-                        }
-                    });
-                    setTimeout(function () {
-                        resolve();
-                    }, 250);
-                });
-            }
-        });
-
-    };
-    function reprocessEvt(){
-        Swal.fire({
-            title: 'Granting Reanalysis',
-            html: `<input type="text" id="login" class="swal2-input" placeholder="Username">
-            <input type="password" id="password" class="swal2-input" placeholder="Password">`,
-            confirmButtonText: 'Submit!',
-            focusConfirm: false,
-            preConfirm: () => {
-                return new Promise(function (resolve) {
-                    const empId = Swal.getPopup().querySelector('#login').value
-                    const password = Swal.getPopup().querySelector('#password').value
-
-                    var employeeId = $.trim(empId);
-                    var empPass = $.trim(password);
-                    // REQUEST TO VALIDATE DATE APPROVER PASSWORD 
-                    // BASED ON THE PASSWORD INPUT (result parameter)  
-                    $.ajax({
-                        type: 'POST',
-                        url: './php/getDetails.php',
-                        data: { userPassInput: empPass, empId: employeeId, request: 22},
-                        dataType: 'json',
-                        success: function (response) {
-                            if(response){
-                                reprocessTheQdn();
-                                alert();
-                            }
-                            else{
-                                Swal.showValidationMessage(`Invalid approver or password`);
-                            };
-                        },
-                        error: function () {
-                            // ERROR HANDLING ALERT WHEN PASSWORD NOT MATCHED
-                            Swal.showValidationMessage(`Invalid approver or password`);
-                        }
-                    });
-                    setTimeout(function () {
-                        resolve();
-                    }, 250);
-                });
-            }
-        });
-    };
-    // REQUEST TO VALIDATE DATE APPROVER PASSWORD 
-    // BASED ON THE PASSWORD INPUT (result parameter)
-    function valProdCred (result, empId, approverName){
-        $.ajax({
-            type: 'POST',
-            url: './php/getDetails.php',
-            data: { userPassInput: result, empId: empId, request: 15 },
-            dataType: 'json',
-            success: function (response) {
-                if (response){
-                    // PASSWORD MATCHED CHANGE THE PLACE HOLDER TO OR INNER TEXT
-                    // OF SELECT OPTION INTO SELECTED NAME OF APPROVER
-                    authEvtProd(approverName);
-                    $('#productionAuth-button span.ui-selectmenu-text').html(approverName);
-                    alert();
-                }else{
-                    // ERROR HANDLING ALERT WHEN PASSWORD NOT MATCHED
-                    Swal.showValidationMessage(`Invalid approver or password`);
-                };
-            },
-            error: function () {
-                // ERROR HANDLING ALERT WHEN PASSWORD NOT MATCHED
-                Swal.showValidationMessage(`Invalid approver or password`);
-            }
-        });
-    };
-    function valEeCred(result, empId, approverName){
-        $.ajax({
-            type: 'POST',
-            url: './php/getDetails.php',
-            data: { userPassInput: result, empId: empId, request: 15},
-            dataType: 'json',
-            success: function (response) {
-                if (response){
-                    // PASSWORD MATCHED CHANGE THE PLACE HOLDER TO OR INNER TEXT
-                    // OF SELECT OPTION INTO SELECTED NAME OF APPROVER
-                    authEvtEe(approverName);
-                    $('#EEAuth-button span.ui-selectmenu-text').html(approverName);
-                    alert();
-                }else{
-                    // ERROR HANDLING ALERT WHEN PASSWORD NOT MATCHED
-                    Swal.showValidationMessage(`Invalid approver or password`);
-                };
-            },
-            error: function () {
-                // ERROR HANDLING ALERT WHEN PASSWORD NOT MATCHED
-                Swal.showValidationMessage(`Invalid approver or password`);
-            }
-        });
-    };
-    function valPeCred(result, empId, approverName){
-        $.ajax({
-            type: 'POST',
-            url: './php/getDetails.php',
-            data: { userPassInput: result, empId: empId, request: 15},
-            dataType: 'json',
-            success: function (response) {
-                if (response) {
-                    // PASSWORD MATCHED CHANGE THE PLACE HOLDER TO OR INNER TEXT
-                    // OF SELECT OPTION INTO SELECTED NAME OF APPROVER
-                    authEvtPe(approverName);
-                    $('#PEAuth-button span.ui-selectmenu-text').html(approverName);
-                    alert();
-                }else{
-                    // ERROR HANDLING ALERT WHEN PASSWORD NOT MATCHED
-                    Swal.showValidationMessage(`Invalid approver or password`);
-                };
-            },
-            error: function () {
-                // ERROR HANDLING ALERT WHEN PASSWORD NOT MATCHED
-                Swal.showValidationMessage(`Invalid approver or password`);
-            }
-        });
-    }; 
-    function valQaCred(result, empId, approverName){
-        $.ajax({
-            type: 'POST',
-            url: './php/getDetails.php',
-            data: { userPassInput: result, empId: empId, request: 15},
-            dataType: 'json',
-            success: function (response) {
-                if (response){
-                    // PASSWORD MATCHED CHANGE THE PLACE HOLDER TO OR INNER TEXT
-                    // OF SELECT OPTION INTO SELECTED NAME OF APPROVER
-                    authEvtQa(approverName);
-                    $('#qaAuth-button span.ui-selectmenu-text').html(approverName);
-                    alert();
-                }
-                else{
-                    // ERROR HANDLING ALERT WHEN PASSWORD NOT MATCHED
-                    Swal.showValidationMessage(`Invalid approver or password`);
-                };
-            },
-            error: function () {
-                // ERROR HANDLING ALERT WHEN PASSWORD NOT MATCHED
-                Swal.showValidationMessage(`Invalid approver or password`);
-            }
-        });
-    };
-    function valOthersCred(result, empId, approverName){
-        $.ajax({
-            type: 'POST',
-            url: './php/getDetails.php',
-            data: { userPassInput: result, empId: empId, request: 15},
-            dataType: 'json',
-            success: function (response) {
-                if (response){
-                    // PASSWORD MATCHED CHANGE THE PLACE HOLDER TO OR INNER TEXT
-                    // OF SELECT OPTION INTO SELECTED NAME OF APPROVER
-                    authEvtOthers(approverName);
-                    $('#othersAuth-button span.ui-selectmenu-text').html(approverName);
-                    alert();
-                }
-                else{
-                    Swal.showValidationMessage(`Invalid approver or password`);
-                };
-            },
-            error: function () {
-                // ERROR HANDLING ALERT WHEN PASSWORD NOT MATCHED
-                Swal.showValidationMessage(`Invalid approver or password`);
-            }
-        });
-    }; 
-    //==============================================================
-    // PRODUCTION APPROVERS LIST REQUEST (request 14)
-    //==============================================================
-    $.ajax({
-        type: 'POST',
-        url: "./php/getDetails.php",
-        data: { request: 14 },
-        cache: false,
-        dataType: "json",
-        success: prodAuthDetails
-    });
-    // </END OF PRODUCTION APPROVERS LIST REQUEST 
-
-    //FUNCTION TO HANDLE PRODUCTION APPROVERS DETAILS 
-    function prodAuthDetails(data) {
-        var dataLen = data.length;
-
-        // LOOP TO HANDLE EACH APPROVER NAMES
-        for (var i = 0; i < dataLen; i++) {
-            var approverName = data[i]['EMP_NAME'];
-            var empNum = data[i]['id'];
-
-            // APPENDING APPROVER NAME TO THE SELECT MENU
-            var option = new Option(approverName, empNum);
-            $(option).html(approverName);
-            $("#productionAuth").append(option);
-        };
-    };
-
-    class alerts {
-        constructor() {
-            this.data;
-        }
-        inputCredentials () {
-            Swal.fire({
-                title: 'Login Form',
-                html: `<input type="text" id="login" class="swal2-input" placeholder="Username">
-                <input type="password" id="password" class="swal2-input" placeholder="Password">`,
-                confirmButtonText: 'Sign in',
-                focusConfirm: false,
-                showLoaderOnConfirm: true,
-                preConfirm: () => {
-                    const login = Swal.getPopup().querySelector('#login').value
-                    const password = Swal.getPopup().querySelector('#password').value
-                    if (!login || !password) {
-                        Swal.showValidationMessage(`Please enter login and password`)
-                    }
-                    return { login: login, password: password }
-                }
-            }).then((result) => {
-            Swal.fire(`
-                Login: ${result.value.login}
-                Password: ${result.value.password}
-                `.trim())
-            })
-        }
-        credentialAlert (){
-            Swal.fire({
-                title: 'Enter your password',
-                input: 'password',
-                inputPlaceholder: 'Enter your password',
-                inputAttributes: {
-                    maxlength: 20,
-                    autocapitalize: 'off',
-                    autocorrect: 'off'
-                },
-                showCancelButton: true,
-                showLoaderOnConfirm: true,
-                preConfirm: function (result) { // OK BUTTON
-                    return new Promise(function (resolve) {
-                        // var empId = data.item.value;// SELECTED EMP ID OF APPROVER
-                        // var approverName = data.item.label; // SELECTED NAME OF APPROVER
-                        // REQUEST TO VALIDATE DATE APPROVER PASSWORD 
-                        // BASED ON THE PASSWORD INPUT (result parameter)
-                        console.log("This is the previous value", result);
-                        Swal.showValidationMessage(`Please enter login and password`)
-                        setTimeout(function () {
-                            resolve();
-                        }, 250);
-                    });
-                },
-                didDestroy: function (result) {
-                    Swal.showValidationMessage(`Please enter login and password`)
-                    // $('#productionAuth-button span.ui-selectmenu-text').html();
-                }
-            });
-        };
     }
-
-    class approverAuth extends alerts {
-        constructor() {
-            super();
-            this.credentialAlert;
-            this.data;
-        }
-        credValidation (newdata) {
-            return $("#productionAuth").selectmenu({
-            // HANDLE SELECT EVENT WHEN APPROVER NAME IS CLICKED
-                select: function  select(click, data) {
-                // THIS WILL SET AS A PLACE HOLDER WHEN ITEM IN THE MENU IS CLICKED 
-                // INSTEAD OF APPROVERS NAME
-                // $('#productionAuth-button span.ui-selectmenu-text').html("Needs Approval...");
-                // let test = $(".swal2-cancel.swal2-styled")
-                console.log("setting the data to the constructor....", data);
-                this.data = data;
-                // inputCredAlert.credentialAlert();
-                // PASSWORD ALERT POPUP WHEN YOU CLICK THE ITEM (approver name)
-                //IN PRODUCTION APPROVER LIST
-                // Swal.fire({
-                //     title: 'Enter your password',
-                //     input: 'password',
-                //     inputPlaceholder: 'Enter your password',
-                //     inputAttributes: {
-                //         maxlength: 20,
-                //         autocapitalize: 'off',
-                //         autocorrect: 'off'
-                //     },
-                //     showCancelButton: true,
-                //     showLoaderOnConfirm: true,
-                //     preConfirm: function (result) { // OK BUTTON
-                //         return new Promise(function (resolve) {
-                //             var empId = data.item.value;// SELECTED EMP ID OF APPROVER
-                //             var approverName = data.item.label; // SELECTED NAME OF APPROVER
-                //             // REQUEST TO VALIDATE DATE APPROVER PASSWORD 
-                //             // BASED ON THE PASSWORD INPUT (result parameter)
-                //             valProdCred (result, empId, approverName);
-                //             // console.log("This is the previous value", prev, test );
-                //             setTimeout(function () {
-                //                 resolve();
-                //             }, 250);
-                //         });
-                //     },
-                //     didDestroy: function (result) {
-                //         $('#productionAuth-button span.ui-selectmenu-text').html(prev);
-                //     }
-                // });
-        },
-        position: {
-            my: "top center",
-            at: "top", of: ".approvalDiv"
-        },
-    })
-    .selectmenu("menuWidget")
-    .addClass("overflow");
-        }
+};
+/** CLASS FOR THE EVENT HANDLERS */
+class approverEvt extends alerts {
+    constructor() {
+       super();
     };
-    // </END FUNCTION TO HANDLE PRODUCTION APPROVERS DETAILS 
-    class prodAuthentication extends approverAuth{
-        constructor(){
-            super();
-            this.result = "S3cret";
-            this.empId = "751";
-            this.approverName = "Leila Ungson";
-            this.data;
-        };
-        setRes (){
-            this.result = result;
-        }
-        getRes (){
-           return this.data;
-        }
-        valOthersCred(){
-            return $.ajax({
-                type: 'POST',
-                url: './php/getDetails.php',
-                data: { userPassInput: `${this.result}`, empId: `${this.empId}`, request: 15},
-                dataType: 'json',
-                success: function (response) {
-                    if (response){
-                        // PASSWORD MATCHED CHANGE THE PLACE HOLDER TO OR INNER TEXT
-                        // OF SELECT OPTION INTO SELECTED NAME OF APPROVER
-                        // authEvtEe(approverName);
-                        // $('#EEAuth-button span.ui-selectmenu-text').html(approverName);
-                        // alert();
-                        console.log("Success!!", response);                                                                                         
-                    }else{
-                        // ERROR HANDLING ALERT WHEN PASSWORD NOT MATCHED
-                        Swal.showValidationMessage(`Invalid approver or password`);
-                    };
-                },
-                error: function (error) {
-                    // ERROR HANDLING ALERT WHEN PASSWORD NOT MATCHED
-                    // Swal.showValidationMessage(`Invalid approver or password`);
-                    console.log("Something went wrong!", error);
-                }
-            });
-        };
+    credValidation () {
+        this.selectmenu({
+            /* HANDLE SELECT EVENT WHEN 
+             * APPROVER NAME IS CLICKED */
+            select: async function (click, data) {
+                // console.log("(credentialAlert Executed!)", this.id);
+                /**this will return password input modal */
+                this.accessingAlerts = new approverEvt();
+                this.accessingAlerts.credentialAlert(data, this.id);
+                const qndNum = new Approval();
+                const getQdnNum = qndNum.getQdnNum();
+                const getObj = qndNum.getVal();
+                
+                const test =  new FetchApprover(getObj.qdnNumber);
+                let r = await test.fetching;
+                console.log(r[0]['qa_auth_col']);
+                const approverFromDb = new SetSelectDefaultVal(this.id, r[0]['qa_auth_col']);
+                // let x = approverFromDb.fetchApprover();
+                // console.log(x);
+                /**
+                 * CRATE A FUNCTION THAT WILL SET THE VALUE
+                 * OF THE SELECT MENU BASED ON THE DATABASE
+                 * IF THE VALUE IS NULL HAVE IT BE Needs Approval...
+                 * 
+                 * SET THE SELECT ELEMENT VALUE BASED ONT HE DB
+                 */
+            },
+            /** This will set the position of 
+             * select menu*/
+            position: {
+                my: "center center",
+                at: "center top", 
+                collision: "fit"
+            },
+        })
+        .selectmenu("menuWidget")
+        .addClass("overflow");
     };
-  
-    (async function () {
-        const alertExec = new alerts();
-        const prodAuthenticationExec = new prodAuthentication();
-        const approversProd = new approverAuth();
-        approversProd.credValidation();
-        let n = prodAuthenticationExec.getRes();
-        // approversProd.credentialAlert();
-        console.log("This is the N", n);
-    })();
-    
-
-    // PRODUCTION AUTHENTICATION SELECT MENU
-    // $("#productionAuth")
-    // .selectmenu({
-    //     // HANDLE SELECT EVENT WHEN APPROVER NAME IS CLICKED
-    //     select: function (click, data) {
-    //         // THIS WILL SET AS A PLACE HOLDER WHEN ITEM IN THE MENU IS CLICKED 
-    //         // INSTEAD OF APPROVERS NAME
-    //         // $('#productionAuth-button span.ui-selectmenu-text').html("Needs Approval...");
-    //         // let test = $(".swal2-cancel.swal2-styled").html();
-    //         const inputCredAlert = new alerts();
-    //         const approversProd = new approverAuth();
-    //         approversProd.credValidation();
-    //         // inputCredAlert.credentialAlert();
-    //         // PASSWORD ALERT POPUP WHEN YOU CLICK THE ITEM (approver name)
-    //         //IN PRODUCTION APPROVER LIST
-    //         // Swal.fire({
-    //         //     title: 'Enter your password',
-    //         //     input: 'password',
-    //         //     inputPlaceholder: 'Enter your password',
-    //         //     inputAttributes: {
-    //         //         maxlength: 20,
-    //         //         autocapitalize: 'off',
-    //         //         autocorrect: 'off'
-    //         //     },
-    //         //     showCancelButton: true,
-    //         //     showLoaderOnConfirm: true,
-    //         //     preConfirm: function (result) { // OK BUTTON
-    //         //         return new Promise(function (resolve) {
-    //         //             var empId = data.item.value;// SELECTED EMP ID OF APPROVER
-    //         //             var approverName = data.item.label; // SELECTED NAME OF APPROVER
-    //         //             // REQUEST TO VALIDATE DATE APPROVER PASSWORD 
-    //         //             // BASED ON THE PASSWORD INPUT (result parameter)
-    //         //             valProdCred (result, empId, approverName);
-    //         //             // console.log("This is the previous value", prev, test );
-    //         //             setTimeout(function () {
-    //         //                 resolve();
-    //         //             }, 250);
-    //         //         });
-    //         //     },
-    //         //     didDestroy: function (result) {
-    //         //         $('#productionAuth-button span.ui-selectmenu-text').html(prev);
-    //         //     }
-    //         // });
-    //     },
-    //     position: {
-    //         my: "top center",
-    //         at: "top", of: ".approvalDiv"
-    //     },
-    // })
-    // .selectmenu("menuWidget")
-    // .addClass("overflow");
-
-    //==============================================================
-    // EQUIPMENT ENGINEERING APPROVERS LIST REQUEST (request 14.1)
-    //==============================================================
-     $.ajax({
-        type: 'POST',
-        url: "./php/getDetails.php",
-        data: { request: 14.1},
-        cache: false,
-        dataType: "json",
-        success: eeAuthDetails
-    });
-    // </END OF EQUIPMENT ENGINEERING APPROVERS LIST REQUEST 
-
-    //FUNCTION TO HANDLE EQUIPMENT ENGINEERING APPROVERS DETAILS 
-    function eeAuthDetails(data) {
-        var dataLen = data.length;
-
+};
+/** CLASS FOR THE MAIN LOGIC */
+class appendAuth extends approverReq{
+    appendAuthToDOM (data, selector) {
+        let dataLen = data.length;
         // LOOP TO HANDLE EACH APPROVER NAMES
         for (var i = 0; i < dataLen; i++) {
             var approverName = data[i]['EMP_NAME'];
             var empNum = data[i]['id'];
-
             // APPENDING APPROVER NAME TO THE SELECT MENU
             var option = new Option(approverName, empNum);
             $(option).html(approverName);
-            $("#EEAuth").append(option);
+            selector.append(option);
         };
+        return selector;
     };
-    // </END FUNCTION TO HANDLE EQUIPMENT ENGINEERING APPROVERS DETAILS 
-
-     // EQUIPMENT ENGINEERING AUTHENTICATION SELECT MENU
-    $("#EEAuth")
-    .selectmenu({
-        // HANDLE SELECT EVENT WHEN APPROVER NAME IS CLICKED
-        select: function (click, data) {
-            // THIS WILL SET AS A PLACE HOLDER WHEN ITEM IN THE MENU IS CLICKED 
-            // INSTEAD OF APPROVERS NAME
-            $('#EEAuth-button span.ui-selectmenu-text').html("Needs Approval...");
-            // PASSWORD ALERT POPUP WHEN YOU CLICK THE ITEM (approver name)
-            //IN EQUIPMENT ENGINEERING APPROVER LIST
-            Swal.fire({
-                title: 'Enter your password',
-                input: 'password',
-                inputPlaceholder: 'Enter your password',
-                inputAttributes: {
-                    maxlength: 20,
-                    autocapitalize: 'off',
-                    autocorrect: 'off'
-                },
-                showCancelButton: true,
-                showLoaderOnConfirm: true,
-                preConfirm: function (result) { // OK BUTTON
-                    return new Promise(function (resolve) {
-                        var empId = data.item.value;// SELECTED EMP ID OF APPROVER
-                        var approverName = data.item.label; // SELECTED NAME OF APPROVER
-                        // REQUEST TO VALIDATE DATE APPROVER PASSWORD 
-                        // BASED ON THE PASSWORD INPUT (result parameter)
-                        valEeCred(result, empId, approverName); 
-                        setTimeout(function () {
-                            resolve();
-                        }, 250);
-                    });
-                },
-            });
-        },
-        position: {
-            my: "top center",
-            at: "top", of: ".EEAuth"
-        },
-
-
-    })
-    .selectmenu("menuWidget")
-    .addClass("overflow");
-
-    //==============================================================
-    // PROCESS ENGINEERING APPROVERS LIST REQUEST (request 14.2)
-    //==============================================================
-    $.ajax({
-        type: 'POST',
-        url: "./php/getDetails.php",
-        data: { request: 14.2},
-        cache: false,
-        dataType: "json",
-        success: peAuthDetails
-    });
-    // </END OF PROCESS ENGINEERING APPROVERS LIST REQUEST 
-
-    //FUNCTION TO HANDLE PROCESS ENGINEERING APPROVERS DETAILS 
-    function peAuthDetails(data) {
-        var dataLen = data.length;
-
-        // LOOP TO HANDLE EACH APPROVER NAMES
-        for (var i = 0; i < dataLen; i++) {
-            var approverName = data[i]['EMP_NAME'];
-            var empNum = data[i]['id'];
-
-            // APPENDING APPROVER NAME TO THE SELECT MENU
-            var option = new Option(approverName, empNum);
-            $(option).html(approverName);
-            $("#PEAuth").append(option);
-        };
-    };
-    // </END FUNCTION TO HANDLE PROCESS ENGINEERING APPROVERS DETAILS 
-
-     // PROCESS ENGINEERING AUTHENTICATION SELECT MENU
-    $("#PEAuth")
-    .selectmenu({
-        // HANDLE SELECT EVENT WHEN APPROVER NAME IS CLICKED
-        select: function (click, data) {
-            // THIS WILL SET AS A PLACE HOLDER WHEN ITEM IN THE MENU IS CLICKED 
-            // INSTEAD OF APPROVERS NAME
-            $('#PEAuth-button span.ui-selectmenu-text').html("Needs Approval...");
-
-            // PASSWORD ALERT POPUP WHEN YOU CLICK THE ITEM (approver name)
-            //IN PROCESS ENGINEERING APPROVER LIST
-            Swal.fire({
-                title: 'Enter your password',
-                input: 'password',
-                inputPlaceholder: 'Enter your password',
-                inputAttributes: {
-                    maxlength: 20,
-                    autocapitalize: 'off',
-                    autocorrect: 'off'
-                },
-                showCancelButton: true,
-                showLoaderOnConfirm: true,
-                preConfirm: function (result) { // OK BUTTON
-                    return new Promise(function (resolve) {
-                        var empId = data.item.value;// SELECTED EMP ID OF APPROVER
-                        var approverName = data.item.label; // SELECTED NAME OF APPROVER
-                        // REQUEST TO VALIDATE DATE APPROVER PASSWORD 
-                        // BASED ON THE PASSWORD INPUT (result parameter)
-                        valPeCred (result, empId, approverName); 
-                        setTimeout(function () {
-                            resolve();
-                        }, 250);
-                    });
-                },
-            });
-        },
-        position: {
-            my: "top center",
-            at: "top", of: ".PEAuth"
-        },
-
-    })
-    .selectmenu("menuWidget")
-    .addClass("overflow");
-
-
-    //==============================================================
-    // QUALITY ASSURANCE APPROVERS LIST REQUEST (request 14.3)
-    //==============================================================
-    $.ajax({
-        type: 'POST',
-        url: "./php/getDetails.php",
-        data: { request: 14.3},
-        cache: false,
-        dataType: "json",
-        success: qaAuthDetails
-    });
-    // </END OF QUALITY ASSURANCE APPROVERS LIST REQUEST 
-
-    //FUNCTION TO HANDLE QUALITY ASSURANCE APPROVERS DETAILS 
-    function qaAuthDetails(data) {
-        var dataLen = data.length;
-
-        // LOOP TO HANDLE EACH APPROVER NAMES
-        for (var i = 0; i < dataLen; i++) {
-            var approverName = data[i]['EMP_NAME'];
-            var empNum = data[i]['id'];
-
-            // APPENDING APPROVER NAME TO THE SELECT MENU
-            var option = new Option(approverName, empNum);
-            $(option).html(approverName);
-            $("#qaAuth").append(option);
-        };
-    };
-    // </END FUNCTION TO HANDLE QUALITY ASSURANCE APPROVERS DETAILS 
-
-     // QUALITY ASSURANCE AUTHENTICATION SELECT MENU
-    $("#qaAuth")
-    .selectmenu({
-        // HANDLE SELECT EVENT WHEN APPROVER NAME IS CLICKED
-        select: function (click, data) {
-            // THIS WILL SET AS A PLACE HOLDER WHEN ITEM IN THE MENU IS CLICKED 
-            // INSTEAD OF APPROVERS NAME
-            $('#qaAuth-button span.ui-selectmenu-text').html("Needs Approval...");
-
-            // PASSWORD ALERT POPUP WHEN YOU CLICK THE ITEM (approver name)
-            //IN QUALITY ASSURANCE APPROVER LIST
-            Swal.fire({
-                title: 'Enter your password',
-                input: 'password',
-                inputPlaceholder: 'Enter your password',
-                inputAttributes: {
-                    maxlength: 20,
-                    autocapitalize: 'off',
-                    autocorrect: 'off'
-                },
-                showCancelButton: true,
-                showLoaderOnConfirm: true,
-                preConfirm: function (result) { // OK BUTTON
-                    return new Promise(function (resolve) {
-                        var empId = data.item.value;// SELECTED EMP ID OF APPROVER
-                        var approverName = data.item.label; // SELECTED NAME OF APPROVER
-                        // REQUEST TO VALIDATE DATE APPROVER PASSWORD 
-                        // BASED ON THE PASSWORD INPUT (result parameter)  
-                        valQaCred(result, empId, approverName);
-                        setTimeout(function () {
-                            resolve();
-                        }, 250);
-                    });
-                },
-            });
-        },
-        position: {
-            my: "top center",
-            at: "top", of: ".qaAuth"
-        },
-    })
-    .selectmenu("menuWidget")
-    .addClass("overflow");
-
-    //==============================================================
-    // OTHERS APPROVERS LIST REQUEST (request 14.4)
-    //==============================================================
-    $.ajax({
-        type: 'POST',
-        url: "./php/getDetails.php",
-        data: { request: 14.4},
-        cache: false,
-        dataType: "json",
-        success: othersAuthDetails
-    });
-    // </END OF OTHERS APPROVERS LIST REQUEST 
-
-    //FUNCTION TO HANDLE OTHERS APPROVERS DETAILS 
-    function othersAuthDetails(data) {
-        var dataLen = data.length;
-
-        // LOOP TO HANDLE EACH APPROVER NAMES
-        for (var i = 0; i < dataLen; i++) {
-            var approverName = data[i]['EMP_NAME'];
-            var empNum = data[i]['id'];
-
-            // APPENDING APPROVER NAME TO THE SELECT MENU
-            var option = new Option(approverName, empNum);
-            $(option).html(approverName);
-            $("#othersAuth").append(option);
-        };
-    };
-    // </END FUNCTION TO HANDLE OTHERS APPROVERS DETAILS 
-
-     // OTHERS AUTHENTICATION SELECT MENU
-    $("#othersAuth")
-    .selectmenu({
-        // HANDLE SELECT EVENT WHEN APPROVER NAME IS CLICKED
-        select: function (click, data) {
-            // THIS WILL SET AS A PLACE HOLDER WHEN ITEM IN THE MENU IS CLICKED 
-            // INSTEAD OF APPROVERS NAME
-            $('#othersAuth-button span.ui-selectmenu-text').html("Needs Approval...");
-
-            // PASSWORD ALERT POPUP WHEN YOU CLICK THE ITEM (approver name)
-            //IN OTHERS APPROVER LIST
-            Swal.fire({
-                title: 'Enter your password',
-                input: 'password',
-                inputPlaceholder: 'Enter your password',
-                inputAttributes: {
-                    maxlength: 20,
-                    autocapitalize: 'off',
-                    autocorrect: 'off'
-                },
-                showCancelButton: true,
-                showLoaderOnConfirm: true,
-                preConfirm: function (result) { // OK BUTTON
-                    return new Promise(function (resolve) {
-                        var empId = data.item.value;// SELECTED EMP ID OF APPROVER
-                        var approverName = data.item.label; // SELECTED NAME OF APPROVER
-                        // REQUEST TO VALIDATE DATE APPROVER PASSWORD 
-                        // BASED ON THE PASSWORD INPUT (result parameter)
-                        valOthersCred(result, empId, approverName);
-                        setTimeout(function () {
-                            resolve();
-                        }, 250);
-                    });
-                },
-            });
-        },
-        position: {
-            my: "top center",
-            at: "top", of: ".othersAuth"
-        },
-    })
-    .selectmenu("menuWidget")
-    .addClass("overflow");
-
-    //==============================================================
-    // REPROCESS AND CLOSING QDN BUTTON CLICK EVENTS
-    //==============================================================
-    var reProcess = document.getElementById('reProcess');
-    var caseClosed = document.getElementById('caseClosed');
-    $(reProcess).click (function (e){
-        reprocessEvt();
-    });
-
-    $(caseClosed).click (function (e){
-        caseClosedEvt();
-    });
-    //==============================================================
-    // </END OF REPROCESS AND CLOSING QDN BUTTON CLICK EVENTS
-    //==============================================================
-
-
-    // document.onkeydown = function (e) {
-    //     if (e.keyCode == 123) {
-    //         return false;
-    //     }
-    //     if (e.ctrlKey && e.shiftKey && e.s == 'I'.charCodeAt(0)) {
-    //         return false;
-    //     }
-    //     if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) {
-    //         return false;
-    //     }
-    //     if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
-    //         return false;
-    //     }
-    //     if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
-    //         return false;
-    //     }
+    // URL TO SEAR QND NUMBER
+    // test() {
+    //     const parameter = (new URL(document.location)).searchParams;
+    //     const urlParam = parameter.get('qndNo');
+    //     document.getElementById("qdnNumber").value = urlParam;
     // }
+};
+//FUNCTION TO RESPONSIBLE FOR INSTANTIATING
+(async function() {
+    /**INSTANTIATING... */
+    const approverReqExec = new approverReq();  
+    /* Request for approvers list */
+    let rawDataProd = await approverReqExec.approversListReq(14);
+    let rawDataEE = await approverReqExec.approversListReq(14.1);
+    let rawDataPE = await approverReqExec.approversListReq(14.2);
+    let rawDataQA = await approverReqExec.approversListReq(14.3);
+    let rawDataO = await approverReqExec.approversListReq(14.4);
+    /** Appending the approvers list to the DOM */
+    const appendAuthExec = new appendAuth();
+    /** Appending prod approvers... */
+    let PROD = appendAuthExec.appendAuthToDOM(rawDataProd, $("#productionAuth"));
+    /** Appending EE approvers... */
+    let EE = appendAuthExec.appendAuthToDOM(rawDataEE, $("#EEAuth"));
+    /** Appending PE approvers... */
+    let PE = appendAuthExec.appendAuthToDOM(rawDataPE, $("#PEAuth"));
+    /** Appending QA approvers... */
+    let QA = appendAuthExec.appendAuthToDOM(rawDataQA, $("#qaAuth"));
+    /** Appending Others approvers... */
+    let O = appendAuthExec.appendAuthToDOM(rawDataO, $("#othersAuth"));
+   
+    /** Instance of Approvers event each param contains selector*/
+    const approverEvtExec = new approverEvt();
+    /** Prod parameter binding */
+    const executeProdBind = approverEvtExec.credValidation.bind(PROD);
+    executeProdBind();
+    /** EE parameter binding */
+    const executeEeBind = approverEvtExec.credValidation.bind(EE);
+    executeEeBind();
+    /** PE parameter binding */
+    const executePeBind = approverEvtExec.credValidation.bind(PE);
+    executePeBind();
+    /** QA parameter binding */
+    const executeQaBind = approverEvtExec.credValidation.bind(QA);
+    executeQaBind();
+    /** Others parameter binding */
+    const executeOBind = approverEvtExec.credValidation.bind(O);
+    executeOBind();
 
+    const qndNum = new Approval();
+    const getQdnNum = qndNum.getQdnNum();
+    const getObj = qndNum.getVal();
+    console.log("I need this QDN Number %c" + getObj.qdnNumber, 'background: #000; color: lightGreen;');   
+})();
+/**TO OD LIST 
+ * >> ALERT FOR ACCESS GRANTED | Done
+ * >> CHECK THE ALWAYS REFER TO THE DB VALUE OF APPROVERS
+ * >>> REQUEST QND LATEST AUTH VALUE 
+ * >>> APPEND TO THE SELECT MENU VALUE 
+ * 
+ */
 
+  

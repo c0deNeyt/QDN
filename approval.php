@@ -43,7 +43,7 @@
     <!------------------------------------------------------------------>   
     <script defer src="./js/approvers.js"></script>
     <!------------------------------------------------------------------>
-    <script defer src="./js/approversAuth_1.js"></script>
+    <script defer src="./js/approversAuth.js"></script>
     <!------------------------------------------------------------------>
     <script src="./js/analysisFormValidation.js" defer></script>
     <!------------------------------------------------------------------>
@@ -669,14 +669,14 @@
           <div class="row ">
               <div id="approvalDiv" class = "approvalDiv col">
                 <div>
-                  <select id="productionAuth" class="">
+                  <select id="productionAuth" one ="1">
                     <option value="" selected disabled>Needs Approval...</option>
                   </select>
                 </div>
                 <span for="productionAuth">Production</span>
               </div>
 
-              <div class = "EEAuth col">
+              <div class ="EEAuth col">
                 <div>
                   <select id="EEAuth">
                     <option value="" selected disabled>Needs Approval...</option>

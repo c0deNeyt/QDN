@@ -6,7 +6,6 @@ require("./cnfg.php");
  // FOR AJAX REQUEST' S
 $request = $_POST['request'];  
 
-
 switch ($request) {
     //=========================================
     //  FOR QDN NUMBER
@@ -492,7 +491,7 @@ switch ($request) {
             echo json_encode($data);
         };
     break;
-    //========================================
+    //===========================================
     //  FOR CHECKING IF THERE IS A CORRECTIVE 
     //  FOR THE QDN   
     //===========================================
@@ -537,7 +536,7 @@ switch ($request) {
             echo json_encode($data);
         };
     break;
-    //=========================================
+    //===========================================
     //  FOR EMAIL RECEIVER    
     //===========================================
     case 13:
@@ -572,7 +571,7 @@ switch ($request) {
             echo json_encode($data);
         };
     break;
-    //=========================================
+    //===========================================
     //  FOR APPROVER LIST    
     //===========================================
     // PROD AUTH
@@ -755,9 +754,9 @@ switch ($request) {
             echo json_encode($data);
         };
     break;
-    //============================================
+    //===========================================
     //  FOR APPROVER LIST AUTHENTICATION REQUEST
-    //==============================================
+    //===========================================
     case 15:        
         $userPassInput  = $_POST['userPassInput'];
         $empId          = $_POST['empId'];
@@ -793,7 +792,7 @@ switch ($request) {
             } 
         }
     break;
-    //=========================================
+    //===========================================
     // UPDATE REQUEST FOR STATUS 
     //===========================================
     case 16:
@@ -809,7 +808,7 @@ switch ($request) {
             echo "Insert SUCCESS!";
         }
     break;
-    //=========================================
+    //===========================================
     // PROD, EE, PE, AND QA AUTH DETAILS
     //===========================================
     case 17:
@@ -980,7 +979,7 @@ switch ($request) {
             echo json_encode($data);
         };
     break;
-    //=========================================
+    //===========================================
     // REQUEST FOR STATUS QDN REASSIGNMENT 
     //===========================================
     case 18:
@@ -1014,7 +1013,7 @@ switch ($request) {
             echo json_encode($data);
         };
     break;
-    //========================================
+    //===========================================
     // REQUEST FOR QDN DETAILS  
     // (for approval section)
     //===========================================
@@ -1051,8 +1050,6 @@ switch ($request) {
             $pe_auth_col            = $row['pe_auth_col'];
             $qa_auth_col            = $row['qa_auth_col'];
             $others_auth_col        = $row['others_auth_col'];
-
-
             // STORING DATA TO AN ARRAY
             $qndNoData[] = array("qdnNo" => $qdnNo, "issuedByName" => $issuedByName,
                 "issuedByTeam" => $issuedByTeam,"issuedToTeam" => $issuedToTeam,
@@ -1066,6 +1063,37 @@ switch ($request) {
                 "prod_auth_col" => $prod_auth_col, "ee_auth_col" => $ee_auth_col,
                 "pe_auth_col" => $pe_auth_col, "qa_auth_col" => $qa_auth_col,
                 "others_auth_col" => $others_auth_col     
+            );
+        }
+        // ENCODING ARRAY TO JSON FORMAT
+        if ( $qndNoData ){
+            echo json_encode($qndNoData);
+        };
+    break;
+    case 19.1:
+        $qdnNum = $_POST['qdnNum'];
+        $dataRequest = "SELECT `analysis_tbl`.`prod_auth_col`,
+                               `analysis_tbl`.`ee_auth_col`,
+                               `analysis_tbl`.`pe_auth_col`,
+                               `analysis_tbl`.`qa_auth_col`,
+                               `analysis_tbl`.`others_auth_col` 
+                        FROM `analysis_tbl`
+                        WHERE `qdnNo` = '$qdnNum'
+                        AND `status` = 1";
+        $dataFromDatabase = $db->prepare($dataRequest);
+        $dataFromDatabase ->execute();
+        while($row =$dataFromDatabase->fetch(PDO::FETCH_ASSOC)){
+            $prod_auth_col          = $row['prod_auth_col'];
+            $ee_auth_col            = $row['ee_auth_col'];
+            $pe_auth_col            = $row['pe_auth_col'];
+            $qa_auth_col            = $row['qa_auth_col'];
+            $others_auth_col        = $row['others_auth_col'];
+            // STORING DATA TO AN ARRAY
+            $qndNoData[] = array("prod_auth_col" => $prod_auth_col,
+                                 "ee_auth_col" => $ee_auth_col,
+                                 "pe_auth_col" => $pe_auth_col,
+                                 "qa_auth_col" => $qa_auth_col,
+                                 "others_auth_col" => $others_auth_col     
             );
         }
         // ENCODING ARRAY TO JSON FORMAT
