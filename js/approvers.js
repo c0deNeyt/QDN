@@ -399,7 +399,7 @@ $(document).ready(function () {
         function qdnDetailsReq(data){
             if(data){
                 // STORES THE JSON DATA INTO A VARIABLES
-                anError();
+                // anError();
                 var qdnDbId = data[0]['id'];
                 var qdnNum = data[0]["qdnNo"];
                 var issuedByName = data[0]['issuedBy'];

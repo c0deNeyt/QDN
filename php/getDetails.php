@@ -1071,6 +1071,7 @@ switch ($request) {
         };
     break;
     case 19.1:
+        $selectorID = $_POST['selectorID'];
         $qdnNum = $_POST['qdnNum'];
         $dataRequest = "SELECT `analysis_tbl`.`prod_auth_col`,
                                `analysis_tbl`.`ee_auth_col`,
@@ -1088,17 +1089,40 @@ switch ($request) {
             $pe_auth_col            = $row['pe_auth_col'];
             $qa_auth_col            = $row['qa_auth_col'];
             $others_auth_col        = $row['others_auth_col'];
+
+            switch ($selectorID) {
+                case "productionAuth":
+                    // echo "This is Production result from getDetails.php file";
+                    $qdnNoData[] = array("auth_col" => $prod_auth_col);
+                break;
+                case "EEAuth":
+                    // echo "This is Equipment Engineering result from getDetails.php file";
+                    $qdnNoData[] = array("auth_col" => $ee_auth_col);
+                break;
+                case "PEAuth":
+                    // echo "This is PE result from getDetails.php file";
+                    $qdnNoData[] = array("auth_col" => $pe_auth_col);
+                break;
+                case "qaAuth":
+                    // echo "This is QA result from getDetails.php file";
+                    $qdnNoData[] = array("auth_col" => $qa_auth_col);
+                break;
+                case "othersAuth":
+                    // echo "This is Others result from getDetails.php file";
+                    $qdnNoData[] = array("auth_col" => $others_auth_col);
+                break;
+            }
             // STORING DATA TO AN ARRAY
-            $qndNoData[] = array("prod_auth_col" => $prod_auth_col,
-                                 "ee_auth_col" => $ee_auth_col,
-                                 "pe_auth_col" => $pe_auth_col,
-                                 "qa_auth_col" => $qa_auth_col,
-                                 "others_auth_col" => $others_auth_col     
-            );
+            // $qdnNoData[] = array("prod_auth_col" => $prod_auth_col,
+            //                      "ee_auth_col" => $ee_auth_col,
+            //                      "pe_auth_col" => $pe_auth_col,     
+            //                      "qa_auth_col" => $qa_auth_col,         
+            //                      "others_auth_col" => $others_auth_col     
+            // );
         }
         // ENCODING ARRAY TO JSON FORMAT
-        if ( $qndNoData ){
-            echo json_encode($qndNoData);
+        if ( $qdnNoData ){
+            echo json_encode($qdnNoData);           
         };
     break;
     //=========================================

@@ -1,5 +1,4 @@
 'use strict'
-
 // CONSTRUCTOR FUNCTION
 function Approval(){
     this.userInputPass;
@@ -8,7 +7,7 @@ function Approval(){
     this.userReqId;
     this.qdnNumber;
 };
-/** THIS FUNCTION WILL CREAT AN OBJECT */
+/** THIS FUNCTION WILL CREATE OR RETURN AN OBJECT */
 Approval.prototype.getVal = function() {
     const initObj = {
         pass: this.userInputPass,
@@ -25,10 +24,15 @@ Approval.prototype.getQdnNum = function () {
     let r = this.qdnNumber
     return r;
 }
-
-function FetchApprover(qndNumber){
+/** HIDES THA SELECT MENU, REPROCESS BUTTON AND CLOSE QDN BUTTON */
+Approval.prototype.hideCommands = function(showHide){
+    let allCommands = document.getElementById("allCommands");
+    let x = allCommands.style.display = showHide;
+}
+function FetchApprover(selectorID, qndNumber){
     this.fetching = new Promise (function (resolve, reject) {
         const formData = new FormData();
+        formData.append('selectorID', selectorID);
         formData.append('qdnNum', qndNumber);
         formData.append('request', 19.1);
         fetch('./php/getDetails.php', {
@@ -45,14 +49,7 @@ function FetchApprover(qndNumber){
             alert.errorAlert(error);
         });
     });
-};
-function SetSelectDefaultVal(selectorId, approversArray) {
-    this.fetchApproverNow = function() {
-        // return approversArray;
-    }
-    $(`#${selectorId}-button`).html(`${approversArray}`);
 }
-
 /** CLASS FOR THE REQUEST */
 class approverReq {
     // constructor(qndNo){
@@ -74,7 +71,6 @@ class approverReq {
         const initVal = new Approval();
         initVal.setCredsVal();
         const credObj = initVal.getVal();
-        console.log(this);
         return $.ajax({
             type: 'POST',
             url: './php/getDetails.php',
@@ -152,7 +148,12 @@ class alerts {
                             approverName: data.item.label,
                             password : Swal.getPopup().querySelector('#password').value.trim()
                         }
+                        /**SETTING VALUE FOR updateApprover method */
                         switch (selectorID) {
+                            /** THE NUMBER SET TO THE this.userReqId
+                             * INDICATES THE AJAX REQUEST # for 
+                             * updateApprover Method
+                             */
                             case "productionAuth":
                                 this.userReqId=1;
                             break;
@@ -174,12 +175,14 @@ class alerts {
                         this.userInputPass = inputCreds.password;
                         this.qdnNumber = document.getElementById('qdnNumber').value;
                     };
+
+                    /**INSTANCE OF Class approverReq */
                     const appReq = new approverReq();
                     /** This will validate the user input */
                     appReq.checkCredsDetails();
                     setTimeout(function () {
                         resolve();
-                    }, 1000);
+                    }, 1500);
                 });
             },
             didDestroy: function (result) {
@@ -254,23 +257,16 @@ class approverEvt extends alerts {
                 /**this will return password input modal */
                 this.accessingAlerts = new approverEvt();
                 this.accessingAlerts.credentialAlert(data, this.id);
+                /** instance fro approval constructor function */
                 const qndNum = new Approval();
-                const getQdnNum = qndNum.getQdnNum();
+                qndNum.getQdnNum();
                 const getObj = qndNum.getVal();
-                
-                const test =  new FetchApprover(getObj.qdnNumber);
-                let r = await test.fetching;
-                console.log(r[0]['qa_auth_col']);
-                const approverFromDb = new SetSelectDefaultVal(this.id, r[0]['qa_auth_col']);
-                // let x = approverFromDb.fetchApprover();
-                // console.log(x);
-                /**
-                 * CRATE A FUNCTION THAT WILL SET THE VALUE
-                 * OF THE SELECT MENU BASED ON THE DATABASE
-                 * IF THE VALUE IS NULL HAVE IT BE Needs Approval...
-                 * 
-                 * SET THE SELECT ELEMENT VALUE BASED ONT HE DB
-                 */
+                /**Instance of fetching approvers*/
+                const fetchInstance =  new FetchApprover(this.id, getObj.qdnNumber); 
+                // CATCHING THE APPROVERS DETAILS
+                let approversArray = await fetchInstance.fetching;
+                //Appending the default value to the innerHTML of select Menu
+                $(`#${this.id}-button span.ui-selectmenu-text`).html(approversArray[0]['auth_col']);
             },
             /** This will set the position of 
              * select menu*/
@@ -283,6 +279,11 @@ class approverEvt extends alerts {
         .selectmenu("menuWidget")
         .addClass("overflow");
     };
+    hideCommands() {
+        let x = document.getElementById("allCommands");
+        x.style.display = "none";
+        return this;
+    }
 };
 /** CLASS FOR THE MAIN LOGIC */
 class appendAuth extends approverReq{
@@ -307,7 +308,7 @@ class appendAuth extends approverReq{
     // }
 };
 //FUNCTION TO RESPONSIBLE FOR INSTANTIATING
-(async function() {
+let executeApprovers = async () =>{
     /**INSTANTIATING... */
     const approverReqExec = new approverReq();  
     /* Request for approvers list */
@@ -347,11 +348,14 @@ class appendAuth extends approverReq{
     const executeOBind = approverEvtExec.credValidation.bind(O);
     executeOBind();
 
-    const qndNum = new Approval();
-    const getQdnNum = qndNum.getQdnNum();
-    const getObj = qndNum.getVal();
-    console.log("I need this QDN Number %c" + getObj.qdnNumber, 'background: #000; color: lightGreen;');   
-})();
+    // console.log("I need this QDN Number %c OKAY LANG", 'background: #000; color: lightGreen;');   
+};
+window.onload =()=>{
+    console.log("I need this QDN Number %c OKAY LANG", 'background: #000; color: lightGreen;');
+    const approval = new Approval();
+    const hideCommands = approval.hideCommands("none");
+}   
+// console.log("This is x", x)
 /**TO OD LIST 
  * >> ALERT FOR ACCESS GRANTED | Done
  * >> CHECK THE ALWAYS REFER TO THE DB VALUE OF APPROVERS

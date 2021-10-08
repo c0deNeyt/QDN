@@ -28,7 +28,7 @@
     <link type="text/css" href="./css/approval.css" rel="stylesheet">
     <!------------------------------------------------------------------>
     <!-- JQUERY STYLESHEET -->
-    <link rel="stylesheet" href="./js/jquery-ui-1.12.1/jquery-ui.css">
+    <link rel="stylesheet" href="./js/jquery-ui-1.12/jquery-ui.css">
     <!------------------------------------------------------------------>
     <!-- Bootstrap core JS -->
     <script src="./bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -41,7 +41,7 @@
     <!--CORE JS-->
     <script type="text/javascript" src="./js/jquery-3.6.0.min.js"></script>
     <!------------------------------------------------------------------>   
-    <script defer src="./js/approvers.js"></script>
+    <!-- <script defer src="./js/approvers.js"></script> -->
     <!------------------------------------------------------------------>
     <script defer src="./js/approversAuth.js"></script>
     <!------------------------------------------------------------------>
@@ -53,308 +53,13 @@
     <!------------------------------------------------------------------>
     <script src="https://smtpjs.com/v3/smtp.js"></script>
     <!------------------------------------------------------------------>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>
+    <script src="./js/jquery-ui-1.12/jquery-ui.js"></script>
     <!-- -------------------------------------------------------------- -->
-    <style>
-      *{
-        margin: 0;
-        padding: 0;
-      }
-      body *{
-        /* outline: 1px solid grey; */
-        margin: 0;
-        font-family: "Lato", sans-serif;
-      }
-
-      .overflow {
-        height: 200px;
-      }
-
-      /*==============================================================
-                              "SIDE BAR STYLE"
-      ================================================================*/
-      .sidebar {
-        background-image: linear-gradient(to bottom, #dbf900, #dbfb48, #dcfc6a, #defd88, #e1fda2);
-        margin: 0;
-        padding: 0;
-        width: 200px;
-        background-color: #f1f1f1;
-        position: fixed;
-        height: 100%;
-        overflow: auto;
-      }
-        .sidebar a {
-          display: block;
-          color: black;
-          padding: 20px;
-          text-decoration: none;
-        }
-
-          .sidebar a:hover:not(.active) {
-            color: rgb(0, 0, 0);
-            position: sticky;
-            transform: scale(1.19);/* (120% zoom) */
-            z-index:99;
-          }
-          .sidebar img, svg {
-            vertical-align: middle;
-            width: 40px;
-            margin: 10px;
-        }
-
-      /*======================================
-        "SYSTEM TITTLE STYLE INSIDE SIDEBAR"
-      ========================================*/
-      .sysName{
-        display: block;
-        text-align: center;
-        border: 5px;
-        border-bottom: 2px solid #00000030;
-        margin-bottom: 15px;
-      }
-        .sysName img{
-          width: 8rem;
-          border-radius: 3px;
-        }
-
-      /*==============================================================
-                        "MAIN CONTENT STYLE"
-      ================================================================*/
-      div.content {
-        margin-left: 200px;
-        padding: 1px 16px;
-        height: 100vh;
-      
-      }
-        .card{
-          padding: 20px;
-          margin: 20px auto;
-          background-color: #ffffffeb;
-        }
-        h4.mb-4 {
-          color: #8c7000;
-          font-weight: bold;
-          width: 23rem;
-          padding: 4px;
-        }
-
-        fieldset.issueDetails {
-          border: 0.1px solid gray;
-          padding: 22px;
-          margin: 0px 0px 38px 0px;
-          box-shadow: 1px 5px 9px 0px gray;
-        }
-        .fromdbResutl {
-          font-weight: bold;
-          color: #212529;
-        }
-      
-        .form-check-label {
-          margin: 0px 0px 0px 1rem;
-        }
-        span.invalid {
-          padding: 20px;
-          color: red;
-        }
-        .telfordRed{
-          color:  #800000;
-        }
-        
-        #productionAuth-button, #EEAuth-button, #PEAuth-button, #qaAuth-button,  #othersAuth-button {
-          border-top: none;
-          background-color: #fff0;
-          border-left: none;
-          border-right: none;
-          border-bottom: 1px solid black;
-          border-radius: 0;
-        }
-        .ui-selectmenu-text {
-            padding: 0 0 0 2rem;
-        }
-          [for="productionAuth"] {
-            padding: .3rem 0 0 4.1rem;
-            display: inline-block;
-            font-weight: bold;
-          }
-
-          [for="EEAuth"] {
-            padding: .3rem 0 0 1.5rem;
-            display: inline-block;
-            font-weight: bold;
-          }
-
-          [for="PEAuth"] {
-            padding: .3rem 0 0 1.5rem;
-            display: inline-block;
-            font-weight: bold;
-          }
-
-          [for="qaAuth"] {
-            padding: .3rem 0 0 1.5rem;
-            display: inline-block;
-            font-weight: bold;
-          }
-          [for="othersAuth"] {
-            padding: .3rem 0 0 5.5rem;
-            display: inline-block;
-            font-weight: bold;
-          }
-          a.col {
-              text-decoration: none;
-          }
-          .appBtnIcon {
-            width: 4rem;
-            margin-left: 2.5rem;
-          }
-          .btnIconLbl {
-            display: block;
-            color: black;
-            font-weight: bold;
-            padding: .5rem 0 0 0;
-            margin: 0 0 0 2rem;
-          }
-          #approvalBtns a:hover:not(.active) {
-              color: rgb(0, 0, 0);
-              position: sticky;
-              transform: scale(1.1);
-              z-index: 99;
-          }
-
-
-
-      /* FOR SWEET ALERT */
-      .colored-toast.swal2-icon-success {
-        background-color: #a5dc86 !important;
-      }
-
-      .colored-toast.swal2-icon-error {
-        background-color: #f27474 !important;
-      }
-
-      .colored-toast.swal2-icon-warning {
-        background-color: #f8bb86 !important;
-      }
-
-      .colored-toast.swal2-icon-info {
-        background-color: #3fc3ee !important;
-      }
-
-      .colored-toast.swal2-icon-question {
-        background-color: #87adbd !important;
-      }
-
-      .colored-toast .swal2-title {
-        color: white;
-      }
-
-      .colored-toast .swal2-close {
-        color: white; 
-      }
-
-      .colored-toast .swal2-content {
-        color: white;
-      }
-
-
-
-      /*==============================================================
-                          "RESPONSIVE STYLE"
-      ================================================================*/
-
-      @media screen and (max-width: 700px) {
-        div.content {
-        margin-left: 200px;
-        padding: 64px 16px;
-        height: 100vh;
-      
-      }
-      /*======================
-        "NAME INCLUDING LOGO"
-      ========================*/
-        .sysName{
-          display: inline-block;
-          text-align: center;
-          width: 11rem;
-          vertical-align: top;
-          margin: 3px 0px 0px -6px;
-          border-bottom: none;
-          border-right: 2px solid #00000030;
-        }
-      /*====================
-        "TOP NAV BAR"
-      ======================*/
-        .sidebar {
-          width: 100%;
-          height: 80px;
-          z-index: 99;
-          display: block;
-          overflow: unset;
-        }
-          .sidebar a {
-            display: inline-block;
-            font-size: 0;
-            line-height: 0;
-            color: transparent;
-            padding: 0;
-            margin: 0.7rem 0.5rem 0.7rem 0.5rem;
-            
-          }
-          .sidebar a img {
-            vertical-align: middle;
-            width: 41px;
-            margin: 0px 7px;
-          }
-        div.content {margin-left: 0;}
-      }
-
-      @media screen and (max-width: 400px) {
-      /*======================
-        "NAME INCLUDING LOGO"
-      ========================*/
-        .sysName {
-          width: 6rem;
-          font-size: 20px;
-        }
-          .sysName img{
-            width: 5rem;
-            border-radius: 1px;
-          }
-          .sysName h4 {
-            font-size: 17px;
-            padding: 0px;
-            margin: -7px;
-          }
-      /*====================
-        "TOP NAV BAR"
-      ======================*/
-        .sidebar {
-          width: 100%;
-          height: 70px;
-          z-index: 99;
-          display: inline;
-          overflow: scroll; /*WHEN SCREEN DROPS < 240PX*/
-        }
-          .sidebar a {
-            display: inline-block;
-            font-size: 0;
-            line-height: 0;
-            color: transparent;
-            padding: 0;
-            margin: 0.7rem 0.5rem 0.7rem 0.5rem;
-          }
-          .sidebar a img {
-            vertical-align: middle;
-            width: 30px;
-            margin: 6px 5px;
-          }
-        h4.mb-4 {
-        width: 19rem;
-        overflow: scroll;
-
-        }
-      }
-
-    </style>
+    <!-- UNCOMMENT TO TEST HOW FAST THE PAGE LOAD
+    <script type="text/javascript">
+            var timerStart = Date.now();
+    </script> -->
+   
   </head>
   <body oncontextmenu="return true">
     <div class="sidebar">
@@ -666,64 +371,76 @@
             <!-- END OF FIELDSET  -->
           </fieldset>
 
-          <div class="row ">
-              <div id="approvalDiv" class = "approvalDiv col">
-                <div>
-                  <select id="productionAuth" one ="1">
-                    <option value="" selected disabled>Needs Approval...</option>
-                  </select>
+          <div id="allCommands">
+            <div class="row ">
+                <div id="approvalDiv" class = "approvalDiv col">
+                  <div>
+                    <select id="productionAuth">
+                      <option value="" selected disabled>Needs Approval...</option>
+                    </select>
+                  </div>
+                  <span for="productionAuth">Production</span>
                 </div>
-                <span for="productionAuth">Production</span>
-              </div>
-
-              <div class ="EEAuth col">
-                <div>
-                  <select id="EEAuth">
-                    <option value="" selected disabled>Needs Approval...</option>
-                  </select>
+                <div class ="EEAuth col">
+                  <div>
+                    <select id="EEAuth">
+                      <option value="" selected disabled>Needs Approval...</option>
+                    </select>
+                  </div>
+                  <span for="EEAuth">Equipment Engineering</span>
                 </div>
-                <span for="EEAuth">Equipment Engineering</span>
-              </div>
-
-              <div class = "PEAuth col">
-                <div>
-                  <select id="PEAuth">
-                    <option value="" selected disabled>Needs Approval...</option>
-                  </select>
+                <div class = "PEAuth col">
+                  <div>
+                    <select id="PEAuth">
+                      <option value="" selected disabled>Needs Approval...</option>
+                    </select>
+                  </div>
+                  <span for="PEAuth">Process Engineering</span>
+                </div>  
+                <div class = "qaAuth col">
+                  <div>
+                    <select id="qaAuth">
+                      <option value="" selected disabled>Needs Approval...</option>
+                    </select> 
+                  </div>
+                  <span for="qaAuth">Quality Assurance</span>
                 </div>
-                <span for="PEAuth">Process Engineering</span>
-              </div>
+            </div>
 
-              <div class = "qaAuth col">
+            <div class="mt-5 mb-5 row">
+              <div class = "col-4"></div>
+              <div class = "othersAuth col">
                 <div>
-                  <select id="qaAuth">
+                  <select id="othersAuth">
                     <option value="" selected disabled>Needs Approval...</option>
                   </select> 
                 </div>
-                <span for="qaAuth">Quality Assurance</span>
+                <span for="othersAuth">Others</span>
               </div>
-          </div>
-
-          <div class="mt-5 mb-5 row">
-            <div class = "col-4"></div>
-            <div class = "othersAuth col">
-              <div>
-                <select id="othersAuth">
-                  <option value="" selected disabled>Needs Approval...</option>
-                </select> 
-              </div>
-              <span for="othersAuth">Others</span>
+              <div class = "col-4"></div>
             </div>
-            <div class = "col-4"></div>
+            <!-- REANALYSIS AND CLOSE QND BUTTON -->
+            <div id = "approvalBtns" class="row mt-2">
+              <a class = "col text-center" id="reProcess" ><img class="appBtnIcon" src="./images/svg/process.svg" alt="REPROCESS_ICON"><span class = "btnIconLbl">SUBMIT FOR REPROCESS</span></a>
+              <a class = "col text-center" id="caseClosed" ><img class="appBtnIcon" src="./images/svg/check.svg" alt="CLOSED_QDN_ICON"><span class = "btnIconLbl">SAVE AS CLOSED QDN</span></a>
+            </div>
+
           </div>
 
-          <div id = "approvalBtns" class="row mt-2">
-            <a class = "col text-center" id="reProcess" ><img class="appBtnIcon" src="./images/svg/process.svg" alt="REPROCESS_ICON"><span class = "btnIconLbl">SUBMIT FOR REPROCESS</span></a>
-            <a class = "col text-center" id="caseClosed" ><img class="appBtnIcon" src="./images/svg/check.svg" alt="CLOSED_QDN_ICON"><span class = "btnIconLbl">SAVE AS CLOSED QDN</span></a>
-          </div>
         </form>
       </div>  
     </div>
-  
+      
+
+    <!-- UNCOMMENT TO TEST HOW FAST IS THE PAGE LOAD -->
+    <!-- <script type="text/javascript">
+             $(document).ready(function() {
+                 console.log("Time until DOMready: ", Date.now()-timerStart);
+             });
+             $(window).load(function() {
+                 console.log("Time until everything loaded: ", Date.now()-timerStart);
+             });
+      </script> -->
+
   </body>
 </html>
