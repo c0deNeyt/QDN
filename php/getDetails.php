@@ -1089,7 +1089,7 @@ switch ($request) {
             $pe_auth_col            = $row['pe_auth_col'];
             $qa_auth_col            = $row['qa_auth_col'];
             $others_auth_col        = $row['others_auth_col'];
-
+            // STORING DATA TO AN ARRAY
             switch ($selectorID) {
                 case "productionAuth":
                     // echo "This is Production result from getDetails.php file";
@@ -1112,13 +1112,6 @@ switch ($request) {
                     $qdnNoData[] = array("auth_col" => $others_auth_col);
                 break;
             }
-            // STORING DATA TO AN ARRAY
-            // $qdnNoData[] = array("prod_auth_col" => $prod_auth_col,
-            //                      "ee_auth_col" => $ee_auth_col,
-            //                      "pe_auth_col" => $pe_auth_col,     
-            //                      "qa_auth_col" => $qa_auth_col,         
-            //                      "others_auth_col" => $others_auth_col     
-            // );
         }
         // ENCODING ARRAY TO JSON FORMAT
         if ( $qdnNoData ){

@@ -95,7 +95,7 @@
                 <span class='fromdbResutl' id='ibName'></span>
               </div>  
               <div class="col-md-2">
-                <label class="telfordRed col-form-label">Team: </label>
+                <label id="issuedByTeam" class="telfordRed col-form-label">Team: </label>
               </div>
               <div class="col">
                   <span class="fromdbResutl" id="ibTeam"></span>
@@ -304,10 +304,10 @@
                 </thead>
                 <tbody id="tblBodyContId">
                   <tr id="containmentRow">
-                    <td id = "containmentCol">Empty!</td>
-                    <td id = "containmentRespCol">Empty!</td>
-                    <td id = "containmentWhenCol">Empty!</td>
-                    <td id = "containmentStatCol">Empty!</td>
+                    <td id = "containmentCol">Not Set!</td>
+                    <td id = "containmentRespCol">Not Set!</td>
+                    <td id = "containmentWhenCol">Not Set!</td>
+                    <td id = "containmentStatCol">Not Set!</td>
                   </tr>
                 </tbody>
                 <!-- END OF TABLE -->
@@ -331,10 +331,10 @@
                 </thead>
                 <tbody id="tblBodyCorrId">
                   <tr id = "correctionTblRow">
-                    <td id = "correctionTblCol">Empty!</td>
-                    <td id = "correctionTblRespCol">Empty!</td>
-                    <td id = "correctionTblWhenCol">Empty!</td>
-                    <td id = "correctionTblStatCol">Empty!</td>
+                    <td id = "correctionTblCol">Not Set!</td>
+                    <td id = "correctionTblRespCol">Not Set!</td>
+                    <td id = "correctionTblWhenCol">Not Set!</td>
+                    <td id = "correctionTblStatCol">Not Set!</td>
                   </tr>
                 </tbody>
                 <!-- END OF TABLE -->
@@ -358,10 +358,10 @@
                 </thead>
                 <tbody id="tblBodyCorrtvId">
                 <tr id = "correctiveTblRow">
-                    <td id = "correctiveTblCol">Empty!</td>
-                    <td id = "correctiveTblRespCol">Empty!</td>
-                    <td id = "correctiveTblWhenCol">Empty!</td>
-                    <td id = "correctiveTblStatCol">Empty!</td>
+                    <td id = "correctiveTblCol">Not Set!</td>
+                    <td id = "correctiveTblRespCol">Not Set!</td>
+                    <td id = "correctiveTblWhenCol">Not Set!</td>
+                    <td id = "correctiveTblStatCol">Not Set!</td>
                   </tr>
                 </tbody>
                 <!-- END OF TABLE -->

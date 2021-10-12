@@ -192,6 +192,7 @@ div.content {
     font-weight: bold;
     color: blue;
     font-size: 1.3rem;
+    height: 3rem;
   }
 
   input[value="Minor"],

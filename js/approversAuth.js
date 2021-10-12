@@ -107,25 +107,13 @@ class approverReq {
     }
     /** REQUEST FOR QND DETAILS */
     getQdnDetails() {
-        return new Promise (function (resolve, reject) {
-            const formData = new FormData();
-            formData.append('qdnNum', "T8321-137");
-            formData.append('request', 19.1);
-            fetch('./php/getDetails.php', {
-            method: 'POST',
-            body: formData
-            })
-            .then(response => response.json())
-            .then(result => {
-                resolve(result);
-            })
-            .catch(error => {
-                const alert = new alerts();
-                reject(reject)
-                alert.errorAlert(error);
-            });
-        })
-
+        return $.ajax({
+            type: 'POST',
+            url: "./php/getDetails.php",
+            data: { request: 19 },
+            cache: false,
+            dataType: "json"
+        });
     }
 };
 /** CLASS FOR ALL ALERTS */
@@ -350,18 +338,45 @@ let executeApprovers = async () =>{
 
     // console.log("I need this QDN Number %c OKAY LANG", 'background: #000; color: lightGreen;');   
 };
-window.onload =()=>{
-    console.log("I need this QDN Number %c OKAY LANG", 'background: #000; color: lightGreen;');
+window.onload = ()=>{
+   
+    console.log("I need this QDN Number %c OKAY LANG AKO !!!", 'background: #000; color: lightGreen;');
+
+    var forms = document.querySelectorAll('.needs-validation');
+ 
+    Array.prototype.slice.call(forms).forEach((item) => {
+    //   console.log(item.elements[1]);
+        let anotherfrm = item.elements[1];
+        Array.prototype.slice.call(anotherfrm).forEach(item => {
+        console.log(item);
+      });
+        
+    });
+    // [form.elements].forEach(item => {
+    //     console.log(item);
+    //   });
+
     const approval = new Approval();
-    const hideCommands = approval.hideCommands("none");
+    // const hideCommands = approval.hideCommands("block");
+
+    /**INSTANCE FOR THE QND DETAILS REQUEST */
+    (async()=>{
+        let request = new approverReq();
+        let rawReq = await request.getQdnDetails();
+        //rawReq will return comple data
+        // console.log(rawReq);
+    })();
+    $('#qdnNumber').on('input', async function(){
+        console.log(this.value);
+    });
+
+
 }   
 // console.log("This is x", x)
 /**TO OD LIST 
- * >> ALERT FOR ACCESS GRANTED | Done
- * >> CHECK THE ALWAYS REFER TO THE DB VALUE OF APPROVERS
- * >>> REQUEST QND LATEST AUTH VALUE 
- * >>> APPEND TO THE SELECT MENU VALUE 
- * 
+ * >> CREATE A REQUEST FOR QDN DEATAILS 
+ * >> LOAD THE REQUEST TO THE HTML DOM
+ * >> INTEGREATE SERACH FUNCTINO
  */
 
   
