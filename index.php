@@ -49,7 +49,7 @@
   <!------------------------------------------------------------------>
   <script src="./js/time_date.js" defer></script>
   <!------------------------------------------------------------------>
-  <script src="./js/sweetalert2.all.min.js" defer></script>
+ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.7/dist/sweetalert2.all.min.js"></script>
   <!------------------------------------------------------------------>
   <!-- JQUERY STYLESHEET -->
   <!------------------------------------------------------------------>
@@ -99,11 +99,11 @@
           </div>
           <div class="col-md-5">
             <label class="col-form-label">Emp. Name:</label>
-            <input class="autofill" id="issuedByEmpName"  type="text"/>
+            <input class="autofill" id="issuedByEmpName"  type="text" placeholder="AutoFill..."disabled/>
           </div>
           <div class="col-md-3">
             <label class="col-form-label">Team:</label>
-            <input class="autofill" id="issuedByEmpTeam"  type="text" />
+            <input class="autofill" id="issuedByEmpTeam"  type="text" placeholder="AutoFill..." disabled/>
           </div>
         </div>
         <!--
@@ -121,11 +121,11 @@
           </div>
           <div class="col-md-5">
               <label for="issuedToEmpName" class="col-form-label">Emp. Name:</label>
-              <input class="autofill" id="issuedToEmpName" type="text"  />
+              <input class="autofill" id="issuedToEmpName" type="text" placeholder="AutoFill..." disabled/>
           </div>
           <div class="col-md-3">
               <label for="issuedToEmpTeam" class="col-form-label">Team:</label>
-              <input class="autofill" id="issuedToEmpTeam" type="text" />
+              <input placeholder="AutoFill..." class="autofill" id="issuedToEmpTeam" type="text"disabled/>
           </div>
         </div>
         <!--
@@ -136,11 +136,11 @@
         <div class="row col-md-12">
           <div class="col-md-4">
             <label for="station" class="col-form-label">Station:</label>
-            <input class="autofill station" id="station" type="text" placeholder="AutoFill..."/>
+            <input class="autofill station" id="station" type="text" placeholder="AutoFill..." disabled/>
           </div>
           <div class="col-md-4">
             <label class="col-form-label">Team/Resp:</label>
-            <input class="autofill teamResp" id="teamResp" type="text"  placeholder="AutoFill..."/>
+            <input class="autofill teamResp" id="teamResp" type="text" placeholder="AutoFill..." disabled/>
           </div>
           <div class="col-md-4">
             <label class="col-form-label">Date/Time:</label>

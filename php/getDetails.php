@@ -1118,6 +1118,86 @@ switch ($request) {
             echo json_encode($qdnNoData);           
         };
     break;
+    case 19.2:
+        $selectorID = $_POST['selectorID'];
+        $qdnNum = $_POST['qdnNum'];
+        $dataRequest = "SELECT  `analysis_tbl`.`qdnNo`,
+                            `analysis_tbl`.`issuedBy`,
+                            `analysis_tbl`.`issuedByName`,
+                            `analysis_tbl`.`issuedByTeam`,
+                            `analysis_tbl`.`issuedTo`,
+                            `analysis_tbl`.`issuedToName`,
+                            `analysis_tbl`.`issuedToTeam`,
+                            `analysis_tbl`.`customer`,
+                            `analysis_tbl`.`packageType`,
+                            `analysis_tbl`.`machine`,
+                            `analysis_tbl`.`deviceName`,
+                            `analysis_tbl`.`station`,
+                            `analysis_tbl`.`lotId`,
+                            `analysis_tbl`.`teamResp`,
+                            `analysis_tbl`.`dateTime`,
+                            `analysis_tbl`.`classification`,
+                            `analysis_tbl`.`defects`,
+                            `analysis_tbl`.`failure_mode`,
+                            `analysis_tbl`.`disposition`,
+                            `analysis_tbl`.`cause_of_defects`,
+                            `analysis_tbl`.`cause_of_defects_des`,
+                            `analysis_tbl`.`status`,
+                            `analysis_tbl`.`prod_auth_col`,
+                            `analysis_tbl`.`ee_auth_col`,
+                            `analysis_tbl`.`pe_auth_col`,
+                            `analysis_tbl`.`qa_auth_col`,
+                            `analysis_tbl`.`others_auth_col`,
+                            `analysis_tbl`.`status_resp`,
+                            `analysis_tbl`.`created_at`,
+                            `analysis_tbl`.`updated_at`, 
+                            `containments`.`actions` AS `containmentAct`, 
+                            `containments`.`responsible` AS `containmentResp`,
+                            `containments`.`when` AS `containmentDate`,
+                            `containments`.`status` AS `containmentStat`,
+                            `corrections`.`actions` AS `correctionsAct`, 
+                            `corrections`.`responsible` AS `correctionsResp`,
+                            `corrections`.`when` AS `correctionsDate`,
+                            `corrections`.`status` AS `correctionsStat`,
+                            `correctives`.`actions` AS `correctivesAct`, 
+                            `correctives`.`responsible` AS `correctivesResp`,
+                            `correctives`.`when` AS `correctivesDate`,
+                            `correctives`.`status` AS `correctivesStat`
+                        FROM 
+                            `telford_db`.`analysis_tbl`
+                        INNER JOIN
+                            `telford_db`.`containments`
+                        ON
+                            `analysis_tbl`.`id` = `containments`.`analysis_tbl_id`
+                        INNER JOIN
+                            `telford_db`.`corrections`
+                        ON
+                            `analysis_tbl`.`id` = `corrections`.`analysis_tbl_id`
+                        INNER JOIN
+                            `telford_db`.`correctives`
+                        ON
+                            `analysis_tbl`.`id` = `correctives`.`analysis_tbl_id`
+                        WHERE
+                            `analysis_tbl`.`qdnNo` = 'T8321-137'
+                        AND
+                            `analysis_tbl`.`status` = 1";
+        $dataFromDatabase = $db->prepare($dataRequest);
+        $dataFromDatabase ->execute();
+        while($row =$dataFromDatabase->fetch(PDO::FETCH_ASSOC)){
+            $prod_auth_col          = $row['prod_auth_col'];
+            $ee_auth_col            = $row['ee_auth_col'];
+            $pe_auth_col            = $row['pe_auth_col'];
+            $qa_auth_col            = $row['qa_auth_col'];
+            $others_auth_col        = $row['others_auth_col'];
+            $containmentAct         = $row['containmentAct'];
+            // STORING DATA TO AN ARRAY
+            $qdnData[] = array("containmentAct" => $containmentAct);
+        }
+        // ENCODING ARRAY TO JSON FORMAT
+        if ( $qdnData ){
+            echo json_encode($qdnData);           
+        };
+    break;
     //=========================================
     // REQUEST FOR QDN REASSIGNMENT 
     //===========================================

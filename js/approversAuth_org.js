@@ -919,6 +919,7 @@
                 title: 'Enter your password',
                 input: 'password',
                 inputPlaceholder: 'Enter your password',
+                backdrop: true,
                 inputAttributes: {
                     maxlength: 20,
                     autocapitalize: 'off',

@@ -110,7 +110,7 @@ class approverReq {
         return $.ajax({
             type: 'POST',
             url: "./php/getDetails.php",
-            data: { request: 19 },
+            data: { request: 19.2 },
             cache: false,
             dataType: "json"
         });
@@ -364,7 +364,7 @@ window.onload = ()=>{
         let request = new approverReq();
         let rawReq = await request.getQdnDetails();
         //rawReq will return comple data
-        // console.log(rawReq);
+        console.log("From request 19.2", rawReq);
     })();
     $('#qdnNumber').on('input', async function(){
         console.log(this.value);

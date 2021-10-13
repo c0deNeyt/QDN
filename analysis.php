@@ -34,7 +34,7 @@
   <script src="./bootstrap/js/bootstrap.bundle.min.js"></script>
   <!------------------------------------------------------------------>
   <script src="./bootstrap/js/bootstrap.js"></script>
-  <!------------------------------------------------------------------>
+  <!------------------------------------------------------------------>*
   <script src="./bootstrap/js/bootstrap.bundle.js"></script>
   <!------------------------------------------------------------------>
 
@@ -49,16 +49,11 @@
   <!------------------------------------------------------------------>
   <script src="https://smtpjs.com/v3/smtp.js"></script>
   <!------------------------------------------------------------------>
-  <script src="./js/sweetalert2.all.min.js" ></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js" ></script>
   <!------------------------------------------------------------------>
   <!-- JQUERY UI -->
   <!------------------------------------------------------------------>
-  <script src="./js/jquery-ui-1.12.1/external/jquery/jquery.js"></script>
-  <!------------------------------------------------------------------>
-  <script src="./js/jquery-ui-1.12.1/jquery-ui.js"></script>
-  <script src="./js/j_ui/jquery-ui.js"></script>
-  <!------------------------------------------------------------------>
-  <script src="./js/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+  <script src="./js/jquery-ui-1.12/jquery-ui.js"></script>
   <!------------------------------------------------------------------>
   <style>
     *{

@@ -16,7 +16,7 @@
   // MAIN OBJECT
   class analysisFormValidation {
     constructor (){
-      this.currentQdnNum     = $("#+").val();
+      this.currentQdnNum     = $("#qdnNumber").val();
       this.qdnFailureMode    = $("input[name = 'failureMode']:checked").val();
       this.disposition       = $("input[name = 'disposition']:checked").val();
       this.COD               = $("input[name = 'COD']:checked").val();
@@ -529,8 +529,6 @@
               newInstantObject.errorAlert(error);
               console.log(error);
             }
-            
-           
 
           };// @ END OF HANDLING UPDATE FOR CURRENT QDN
 
