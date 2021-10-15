@@ -110,7 +110,7 @@ class approverReq {
         return $.ajax({
             type: 'POST',
             url: "./php/getDetails.php",
-            data: { request: 19.2 },
+            data: { request: 19 },
             cache: false,
             dataType: "json"
         });
@@ -267,6 +267,8 @@ class approverEvt extends alerts {
         .selectmenu("menuWidget")
         .addClass("overflow");
     };
+    /**this will hide all the division 
+     * with an ID of allCommands */
     hideCommands() {
         let x = document.getElementById("allCommands");
         x.style.display = "none";
@@ -361,10 +363,18 @@ window.onload = ()=>{
 
     /**INSTANCE FOR THE QND DETAILS REQUEST */
     (async()=>{
-        let request = new approverReq();
-        let rawReq = await request.getQdnDetails();
-        //rawReq will return comple data
-        console.log("From request 19.2", rawReq);
+        const req = new approverReq();
+        const approverSectionIds = ["qdnNumber", "ibName", "ibTeam", "itName",
+                                   "itTeam", "customer", "machine", "pkgType",
+                                   "partName", "station","lotId", "teamResp", 
+                                   "dateTime", "classification", "defects", "failureMode", 
+                                   "disposition", "rooCause", "codDes"];
+        let reqResult = await req.getQdnDetails();
+        let objectValues = Object.values(reqResult[0]);
+
+        console.log(approverReq.prototype, "And this the the result of request -->", objectValues[0]);
+
+
     })();
     $('#qdnNumber').on('input', async function(){
         console.log(this.value);
