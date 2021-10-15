@@ -3,37 +3,57 @@ $(document).ready(function(){
     let gPackageTypeFromDb = ["N/A"];
     gPackageTypeFromDbLen = gPackageTypeFromDb.length;
 
+    /** CLASS FOR MACHINE AND PART NAME EDIT MODE*/
     class editVal {
-        constructor(gPackageTypeFromDb, userInputLen, userInput, uerpkgType){
+        constructor(gPackageTypeFromDb, userInputLen, userInput, uerpkgType, originalPackageType){
             this.gPackageTypeFromDb = gPackageTypeFromDb
             this.userInput = userInput;
             this.userInputLen = userInputLen;
             this.uerpkgType = uerpkgType;
+            this.originalPackageType = originalPackageType;
         };
-        changingPackageValue (){
+        valueAfterStringKey (){
             let stringKey = "_";
             let key = 0;
-            console.log("Not matched!", this.userInput);
+            // console.log("User input value", this.userInput);
             let customPkgTyp = [];
+            /**Loop through the machine input value*/
             for(var i=0; i<this.userInputLen; i++  ){
+                /**If underscore are found and setting the key
+                 * to the value of i */
                 if (this.userInput[i] == stringKey){
                     key = i;
                 }
-                if ((key != 0 ) && ( i > key)){
+                /**getting the value after the underscore or 
+                 * the stringKey for instance and push the 
+                 * value inside the customPkgTyp*/
+                if ((key) && ( i > key)){
                     var nextValToTheKey  = this.userInput[i];
                     customPkgTyp.push(nextValToTheKey)
                 }
             };
-
-            var customPkgTypLen = customPkgTyp.length;
+            /**joining customPkgTyp or converting array as string */
             var finalCustomPkgTyp = (customPkgTyp.join(""));
-
-            if ((customPkgTypLen > 0 )){
+            return finalCustomPkgTyp;
+        }
+        /**METHOD FOR THE PACKAGE TYPE EDITING UNDER MACHINE
+         * INPUT EVENT*/
+        changingPackageValue (finalCustomPkgTyp){
+            // console.log ("this is the customPkgTyp", finalCustomPkgTyp)
+            /**checking if the customPkgTyp was set*/
+            if (finalCustomPkgTyp){
                 $("#packageType").val(finalCustomPkgTyp);
+                /**removing the initial value of global variable(line 3) 
+                 * using pop() */
                 gPackageTypeFromDb.pop();
+                /**assigning new value the global variable. This is 
+                 * for reference of customLeadCount Method*/
                 gPackageTypeFromDb.push(finalCustomPkgTyp);
-                // console.log("OK PA AKO");
+                // console.log("OK PA AKO", gPackageTypeFromDb);
             }
+            /*if the customPkyTyp is not set
+             *but edit event is triggered set ht value 
+             of package type to "N/A" */
             else{
                 gPackageTypeFromDb.pop();
                 document.getElementById('packageType').value = "N/A";
@@ -42,6 +62,10 @@ $(document).ready(function(){
                 // console.log("OK PA AKO", tempPkgVal);
                 gPackageTypeFromDb.push(tempPkgVal);
             };
+        };
+        /**METHOD FOR THE PART NAME Lead count editing*/
+        customLeadCount(finalCustomLeadCount){
+            $("#packageType").val(this.originalPackageType + "_" + finalCustomLeadCount + "L");
         }
     };
    
@@ -225,7 +249,6 @@ $(document).ready(function(){
                     if ( data ){
                         var dataLen = data.length;
                         var pkgType = data[0]['package_type'];
-
                         if((dataLen > 0) && (gPackageTypeFromDbLen = 0)){
                             $("#packageType")
                             .val(pkgType)
@@ -240,17 +263,19 @@ $(document).ready(function(){
                             $("#packageType").val(pkgType);
                             gPackageTypeFromDb.push(pkgType);
                         }    
-                    }
+                    }   
                     else{
                         const varEditVal = new editVal(gPackageTypeFromDb, userInputLen, userInput);
-                        const execMethod = varEditVal.changingPackageValue();
+                        let customPkgType = varEditVal.valueAfterStringKey();
+                        varEditVal.changingPackageValue(customPkgType);
                     };
                     //</ END OF CHECKING IF DATA PARAM IS NOT NULL
                 },
                 error: () => {
                     $("#packageType").val("N/A").css({"color":"", "border-bottom": "1px solid #63f200"/*Green Hex*/});
                     const varEditVal = new editVal(gPackageTypeFromDb, userInputLen, userInput, uerpkgType);
-                    const execMethod = varEditVal.changingPackageValue();
+                    let customPkgType = varEditVal.valueAfterStringKey();
+                    varEditVal.changingPackageValue(customPkgType);
                 },
             });
         };
@@ -351,38 +376,22 @@ $(document).ready(function(){
                         };
                        
                     }
-                     else {
-                            // console.log ("This is the partname Datat", data);
-                            // var stringKey = "_";
-                            // key = 0;
-                            // var customLeadCount = [];
-
-                            // for(var i = 0; i < userPartNameInputLen; i++  ){
-                                
-                            //     if (userPartNameInput[i] == stringKey){
-                            //         key = i;
-                            //     }
-                            //     if ((key != 0 ) && ( i > key)){
-                            //         var nextValToTheKey  = userPartNameInput[i];
-                            //         customLeadCount.push(nextValToTheKey)
-                            //     }
-                            // }
-                            // var finalCustomLeadCount = (customLeadCount.join(""));
-                            // $("#packageType").val(originalPackageType + "_" + finalCustomLeadCount + "L");
-                            const varEditVal = new editVal(gPackageTypeFromDb, userInputLen, userInput, uerpkgType);
-                            const execMethod = varEditVal.changingPackageValue();
-                        };
+                    // else {
+                    //     const varEditVal = new editVal(gPackageTypeFromDb, userInputLen, userInput, uerpkgType, originalPackageType);
+                    //     const execMethod = varEditVal.customLeadCount();
+                    // };
                     // </END OF CHECKING IN data IS NOT NULL
                 },
                 error: ()=>{
-                    const varEditVal = new editVal(gPackageTypeFromDb, userInputLen, userInput, uerpkgType);
-                    const execMethod = varEditVal.changingPackageValue();
+                    const varEditVal = new editVal(gPackageTypeFromDb, userInputLen, userInput, uerpkgType, originalPackageType);
+                    let customPkgType = varEditVal.valueAfterStringKey();
+                    varEditVal.customLeadCount(customPkgType); 
                 },
             });           
         };
         // STORING THE DATA FROM DATABASE INTO ARRAY
         // THIS DATA IS FOR AC JQUERY PLUGIN 
-        var partNameDetails = [];
+        var partNameDetails = []; 
         $.ajax({
             type: 'POST',
             url: "./php/getDetails.php",

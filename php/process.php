@@ -3,7 +3,6 @@
 require("../php/cnfg.php");
 
 if(isset($_POST)){
-
 	$qdnNumber2Db 			= $_POST['qdnNumber2Db'];
 	$qdnIBENo2Db 			= $_POST['qdnIBENo2Db'];
 	$qdnIBEN2Db 			= $_POST['qdnIBEN2Db'];
@@ -21,9 +20,19 @@ if(isset($_POST)){
 	$qdnDateTime2Db 		= $_POST['qdnDateTime2Db'];
 	$qdnClassification2Db 	= $_POST['qdnClassification2Db'];
 	$qdnDefects2Db			= $_POST['qdnDefects2Db'];
-	// $qdnFailureMode2Db		= $_POST['qdnFailureMode2Db'];
 	
-		$Insert = "INSERT INTO analysis_tbl (qdnNo, issuedBy, issuedByName, issuedByTeam, issuedTo, issuedToName, issuedToTeam, customer, machine, packageType, deviceName, station, lotId, teamResp, dateTime, classification, defects) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"; 
+	$Insert = "INSERT INTO analysis_tbl (qdnNo, issuedBy, issuedByName, issuedByTeam, issuedTo, issuedToName, issuedToTeam, customer, machine, packageType, deviceName, station, lotId, teamResp, dateTime, classification, defects) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"; 
+	$checkSqlStatement = "SELECT  `analysis_tbl`.`qdnNo` 
+							FROM 
+								`telford_db`.`analysis_tbl`
+							WHERE 
+							`analysis_tbl`.`qdnNo` = '$qdnNumber2Db'";
+
+	$stmt = $db->prepare($checkSqlStatement);
+	if($stmt->rowCount() > 0){
+		echo "exists!";
+	}
+	else{
 		$stmtinsert = $db->prepare($Insert);
 		$result = $stmtinsert->execute([$qdnNumber2Db, $qdnIBENo2Db, $qdnIBEN2Db, $qdnIBET2Db, $qdnITENo2Db, $qdnITEN2Db, $qdnITET2Db, $qdncustomer2Db, $qdnmachine2Db, $qdnpkgtype2Db, $qdnDeviceName2Db, $qdnStation2Db, $qdnLotId2Db, $qdnTeamResp2Db, $qdnDateTime2Db, $qdnClassification2Db, $qdnDefects2Db]);
 		if($result){
@@ -34,6 +43,7 @@ if(isset($_POST)){
 			$result2 = $stmtinsertTwo->execute([$qdnNumber2Db]);
 			echo $result;
 		};
+	}
 };
 
 ?>

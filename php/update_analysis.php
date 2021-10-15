@@ -3,7 +3,6 @@
 require("../php/cnfg.php");
 
 if(isset($_POST)){
-
 	$id 				= $_POST['id'];
 	$qdnFailureMode2Db  = $_POST['qdnFailureMode2Db'];
 	$disposition2Db		= $_POST['disposition2Db'];

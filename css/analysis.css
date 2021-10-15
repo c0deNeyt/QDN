@@ -32,6 +32,9 @@ body {
   font-family: "Lato", sans-serif;
   /* outline: 1px solid grey; */
 }
+.overflow {
+  height: 200px;
+}
 
 /*==============================================================
                         "SIDE BAR STYLE"
@@ -129,6 +132,38 @@ div.content {
   input[value="Major"] {
     margin: 0px 3px 0px 20px;
   }
+  fieldset.issueDetails {
+    border: 0.1px solid gray;
+    padding: 22px;
+    margin: 0px 0px 38px 0px;
+    box-shadow: 1px 5px 9px 0px gray;
+  }
+  .fromdbResutl {
+    font-weight: bold;
+    color: #212529;
+  }
+  td {
+    word-break: break-word;
+    overflow: auto;
+  }
+  .form-check-label {
+    margin: 0px 0px 0px 1rem;
+  }
+  span.invalid {
+    padding: 20px;
+    color: red;
+  }
+  .telfordRed{
+    color:  #800000;
+  }
+
+  .form-select {
+    display: block;
+    width: 50%;
+  }
+  #reAssignToName, #reAssignToTeam, #reAssignTo, #dept, #reassTeamResp{
+    text-align: center;
+  }
 
 /*=======================
   ALERT CUSTOM STYLES
@@ -142,9 +177,39 @@ div.swal2-content {
       color: #f27474;
       font-size: 1em;
   }
-  
 
+/* FOR SWEET ALERT */
+.colored-toast.swal2-icon-success {
+  background-color: #a5dc86 !important;
+}
 
+.colored-toast.swal2-icon-error {
+  background-color: #f27474 !important;
+}
+
+.colored-toast.swal2-icon-warning {
+  background-color: #f8bb86 !important;
+}
+
+.colored-toast.swal2-icon-info {
+  background-color: #3fc3ee !important;
+}
+
+.colored-toast.swal2-icon-question {
+  background-color: #87adbd !important;
+}
+
+.colored-toast .swal2-title {
+  color: white;
+}
+
+.colored-toast .swal2-close {
+  color: white;
+}
+
+.colored-toast .swal2-content {
+  color: white;
+}
 
 /*==============================================================
                     "RESPONSIVE STYLE"

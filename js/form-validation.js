@@ -47,14 +47,24 @@
       formData.append('qdnClassification2Db', `${this.qdnClassification}`);
       formData.append('qdnDefects2Db',        `${this.qdnDefects}`);
       return fetch(url, { method: 'POST', body: formData })
-      .then(function (response) {
-        //converting format to JSON DATA
+      .then(async function (response) {
+        /**INSTANTIATING THE MAIN CLASS */
+        const initiateMainObj = new mainObject();
         if (response.status == 200 && response.ok){
+          // console.log("This is the response from insert Event", response);
+          // Fetch the initial emails from db.
+          const fetchRawEmails = await initiateMainObj.fetchEmail();
+          // Convert the object into a string format
+          const receivers = initiateMainObj.emailDetails(fetchRawEmails);
+          // This will send an emails
+          initiateMainObj.sendEmail(receivers);
+          // This will execute the success alert method
+          initiateMainObj.successAlert();          
           return response;
         }
         else{
           // error inserting to the database.
-          errorAlert(response.statusText);
+          initiateMainObj.errorAlert(response.statusText);
         };
       });
     };
@@ -148,7 +158,7 @@
         "<b>Issued To:</b> "    + `${this.qdnITEN}` + "<br>" +
         "<b>Issued By:</b> "    + `${this.qdnIBEN}` + "<br>" +
         "<b>Station:</b> "      + `${this.qdnStation}` + "<br>" + 
-        "<b>Date/Time:</b> "    + `${this.qdnDateTime}` + "<br>" + "<br>" +
+        "<b>Date/Time:</b> "    + `${this.qdnDateTime}` + "<br>" +
         "<pre><b>Lot Details</b><br>" +
         "   <b>Lot ID No.:</b> "   + `${this.qdnLotId}` + "<br>" +
         "   <b>Package Type:</b> " + `${this.qdnPkgtype}` + "<br>" +
@@ -180,7 +190,7 @@
       })
       await Toast.fire({
         icon: 'error',
-        title: 'Something Went Wrong!',
+        title: 'Issuance interrupted!',
         html:"<b style ='color:red;'>"+  errorVar +"</b>",
       });
     };
@@ -228,16 +238,8 @@
           try{
             //Instantiating the object
             const initiateMainObj = new mainObject();
-            // Fetch the initial emails from db.
-            const fetchRawEmails = await initiateMainObj.fetchEmail();
-            // Convert the object into a string format
-            const receivers = initiateMainObj.emailDetails(fetchRawEmails);
             // execute the insert event to the database
             initiateMainObj.insertToDatabase();
-            // This will send an emails
-            initiateMainObj.sendEmail(receivers);
-            // This will execute the success alert method
-            initiateMainObj.successAlert();
           }
           catch (err){
             const newInstantObject = new mainObject();

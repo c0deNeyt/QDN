@@ -19,7 +19,7 @@
       this.currentQdnNum     = $("#qdnNumber").val();
       this.qdnFailureMode    = $("input[name = 'failureMode']:checked").val();
       this.disposition       = $("input[name = 'disposition']:checked").val();
-      this.COD               = $("input[name = 'COD']:checked").val();
+      this.varCOD            = $("input[name = 'COD']:checked").val();
       this.CODstatement      = $("#CODstatement").val(); 
       //CONTAINMENT 
       this.containment       = $("#containment").text();
@@ -60,6 +60,8 @@
       await Toast.fire({
         icon: 'success',
         title: msg + "! " +'Update Success!',
+        html:"QDN " + "<b style ='color:red;'>"+  `${this.currentQdnNum} ` +"</b>"
+        + " updated! 🎉 🥳 🎉",
       }).then(()=>{
         // window.location.href = "analysis.php?";
       });
@@ -111,12 +113,11 @@
       const formData = new FormData();
       formData.append('qdnFailureMode2Db', `${this.qdnFailureMode}`);
       formData.append('disposition2Db', `${this.disposition}`);
-      formData.append('COD2Db', `${this.COD}`);
+      formData.append('COD2Db', `${this.varCOD}`);
       formData.append('CODstatement2Db',`${this.CODstatement}`);
       formData.append('id', currentQdnId);
-
       fetch('./php/update_analysis.php', {
-        method: 'PUT',
+        method: 'POST',
         body: formData
       })
       .then(result => {
@@ -278,10 +279,8 @@
           };
           // @ HANDLES UPDATE FOR OPEN QDN
           if(document.getElementById('submitUpdate')){  
-
             // VARIABLE TO INITIALIZE THE CURRENT QND NUMBER
             // FROM USE INPUTS
-
             try{
               // Instantiating Main Object
               const mainObject = new analysisFormValidation();

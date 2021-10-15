@@ -15,15 +15,15 @@ switch ($request) {
         // SQL QUERY DATA REQUEST THAT IS MATCHED TO STORED QDN# AT DB 
         // "qdnNOReq" --> CAME FROM AJAX REQUEST OF issuance.js
         $dataRequest = "SELECT  
-                            `qdnNo`
+                            `analysis_tbl`.`qdnNo`
                         FROM 
-                            `qdnno`
+                            `telford_db`.`analysis_tbl`
                         WHERE  
-                            `qdnNo`
+                            `analysis_tbl`.`qdnNo`
                         LIKE 
                             '%$qdnNoReq%' 
                         ORDER BY
-                            `id`  
+                            `analysis_tbl`.`id`
                         DESC LIMIT 1";
         $dataFromDatabase = $db->prepare($dataRequest);
         $dataFromDatabase ->execute();
@@ -1178,7 +1178,7 @@ switch ($request) {
                         ON
                             `analysis_tbl`.`id` = `correctives`.`analysis_tbl_id`
                         WHERE
-                            `analysis_tbl`.`qdnNo` = 'T8321-137'
+                            `analysis_tbl`.`qdnNo` = 'T101421-8'
                         AND
                             `analysis_tbl`.`status` = 1";
         $dataFromDatabase = $db->prepare($dataRequest);

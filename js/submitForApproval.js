@@ -120,7 +120,6 @@ $(document).ready(function(){
             catch(err){
                 console.log("Something went wrong. Check submitForApproval.js", err);
             }
-
             //========================================================
             // INTEGRATION OF URL SEARCH
             //========================================================
@@ -137,7 +136,6 @@ $(document).ready(function(){
 
         }
         exec();
-        
     }, 500);
     // </END OF INTERVAL TO CHECK THE QDN STATUS
     //**FUNCTION TO CHECK REASSIGNMENT*/
@@ -476,13 +474,13 @@ $(document).ready(function(){
                 //**CHECKING FOR REASSIGNMENT*/
                 switch (check4Reassignments !== null){
                     case true:
-                        console.log("REASSIGNMENT IS PRESENT!!");
+                        // console.log("REASSIGNMENT IS PRESENT!!");
                         switch (reassPLDetails[0]['pl'] == "G & A"){
                             // G&A EMPLOYEE
                             case true:
                                 //**FUNCTION EXECUTION TO REMOVE DUPLICATE EMAILS*/
                                 const finalEmailReceivers = removeDupMails(combinedEmails2);
-                                console.log("G & A DETECTED!!", finalEmailReceivers);
+                                // console.log("G & A DETECTED!!", finalEmailReceivers);
                                 forApprovalDialogBox(finalEmailReceivers, qdnNumber);
                             break;
                             //NOT G&A EMPLOYEE
@@ -495,7 +493,7 @@ $(document).ready(function(){
                         };
                     break;
                     default:
-                        console.log("NO REASSIGNMENT DETECTED!!");
+                        // console.log("NO REASSIGNMENT DETECTED!!");
                         switch (empPLDetails[0]['pl'] == "G & A"){
                             case true:
                                 //**FUNCTION EXECUTION TO REMOVE DUPLICATE EMAILS*/
