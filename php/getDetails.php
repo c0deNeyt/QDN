@@ -1053,17 +1053,17 @@ switch ($request) {
             $others_auth_col        = $row['others_auth_col'];
             // STORING DATA TO AN ARRAY
             $qndNoData[] = array("qdnNo" => $qdnNo, "issuedByName" => $issuedByName,
-                "issuedByTeam" => $issuedByTeam,"issuedToTeam" => $issuedToTeam,
-                "issuedToName" => $issuedToName,"customer" => $customer,
-                "packageType" => $packageType, "machine" => $machine,
-                "deviceName" => $deviceName, "station" => $station, "lotId" => $lotId,
-                "teamResp" => $teamResp, "dateTime" => $dateTime,"id" => $id,
-                "classification" => $classification, "defects" => $defects,
-                "failure_mode" => $failure_mode, "disposition" => $disposition,
-                "cause_of_defects" => $cause_of_defects, "cause_of_defects_des" => $cause_of_defects_des,
-                "prod_auth_col" => $prod_auth_col, "ee_auth_col" => $ee_auth_col,
-                "pe_auth_col" => $pe_auth_col, "qa_auth_col" => $qa_auth_col,
-                "others_auth_col" => $others_auth_col     
+                "issuedByTeam" => $issuedByTeam, "issuedToName" => $issuedToName,
+                "issuedToTeam" => $issuedToTeam, "dateTime" => $dateTime,
+                "customer" => $customer, "station" => $station,
+                "teamResp" => $teamResp, "machine" => $machine, 
+                "packageType" => $packageType,"deviceName" => $deviceName, 
+                "lotId" => $lotId, "classification" => $classification, 
+                "failure_mode" => $failure_mode, "disposition" => $disposition, 
+                "defects" => $defects, "cause_of_defects" => $cause_of_defects, 
+                "cause_of_defects_des" => $cause_of_defects_des, "prod_auth_col" => $prod_auth_col, 
+                "ee_auth_col" => $ee_auth_col,"pe_auth_col" => $pe_auth_col, 
+                "qa_auth_col" => $qa_auth_col, "others_auth_col" => $others_auth_col     
             );
         }
         // ENCODING ARRAY TO JSON FORMAT

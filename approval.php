@@ -262,7 +262,7 @@
                 <label for="lotId" class="telfordRed col-form-label">Defects/Failure: </label>
               </div>
               <div class="col">
-                <span class="fromdbResutl" id="rooCause"></span>
+                <span class="fromdbResutl" id="rootCause"></span>
               </div>
             </div>
             <!--
