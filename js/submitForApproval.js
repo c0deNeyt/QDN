@@ -63,9 +63,9 @@ $(document).ready(function(){
         };
         // ** 🔚 
         //METHOD TO UPDATE THE ANALYSIS DATA FROM TIME TO TIME
-        dataUpdate = async() =>{
-            const rawQdnDetails =  await this.findCurrentQdnId();
-            let  qdnId = rawQdnDetails[0].id;
+        dataUpdate = async function() {
+            // const rawQdnDetails =  await this.findCurrentQdnId();
+            // let  qdnId = rawQdnDetails[0].id;
             // const containmentDetails = await this.getContainmentDetails(qdnId);
             // console.log("This is the", containmentDetails);
         };

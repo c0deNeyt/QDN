@@ -49,7 +49,7 @@
         background: 'gray',
         allowEscapeKey: false,
         showConfirmButton: false,
-        timer: 5000,
+        timer: 3000,
         timerProgressBar: true,
         //**This will let you pause and play the alert loading*/
         didOpen: (toast) => { 
@@ -128,6 +128,9 @@
       });
     };
     //**🔚
+    updateContainment() {
+
+    }
   };
   // Fetch all the forms we want to apply custom Bootstrap validation styles
   var forms = document.querySelectorAll('.needs-validation');

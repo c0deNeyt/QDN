@@ -52,9 +52,11 @@ function FetchApprover(selectorID, qndNumber){
 }
 /** CLASS FOR THE REQUEST */
 class approverReq {
-    // constructor(qndNo){
-    //     this.qdnNumber = qndNo;
-    // }
+    constructor(param1, param2){
+        this.selectorID = param1;
+        this.approverName = param2;
+        this.qdnDbId = param1;
+    }
     /** REQUEST FOR APPROVERS LIST METHOD */
     approversListReq(reqNum) {
         return $.ajax({
@@ -67,7 +69,7 @@ class approverReq {
     }
     /** Method to verify the approvers
      * credentials*/
-    checkCredsDetails(){
+    checkCredsDetails(selectorID, approverName){
         const initVal = new Approval();
         initVal.setCredsVal();
         const credObj = initVal.getVal();
@@ -82,6 +84,7 @@ class approverReq {
                 const alert = new alerts();
                 this.initUpdate = new approverReq();
                 /** This will execute the updateApprover method */
+                $(`#${selectorID}-button span.ui-selectmenu-text`).html(approverName);
                 this.initUpdate.updateApprover();
                 alert.successAlert();
             },
@@ -117,6 +120,18 @@ class approverReq {
                 const alert = new alerts();
                 alert.errorAlert(`${error} Failed to get the latest QDN Number`);
             }
+        });
+    }
+    /**Request for containment details*/
+    getQdnContainment() {
+        let r = "This is the qdnDbID " + this.qdnDbId +  typeof this.qdnDbId;
+        // return r;
+        return $.ajax({
+            type: 'POST',
+            url: "./php/getDetails.php",    
+            data: {matchedContainment: this.qdnDbId, request: 11 },
+            cache: false,
+            dataType: "json"
         });
     }
 };
@@ -167,20 +182,18 @@ class alerts {
                         this.userInputPass = inputCreds.password;
                         this.qdnNumber = document.getElementById('qdnNumber').value;
                     };
-
                     /**INSTANCE OF Class approverReq */
                     const appReq = new approverReq();
                     /** This will validate the user input */
-                    appReq.checkCredsDetails();
+                    appReq.checkCredsDetails(selectorID, data.item.label);
                     setTimeout(function () {
                         resolve();
                     }, 1500);
                 });
             },
-            didDestroy: function (result) {
-                // HANDLE THE CANCEL EVENT HERE
-                console.log("You canCeled the alert!!");
-            }
+            didDestroy: async function (result) {
+               //Code here at dismissed event...
+            }   
         });
     };
     /** ERROR ALERT */
@@ -194,7 +207,7 @@ class alerts {
             },
             allowEscapeKey: false,
             showConfirmButton: false,
-            timer: 500000,
+            timer: 50000,
             timerProgressBar: true,
             //**This will let you pause and play the alert loading*/
             didOpen: (toast) => { 
@@ -219,7 +232,7 @@ class alerts {
             },
             allowEscapeKey: false,
             showConfirmButton: false,
-            timer: 10000,
+            timer: 5000,
             timerProgressBar: true,
             //**This will let you pause and play the alert loading*/
             didOpen: (toast) => { 
@@ -237,10 +250,12 @@ class alerts {
 };
 /** CLASS FOR THE EVENT HANDLERS */
 class approverEvt extends alerts {
-    constructor(spanIndex, value){
+    constructor(param1, param2){
         super();
-        this.spanIndex = spanIndex;
-        this.value = value;
+        this.spanIndex = param1;
+        this.value = param2;
+        this.approverSectionIds = param1;
+        this.objectValues = param2;
     };
     credValidation () {
         this.selectmenu({
@@ -249,7 +264,7 @@ class approverEvt extends alerts {
             select: async function (click, data) {
                 // console.log("(credentialAlert Executed!)", this.id);
                 /**this will return password input modal */
-                this.accessingAlerts = new approverEvt();
+                this.accessingAlerts = new alerts(data, this.id);
                 this.accessingAlerts.credentialAlert(data, this.id);
                 /** instance fro approval constructor function */
                 const qndNum = new Approval();
@@ -260,8 +275,11 @@ class approverEvt extends alerts {
                 // CATCHING THE APPROVERS DETAILS
                 let approversArray = await fetchInstance.fetching;
                 //Appending the default value to the innerHTML of select Menu
-                $(`#${this.id}-button span.ui-selectmenu-text`).html(approversArray[0]['auth_col']);
-            },
+                let refinedObjectArray = Object.values(approversArray[0]);
+                refinedObjectArray[0] !== null ?
+                $(`#${this.id}-button span.ui-selectmenu-text`).html(approversArray[0]['auth_col']) :
+                $(`#${this.id}-button span.ui-selectmenu-text`).html("Needs Approval...");
+            },  
             /** This will set the position of 
              * select menu*/
             position: {
@@ -280,6 +298,8 @@ class approverEvt extends alerts {
         x.style.display = "none";
         return this;
     }
+    /** This will append the default value to the approvers
+     * select menu */
     appendApprover() {
         /**Fetching all span tag in DOM */
         const spanElement = document.querySelectorAll("span");
@@ -290,8 +310,52 @@ class approverEvt extends alerts {
             const child = parent.lastElementChild.innerText = this.value;
         }else{
             const parent =  spanElement[this.spanIndex].parentElement.firstElementChild.lastElementChild;
-            const child = parent.lastElementChild.innerText = "Needs Approval test...";
+            const child = parent.lastElementChild.innerText = "Needs Approval...";
         }
+    }
+    /**this will decide where to put the database value 
+     * from approverReq Class using getQdnDetails method 
+     * accordingly*/
+    onloadAppendItem() {
+        /**Store the length of objectValues into variable*/
+        let objectValuesLen = this.objectValues.length; 
+        /**This algorithm will loop through the results at instance
+         * of approveReq() which will execute the getQdnDetails method*/
+        for(let i=0;i<objectValuesLen;i++){
+            /**this switch statement will check
+             * each item to identify when the 
+             * item should be append*/
+            switch (i){
+                case 0: /**case for QDN #*/
+                    $(`#${this.approverSectionIds[i]}`).val(this.objectValues[i]);
+                break;
+                case 19 :/**Case that will append value for Prod Approver */
+                    const appendProdApprovers = new approverEvt(18, this.objectValues[i]);
+                    appendProdApprovers.appendApprover();
+                break;
+                case 20:/**Case that will append value for EE Approver */
+                    const appendEEApprovers = new approverEvt(19, this.objectValues[i]);
+                    appendEEApprovers.appendApprover();
+                break;
+                case 21:  /**Case that will append value for PE Approver */
+                    const appendPEApprovers = new approverEvt(20, this.objectValues[i]);
+                    appendPEApprovers.appendApprover();
+                break;
+                case 22: /**Case that will append value for QA Approver */
+                    const appendQAApprovers = new approverEvt(21, this.objectValues[i]);
+                    appendQAApprovers.appendApprover();
+                break;
+                case 23: /**Case that will append value for Others Approver */
+                    const appendOthersApprovers = new approverEvt(22, this.objectValues[i]);
+                    appendOthersApprovers.appendApprover();
+                break;
+                default:/**case for QND details but 
+                        containment, correction and corrective items
+                        are not included */
+                    $(`#${this.approverSectionIds[i]}`).html(this.objectValues[i]);
+                break;  
+            };
+        };
     }
 };
 
@@ -365,73 +429,31 @@ window.onload = ()=>{
     console.log("I need this QDN Number %c OKAY LANG AKO !!!", 'background: #000; color: lightGreen;');
     const approval = new Approval();
     const hideCommands = approval.hideCommands("block");
-    
-    let z = document.querySelectorAll("span");
-    let f =  $('#productionAuth-button span.ui-selectmenu-text');
-
-    let parent =  z[20].parentElement.firstElementChild.lastElementChild;
-    let child = parent.lastElementChild.innerText = "NeEds Approval...";
-    console.log("Case 19 is not null ", child, z);
-
-    /**INSTANCE FOR THE QND DETAILS REQUEST */
     (async()=>{
         const req = new approverReq();
         let reqResult = await req.getQdnDetails();
+        /**Array of selectors name this if for reference where to append the 
+         * items from database*/
         const approverSectionIds = ["qdnNumber", "ibName", "ibTeam", "itName",
                                    "itTeam", "dateTime", "customer", "station", 
                                    "teamResp", "machine", "pkgType", "partName", 
                                    "lotId", "classification", "failureMode", "disposition", 
-                                   "rootCause", "defects", "codDes", "productionAuth"]; 
+                                   "rootCause", "defects", "codDes" ]; 
         /**rawData of latest QDN Details */
         let objectValues = Object.values(reqResult[0]);
-        console.log("And this the the result of request -->", objectValues[19]);
-
-
-        /**Store the length of objectValues into variable*/
-        let objectValuesLen = objectValues.length;
+        const secondApproverEvent =  new approverReq(objectValues[objectValues.length -1]);  
         
-        /**This algorithm will loop through the results at instance
-         * of approveReq() which will execute the getQdnDetails method*/
-        for(let i=0;i<objectValuesLen;i++){
-            /**this switch statement will check
-             * each item to identify when the 
-             * item should be append*/
-            switch (i && objectValues[i]){
-                case 0: /**case for QDN #*/
-                    $(`#${approverSectionIds[i]}`).val(objectValues[i]);
-                break;
-                case 19  && objectValues[i]:/**Case that will append value for Prod Approver */
-                    const appendProdApprovers = new approverEvt(18, objectValues[19]);
-                    appendProdApprovers.appendApprover();
-                break;
-                case 20  && objectValues[20]:/**Case that will append value for EE Approver */
-                    const appendEEApprovers = new approverEvt(19, objectValues[20]);
-                    appendEEApprovers.appendApprover();
-                    console.log("This is the result from case 20", objectValues[i]);
-                break;
-                case 21  && objectValues[i]:/**Case that will append value for PE Approver */
-                    const spanElement = document.querySelectorAll("span");
-                    const parent =  spanElement[20].parentElement.firstElementChild.lastElementChild;
-                    const child = parent.lastElementChild.innerText = objectValues[21];
-                    console.log("This is the result from case 21", objectValues[i]);
-                    // const appendPEApprovers = new approverEvt(20, objectValues[21]);
-                    // appendPEApprovers.appendApprover();
-                break;
-                case 22  && objectValues[22]: /**Case that will append value for QA Approver */
-                    const appendQAApprovers = new approverEvt(21, objectValues[22]);
-                    appendQAApprovers.appendApprover();
-                break;
-                case 23  && objectValues[23]: /**Case that will append value for Others Approver */
-                    const appendOthersApprovers = new approverEvt(22, objectValues[23]);
-                    appendOthersApprovers.appendApprover();
-                break;
-                default: /**case for QND details but 
-                        containment, correction and corrective items
-                        are not included */
-                    $(`#${approverSectionIds[i]}`).html(objectValues[i]);
-                break;  
-            };
-        };
+        try{
+            let res = await secondApproverEvent.getQdnContainment();  
+            console.log("This is the response ", res)
+        }catch(e){
+            console.log("this is the error", e, objectValues[objectValues.length -1])
+        }
+        /** instantiating approverEvt*/
+        const approverEvent = new approverEvt(approverSectionIds, objectValues);
+        /**Execution of onloadAppendItem Method*/
+        approverEvent.onloadAppendItem();          
+        // console.log("And this the the result of request -->", containmentDetails);
 
     })();
 

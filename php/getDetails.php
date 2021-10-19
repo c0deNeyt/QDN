@@ -212,14 +212,11 @@ switch ($request) {
     case 8:
         $matchedQdnNum = $_POST["matchedQdnNum"];
         $dataRequest = "SELECT * FROM 
-                            analysis_tbl 
+                            `telford_db`.`analysis_tbl`
                         WHERE 
-                            qdnNo = '$matchedQdnNum'  
+                            `analysis_tbl`.`qdnNo` = '$matchedQdnNum'  
                         AND 
-                            `status` = 0  
-                        ORDER BY 
-                            id 
-                        DESC LIMIT 5";
+                            `analysis_tbl`.`status` = 0";
         $dataFromDatabase = $db->prepare($dataRequest);
         $dataFromDatabase -> execute();
 
@@ -248,16 +245,14 @@ switch ($request) {
 
             $data[] = array(
                 "id" => $id, "qdnNo" => $qdnNo, "issuedByName" => $issuedByName,
-                "issuedByName" => $issuedByName, "issuedByTeam" => $issuedByTeam, 
-                "issuedToName" => $issuedToName, "issuedToTeam" => $issuedToTeam,
-                "customer" => $customer, "machine" => $machine,
-                "packageType" => $packageType, "deviceName" => $deviceName,
-                "station" => $station, "lotId" => $lotId,
-                "teamResp" => $teamResp, "dateTime" => $dateTime,
-                "classification" => $classification, "defects" => $defects,
-                "failure_mode" => $failure_mode, "disposition" => $disposition,
-                "cause_of_defects" =>  $cause_of_defects, "cause_of_defects_des" => $cause_of_defects_des,
-                "status" => $status 
+                "issuedByTeam" => $issuedByTeam, "issuedToName" => $issuedToName,
+                "issuedToTeam" => $issuedToTeam, "dateTime" => $dateTime,
+                "customer" => $customer, "station" => $station,
+                "teamResp" => $teamResp, "machine" => $machine, 
+                "packageType" => $packageType,"deviceName" => $deviceName, 
+                "lotId" => $lotId, "classification" => $classification, 
+                "defects" => $defects, "failure_mode" => $failure_mode, "disposition" => $disposition, 
+               "cause_of_defects" => $cause_of_defects, "cause_of_defects_des" => $cause_of_defects_des
             );
         }
         if ( $data ){
@@ -1063,7 +1058,8 @@ switch ($request) {
                 "defects" => $defects, "cause_of_defects" => $cause_of_defects, 
                 "cause_of_defects_des" => $cause_of_defects_des, "prod_auth_col" => $prod_auth_col, 
                 "ee_auth_col" => $ee_auth_col,"pe_auth_col" => $pe_auth_col, 
-                "qa_auth_col" => $qa_auth_col, "others_auth_col" => $others_auth_col     
+                "qa_auth_col" => $qa_auth_col, "others_auth_col" => $others_auth_col,
+                "qdnId" => $id     
             );
         }
         // ENCODING ARRAY TO JSON FORMAT

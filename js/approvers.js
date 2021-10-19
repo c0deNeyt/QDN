@@ -78,7 +78,7 @@ $(document).ready(function () {
             $("#rooCause").html(cause_of_defects);
             $("#codDes").html(cause_of_defects_des);
             if(prod_auth_col){
-                $('#productionAuth-button span.ui-selectmenu-text').html(prod_auth_col);
+                
             }
             if (ee_auth_col){
                 $('#EEAuth-button span.ui-selectmenu-text').html(ee_auth_col);

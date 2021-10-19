@@ -832,216 +832,301 @@ $(document).ready(function () {//*✅*/
     //=====================================================>
     // </ OF DEFAULT NUMBER 
     //=====================================================>
+    class AnalysisEvent {
+        noQdnResultFound() {
+            let errorSpan = "<span class='invalid'>Invalid QDN Number!</span>";
+            $(".invalid").remove();
+            $(".fromDbData").remove();
+            $(".errorSpan").append(errorSpan);
+            $("#reAssignDiv").css("visibility", "hidden");
+            $(".analysisSection").remove();
+            makeItBlank();
+        }
+    }
+    class AnalysisRequest {
+        constructor(param1) { 
+            this.usrInput = param1;
+        }
+        qdnDetails() {
+            return $.ajax({
+                type: 'POST',
+                url: "./php/getDetails.php",
+                data: { matchedQdnNum: this.usrInput, request: 8 },
+                cache: false,
+                dataType: "json"
+            });
+        }
+    };
+    class Alert {
+        constructor(param1) {
+            this.errorVar = param1;
+        };
+        errorAlert = async function() {
+            const Toast = Swal.mixin({
+              toast: true,
+              position: 'top-right',
+              iconColor: 'white',
+              customClass: {
+                popup: 'colored-toast'
+              },
+              allowEscapeKey: false,
+              showConfirmButton: false,
+              timer: 5000,
+              timerProgressBar: true,
+              //**This will let you pause and play the alert loading*/
+              didOpen: (toast) => { 
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+              }
+            })
+            await Toast.fire({
+              icon: 'error',
+              title: 'Something Went Wrong!',
+              html:"<b style ='color:red;'>"+  this.errorVar +"</b>",
+            });
+        };
+    }
 
     //=====================================================>
     // START OF ANALYSIS AUTOCOMPLETE(AC) KEYUP FUNCTION
     //=====================================================>
-    $("#qdnNumber").on("keyup paste", function () {
-        var input = $(this).val();
+    $("#qdnNumber").on("input", async function () {
+        var input = $(this).val().replace(/\s/g,'');
         var usrInput = $.trim(input);
         var usrInputLen = usrInput.length;
-        var div1 =  document.getElementById("#reAssignDiv");
-        if (usrInputLen) {
-            // REQUEST FOR MATCHED QND DETAILS (request 8)
-            $.ajax({
-                type: 'POST',
-                url: "./php/getDetails.php",
-                data: { matchedQdnNum: usrInput, request: 8 },
-                cache: false,
-                dataType: "json",
-                success: getMatchedQdnDetails,
-                error: function (){
-                    var errorSpan = "<span class='invalid'>Invalid QDN Number!</span>";
-                    $(".invalid").remove();
-                    $(".fromDbData").remove();
-                    $(".errorSpan").append(errorSpan);
-                    $("#reAssignDiv").css("visibility", "hidden");
-                    $(".analysisSection").remove();
-                    makeItBlank();
-                }
-            });
-            //FUNCTION TO HANDLE QND DETAILS
-            function getMatchedQdnDetails(data) {
-                // CHECK IF THE DATA PARAMETER IS NOT NULL
-                if ( data ){
-                    // RESULTS FROM REQUEST STORED IN VARIABLES
-                    // div1 ? $("#reAssignDiv").after(analysisSectionTemplate):
-                    // $(".issueDetails").after(analysisSectionTemplate);
-                    var checkID = data[0]["id"];
-                    var dataLen = data.length;
-                    var des = data[0]["disposition"];
-                    var COD = data[0]["cause_of_defects"];
-                    var CODDes = data[0]["cause_of_defects_des"];
-                    var issuedByName = data[0]['issuedByName'];
-                    var issuedByTeam = data[0]['issuedByTeam'];
-                    var issuedByName = data[0]['issuedByName'];
-                    var issuedByTeam = data[0]['issuedByTeam'];
-                    var issuedToName = data[0]['issuedToName'];
-                    var issuedToTeam = data[0]['issuedToTeam'];
-                    var customer = data[0]['customer'];
-                    var machine = data[0]['machine'];
-                    var packageType = data[0]['packageType'];
-                    var deviceName = data[0]['deviceName'];
-                    var station = data[0]['station'];
-                    var lotId = data[0]['lotId'];
-                    var teamResp = data[0]['teamResp'];
-                    var dateTime = data[0]['dateTime'];
-                    var classification = data[0]['classification'];
-                    var defects = data[0]['defects'];
-                    var failure_mode = data[0]['failure_mode'];
+        // console.log(">> ", usrInputLen, usrInput);
 
-                    // CHECKING THE EXISTENCE OF THE QDN ID 
-                    if ((checkID) && ($(".fromDbData").length === 0)) {
-                        // $("#reAssignDiv").after(analysisSectionTemplate);
-                        // EXECUTION OF FUNCTIONS Reassignment,
-                        // Containment, Correction, Corrective
-                        exeFuncReass(checkID);
-                        exeFuncContain(checkID);
-                        exeFuncCorrection(checkID);
-                        exeFuncCorrective(checkID);
+        if (usrInputLen){
+            try{
+                /*Instantiate AnalysisReq*/
+                const analysisRequest = new AnalysisRequest(usrInput);
+                let result = await analysisRequest.qdnDetails();
+                let qndRawValue = Object.values(result[0]);
+                let selectorsIDs = ["ibName","ibTeam","itName",
+                                    "itTeam", "dateTime", "customer",
+                                    "station", "teamResp", "machine",
+                                    "pkgType","partName","lotId",
+                                    "classification","defects",];
+                $(".invalid").remove();
+                for(let i=0;i<qndRawValue.length;i++){
+                    switch (i){
+                        case:
+                        break;
+                        default:
+                            $(`#${selectorsIDs[i]}`).html(qndRawValue[i+2]);
+                        break;
                     };
-                    // IF THERE IS A VALID DATA FROM INPUT 
-                    // APPEND THEM …
-                    if (dataLen) {
-                        $(".analysisSection").remove();
-                        $(".invalid").remove();
-                        $("#ibName").html(issuedByName);
-                        $("#ibTeam").html(issuedByTeam);
-                        $("#itName").html(issuedToName);
-                        $("#itTeam").html(issuedToTeam);
-                        $("#customer").html(customer);
-                        $("#machine").html(machine);
-                        $("#pkgType").html(packageType);
-                        $("#partName").html(deviceName);
-                        $("#station").html(station);
-                        $("#lotId").html(lotId);
-                        $("#teamResp").html(teamResp);
-                        $("#dateTime").html(dateTime);
-                        $("#classification").html(classification);
-                        $("#defects").html(defects);
-                        $("#failureMode").html(failure_mode);
-                        $("#reAssignDiv").css("visibility", "visible");
-                        $("#reAssignDiv").after(analysisSectionTemplate);
-                    };
-                   //**FUNCTION EXECUTION FOR RADIO BUTTON VALUES
-                   checkTheRadio(des, COD, CODDes, failure_mode);
-                }
-                else {
-                    // console.log("This is test feedback!");
-                    var errorSpan = "<span class='invalid'>Invalid QDN Number!</span>";
-                    $(".invalid").remove();
-                    $(".fromDbData").remove();
-                    $(".errorSpan").append(errorSpan);
-                    $(".analysisSection").remove();
-                    makeItBlank();
-                };
-                // </ End of checking if parameter is not null
-            };
-            // </End of function to handle qdn details
-        };
-        // AJAX REQUEST FOR AC ARRAY SOURCE
-        var qdnNumbers = [];
-        // REQUEST FOR QND DETAILS (request 7.1)
-        $.ajax({
-            type: 'POST',
-            url: "./php/getDetails.php",
-            data: { searchForThisQdnNo: usrInput, request: 7.1},
-            cache: false,
-            dataType: "json",
-            success: function (data) {
-                // console.log (data);
-                var dataLen = data.length;
-                for (var i = 0; i < dataLen; i++) {
-                    qdnNumbers.push(data[i]['qdnNo']);
-                };
+                    
+                } 
+                console.log(Object.keys(result[0]), Object.values(result[0]));
+            }catch{
+                const analysisEvt = new AnalysisEvent(); 
+                analysisEvt.noQdnResultFound();
+                console.log("the noQdnResultFound!!");
             }
-        });
-        // AC SUGGESTION
-        $(this).autocomplete({
-            source: qdnNumbers,
-            // </END OF FUNCTION WHEN YOU CLICK AC SUGGESTION(S).
-            select: function (event, ui) {
-                //"selectedValue" variable is to identify the 
-                // users selected value on the  AC suggestions.
-                var selectedValue = ui["item"]["value"];
-
-                // DETAILS REQUEST FOR SELECTED QND Number(request 8)
-                $.ajax({
-                    type: 'POST',
-                    url: "./php/getDetails.php",
-                    data: { matchedQdnNum: selectedValue, request: 8 },
-                    cache: false,
-                    dataType: "json",
-                    success: getQdnDetails
-                });
-                // FUNCTION TO HANDLE MATCHED QND DETAILS
-                function getQdnDetails(data) {
-                    //CHECK IF getQdnDetails(data) PARA 
-                    var checkID = data[0]["id"];
-
-                    var dataLen = data.length;
-                    var des = data[0]["disposition"];
-                    var COD = data[0]["cause_of_defects"];
-                    var CODDes = data[0]["cause_of_defects_des"];
-
-                    var issuedByName = data[0]['issuedByName'];
-                    var issuedByTeam = data[0]['issuedByTeam'];
-                    var issuedByName = data[0]['issuedByName'];
-                    var issuedByTeam = data[0]['issuedByTeam'];
-                    var issuedToName = data[0]['issuedToName'];
-                    var issuedToTeam = data[0]['issuedToTeam'];
-                    var customer = data[0]['customer'];
-                    var machine = data[0]['machine'];
-                    var packageType = data[0]['packageType'];
-                    var deviceName = data[0]['deviceName'];
-                    var station = data[0]['station'];
-                    var lotId = data[0]['lotId'];
-                    var teamResp = data[0]['teamResp'];
-                    var dateTime = data[0]['dateTime'];
-                    var classification = data[0]['classification'];
-                    var defects = data[0]['defects'];
-                    var failure_mode = data[0]['failure_mode'];
-
-                    // CHECKING THE EXISTENCE OF THE QDN ID
-                    if ((checkID) && ($(".fromDbData").length === 0)) {
-                        // $("#reAssignDiv").after(analysisSectionTemplate);
-                        // EXECUTION OF FUCNTIONS Reassignment,
-                        // Containment, Correction, Corrective
-                        exeFuncReass(checkID);
-                        exeFuncContain(checkID);
-                        exeFuncCorrection(checkID);
-                        exeFuncCorrective(checkID);
-                    };
-                    // CONDITION TO APPEND QDN DETAILS FROM DB
-                    if (dataLen) {
-                        $(".analysisSection").remove();
-                        $(".invalid").remove();
-                        $("#ibName").html(issuedByName);
-                        $("#ibTeam").html(issuedByTeam);
-                        $("#itName").html(issuedToName);
-                        $("#itTeam").html(issuedToTeam);
-                        $("#customer").html(customer);
-                        $("#machine").html(machine);
-                        $("#pkgType").html(packageType);
-                        $("#partName").html(deviceName);
-                        $("#station").html(station);
-                        $("#lotId").html(lotId);
-                        $("#teamResp").html(teamResp);
-                        $("#dateTime").html(dateTime);
-                        $("#classification").html(classification);
-                        $("#defects").html(defects);
-                        $("#failureMode").html(failure_mode);
-                        $("#reAssignDiv").css("visibility", "visible");
-                        $("#reAssignDiv").after(analysisSectionTemplate);
-                    };
-                    //**FUNCTION EXECUTION FOR RADIO BUTTON VALUES
-                    checkTheRadio(des, COD, CODDes, failure_mode);
-                };// </END OF FUNCTION TO HANDLE MATCHED QND DETAILS
-
-            }, // </END OF SELECT WHEN AUTO COMPLETE IS SUGGESTION IS CLICKED
             
-        }); // </END OF FUNCTION WHEN YOU CLICK AC SUGGESTION(S).
+        }else{
+
+        }
     });
+
+    // $("#qdnNumber").on("input", function () {
+    //     var input = $(this).val();
+    //     var usrInput = $.trim(input);
+    //     var usrInputLen = usrInput.length;
+    //     var div1 =  document.getElementById("#reAssignDiv");
+    //     if (usrInputLen) {
+    //         // REQUEST FOR MATCHED QND DETAILS (request 8)
+    //         $.ajax({
+    //             type: 'POST',
+    //             url: "./php/getDetails.php",
+    //             data: { matchedQdnNum: usrInput, request: 8 },
+    //             cache: false,
+    //             dataType: "json",
+    //             success: getMatchedQdnDetails,
+    //         });
+    //         //FUNCTION TO HANDLE QND DETAILS
+    //         function getMatchedQdnDetails(data) {
+    //             // CHECK IF THE DATA PARAMETER IS NOT NULL
+    //             if ( data ){
+    //                 // RESULTS FROM REQUEST STORED IN VARIABLES
+    //                 // div1 ? $("#reAssignDiv").after(analysisSectionTemplate):
+    //                 // $(".issueDetails").after(analysisSectionTemplate);
+    //                 var checkID = data[0]["id"];
+    //                 var dataLen = data.length;
+    //                 var des = data[0]["disposition"];
+    //                 var COD = data[0]["cause_of_defects"];
+    //                 var CODDes = data[0]["cause_of_defects_des"];
+    //                 var issuedByName = data[0]['issuedByName'];
+    //                 var issuedByTeam = data[0]['issuedByTeam'];
+    //                 var issuedByName = data[0]['issuedByName'];
+    //                 var issuedByTeam = data[0]['issuedByTeam'];
+    //                 var issuedToName = data[0]['issuedToName'];
+    //                 var issuedToTeam = data[0]['issuedToTeam'];
+    //                 var customer = data[0]['customer'];
+    //                 var machine = data[0]['machine'];
+    //                 var packageType = data[0]['packageType'];
+    //                 var deviceName = data[0]['deviceName'];
+    //                 var station = data[0]['station'];
+    //                 var lotId = data[0]['lotId'];
+    //                 var teamResp = data[0]['teamResp'];
+    //                 var dateTime = data[0]['dateTime'];
+    //                 var classification = data[0]['classification'];
+    //                 var defects = data[0]['defects'];
+    //                 var failure_mode = data[0]['failure_mode'];
+
+    //                 // CHECKING THE EXISTENCE OF THE QDN ID 
+    //                 if ((checkID) && ($(".fromDbData").length === 0)) {
+    //                     // $("#reAssignDiv").after(analysisSectionTemplate);
+    //                     // EXECUTION OF FUNCTIONS Reassignment,
+    //                     // Containment, Correction, Corrective
+    //                     exeFuncReass(checkID);
+    //                     exeFuncContain(checkID);
+    //                     exeFuncCorrection(checkID);
+    //                     exeFuncCorrective(checkID);
+    //                 };
+    //                 // IF THERE IS A VALID DATA FROM INPUT 
+    //                 // APPEND THEM …
+    //                 if (dataLen) {
+    //                     $(".analysisSection").remove();
+    //                     $(".invalid").remove();
+    //                     // $("#ibName").html(issuedByName);
+    //                     // $("#ibTeam").html(issuedByTeam);
+    //                     // $("#itName").html(issuedToName);
+    //                     // $("#itTeam").html(issuedToTeam);
+    //                     // $("#customer").html(customer);
+    //                     // $("#machine").html(machine);
+    //                     // $("#pkgType").html(packageType);
+    //                     // $("#partName").html(deviceName);
+    //                     // $("#station").html(station);
+    //                     // $("#lotId").html(lotId);
+    //                     // $("#teamResp").html(teamResp);
+    //                     // $("#dateTime").html(dateTime);
+    //                     // $("#classification").html(classification);
+    //                     // $("#defects").html(defects);
+    //                     // $("#failureMode").html(failure_mode);
+    //                     $("#reAssignDiv").css("visibility", "visible");
+    //                     $("#reAssignDiv").after(analysisSectionTemplate);
+    //                 };
+    //                //**FUNCTION EXECUTION FOR RADIO BUTTON VALUES
+    //                checkTheRadio(des, COD, CODDes, failure_mode);
+    //             }
+    //             else {
+    //                 // console.log("This is test feedback!");
+    //                 var errorSpan = "<span class='invalid'>Invalid QDN Number!</span>";
+    //                 $(".invalid").remove();
+    //                 $(".fromDbData").remove();
+    //                 $(".errorSpan").append(errorSpan);
+    //                 $(".analysisSection").remove();
+    //                 makeItBlank();
+    //             };
+    //             // </ End of checking if parameter is not null
+    //         };
+    //         // </End of function to handle qdn details
+    //     };
+    //     // AJAX REQUEST FOR AC ARRAY SOURCE
+    //     var qdnNumbers = [];
+    //     // REQUEST FOR QND DETAILS (request 7.1)
+    //     $.ajax({
+    //         type: 'POST',
+    //         url: "./php/getDetails.php",
+    //         data: { searchForThisQdnNo: usrInput, request: 7.1},
+    //         cache: false,
+    //         dataType: "json",
+    //         success: function (data) {
+    //             // console.log (data);
+    //             var dataLen = data.length;
+    //             for (var i = 0; i < dataLen; i++) {
+    //                 qdnNumbers.push(data[i]['qdnNo']);
+    //             };
+    //         }
+    //     });
+    //     // AC SUGGESTION
+    //     $(this).autocomplete({
+    //         source: qdnNumbers,
+    //         // </END OF FUNCTION WHEN YOU CLICK AC SUGGESTION(S).
+    //         select: function (event, ui) {
+    //             //"selectedValue" variable is to identify the 
+    //             // users selected value on the  AC suggestions.
+    //             var selectedValue = ui["item"]["value"];
+
+    //             // DETAILS REQUEST FOR SELECTED QND Number(request 8)
+    //             $.ajax({
+    //                 type: 'POST',
+    //                 url: "./php/getDetails.php",
+    //                 data: { matchedQdnNum: selectedValue, request: 8 },
+    //                 cache: false,
+    //                 dataType: "json",
+    //                 success: getQdnDetails
+    //             });
+    //             // FUNCTION TO HANDLE MATCHED QND DETAILS
+    //             function getQdnDetails(data) {
+    //                 //CHECK IF getQdnDetails(data) PARA 
+    //                 var checkID = data[0]["id"];
+
+    //                 var dataLen = data.length;
+    //                 var des = data[0]["disposition"];
+    //                 var COD = data[0]["cause_of_defects"];
+    //                 var CODDes = data[0]["cause_of_defects_des"];
+
+    //                 var issuedByName = data[0]['issuedByName'];
+    //                 var issuedByTeam = data[0]['issuedByTeam'];
+    //                 var issuedByName = data[0]['issuedByName'];
+    //                 var issuedByTeam = data[0]['issuedByTeam'];
+    //                 var issuedToName = data[0]['issuedToName'];
+    //                 var issuedToTeam = data[0]['issuedToTeam'];
+    //                 var customer = data[0]['customer'];
+    //                 var machine = data[0]['machine'];
+    //                 var packageType = data[0]['packageType'];
+    //                 var deviceName = data[0]['deviceName'];
+    //                 var station = data[0]['station'];
+    //                 var lotId = data[0]['lotId'];
+    //                 var teamResp = data[0]['teamResp'];
+    //                 var dateTime = data[0]['dateTime'];
+    //                 var classification = data[0]['classification'];
+    //                 var defects = data[0]['defects'];
+    //                 var failure_mode = data[0]['failure_mode'];
+
+    //                 // CHECKING THE EXISTENCE OF THE QDN ID
+    //                 if ((checkID) && ($(".fromDbData").length === 0)) {
+    //                     // $("#reAssignDiv").after(analysisSectionTemplate);
+    //                     // EXECUTION OF FUCNTIONS Reassignment,
+    //                     // Containment, Correction, Corrective
+    //                     exeFuncReass(checkID);
+    //                     exeFuncContain(checkID);
+    //                     exeFuncCorrection(checkID);
+    //                     exeFuncCorrective(checkID);
+    //                 };
+    //                 // CONDITION TO APPEND QDN DETAILS FROM DB
+    //                 if (dataLen) {
+    //                     $(".analysisSection").remove();
+    //                     $(".invalid").remove();
+    //                     $("#ibName").html(issuedByName);
+    //                     $("#ibTeam").html(issuedByTeam);
+    //                     $("#itName").html(issuedToName);
+    //                     $("#itTeam").html(issuedToTeam);
+    //                     $("#customer").html(customer);
+    //                     $("#machine").html(machine);
+    //                     $("#pkgType").html(packageType);
+    //                     $("#partName").html(deviceName);
+    //                     $("#station").html(station);
+    //                     $("#lotId").html(lotId);
+    //                     $("#teamResp").html(teamResp);
+    //                     $("#dateTime").html(dateTime);
+    //                     $("#classification").html(classification);
+    //                     $("#defects").html(defects);
+    //                     $("#failureMode").html(failure_mode);
+    //                     $("#reAssignDiv").css("visibility", "visible");
+    //                     $("#reAssignDiv").after(analysisSectionTemplate);
+    //                 };
+    //                 //**FUNCTION EXECUTION FOR RADIO BUTTON VALUES
+    //                 checkTheRadio(des, COD, CODDes, failure_mode);
+    //             };// </END OF FUNCTION TO HANDLE MATCHED QND DETAILS
+
+    //         }, // </END OF SELECT WHEN AUTO COMPLETE IS SUGGESTION IS CLICKED
+            
+    //     }); // </END OF FUNCTION WHEN YOU CLICK AC SUGGESTION(S).
+    // });
     //=====================================================>
     // </END OF ANALYSIS AUTOCOMPLETE(AC) KEYUP FUNCTION
     //=====================================================>
