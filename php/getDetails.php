@@ -145,7 +145,8 @@ switch ($request) {
         $dataRequest = "SELECT * 
                         FROM `analysis_tbl`
                         WHERE `status` = 0
-                        ORDER BY `id` DESC";
+                        ORDER BY `id` DESC
+                        LIMIT 1";
         $dataFromDatabase = $db->prepare($dataRequest);
         $dataFromDatabase -> execute();
 
@@ -214,9 +215,9 @@ switch ($request) {
         $dataRequest = "SELECT * FROM 
                             `telford_db`.`analysis_tbl`
                         WHERE 
-                            `analysis_tbl`.`qdnNo` = '$matchedQdnNum'  
+                            `analysis_tbl`.`status` = 0  
                         AND 
-                            `analysis_tbl`.`status` = 0";
+                            `analysis_tbl`.`qdnNo` = '$matchedQdnNum'";
         $dataFromDatabase = $db->prepare($dataRequest);
         $dataFromDatabase -> execute();
 
@@ -274,6 +275,58 @@ switch ($request) {
         }
         if ( $data ){
             echo json_encode($data);
+        };
+    break;
+    case 8.2:
+        $dataRequest = "SELECT * FROM 
+                            `telford_db`.`analysis_tbl`
+                        WHERE `analysis_tbl`.`status` = 0
+                        ORDER BY `analysis_tbl`.`id` DESC
+                        LIMIT 1";
+        $dataFromDatabase = $db->prepare($dataRequest);
+        $dataFromDatabase ->execute();
+        while($row =$dataFromDatabase->fetch(PDO::FETCH_ASSOC)){
+            $id                     = $row['id'];
+            $qdnNo                  = $row['qdnNo'];
+            $issuedByName           = $row['issuedByName'];
+            $issuedByTeam           = $row['issuedByTeam'];
+            $issuedToName           = $row['issuedToName'];
+            $issuedToTeam           = $row['issuedToTeam'];
+            $customer               = $row['customer'];
+            $packageType            = $row['packageType'];
+            $machine                = $row['machine'];
+            $deviceName             = $row['deviceName'];
+            $station                = $row['station'];
+            $lotId                  = $row['lotId'];
+            $teamResp               = $row['teamResp'];
+            $dateTime               = $row['dateTime'];
+            $classification         = $row['classification'];
+            $defects                = $row['defects'];
+            $failure_mode           = $row['failure_mode'];
+            $disposition            = $row['disposition'];
+            $cause_of_defects       = $row['cause_of_defects'];
+            $cause_of_defects_des   = $row['cause_of_defects_des'];
+            $prod_auth_col          = $row['prod_auth_col'];
+            $ee_auth_col            = $row['ee_auth_col'];
+            $pe_auth_col            = $row['pe_auth_col'];
+            $qa_auth_col            = $row['qa_auth_col'];
+            $others_auth_col        = $row['others_auth_col'];
+            // STORING DATA TO AN ARRAY
+            $qndNoData[] = array("qdnNo" => $qdnNo, "issuedByName" => $issuedByName,
+                "issuedByTeam" => $issuedByTeam, "issuedToName" => $issuedToName,
+                "issuedToTeam" => $issuedToTeam, "dateTime" => $dateTime,
+                "customer" => $customer, "station" => $station,
+                "teamResp" => $teamResp, "machine" => $machine, 
+                "packageType" => $packageType,"deviceName" => $deviceName, 
+                "lotId" => $lotId, "classification" => $classification,
+                "defects" => $defects, "failure_mode" => $failure_mode,
+                "disposition" => $disposition, "cause_of_defects" => $cause_of_defects, 
+                "cause_of_defects_des" => $cause_of_defects_des, "qdnId" => $id     
+            );
+        }
+        // ENCODING ARRAY TO JSON FORMAT
+        if ( $qndNoData ){
+            echo json_encode($qndNoData);
         };
     break;
     //========================================

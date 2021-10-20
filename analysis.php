@@ -41,7 +41,8 @@
   <!--CORE JS-->
   <script type="text/javascript" src="./js/jquery-3.6.0.min.js"></script>
   <!------------------------------------------------------------------>   
-  <script src="./js/analysis.js" defer></script>
+  <!-- <script src="./js/analysis copy.js" defer></script> -->
+  <script src="./js/analysis.js" defer></script>  
   <!------------------------------------------------------------------>
   <script src="./js/analysisFormValidation.js" defer></script>
   <!------------------------------------------------------------------>
@@ -73,7 +74,7 @@
         <div class="row col-md-12 mb-3">
           <div class="errorSpan col-sm-4">
             <label for="qdnNumber" class="form-label">QDN #:</label>
-            <input type="text" class="form-control" id="qdnNumber" required>
+            <input autocomplete = "off" type="text" class="form-control" id="qdnNumber" required>
           </div>
         </div>
         <!--
