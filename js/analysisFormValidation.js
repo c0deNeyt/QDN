@@ -292,7 +292,7 @@
               // CURRENT QDN ID 
               let currentQdnId = fetchQDNDetails[0].id;
               // POSTING UPDATE TO THE DATABASE
-              const radioButtonsInsert = await mainObject.updateRadioButton(currentQdnId);
+              await mainObject.updateRadioButton(currentQdnId);
              
               //CONTAINMENT VARIABLES
               var containment       = $("#containment").text();
@@ -302,6 +302,7 @@
               var newContainment    = document.getElementById('conTblRow');
               var newContainmentVal = newContainment.innerText;
               var newContainmentLen = $.trim(newContainmentVal).length;
+              // console.log(radioButtonsInsert);
 
               // CORRECTION VARIABLES 
               var correction        = $("#correction").text();
@@ -470,12 +471,12 @@
 
                 // CONDITION TO SEND NEW DATA TO CONTAINMENT DATABASE TBL 
                 // IF THERE IS A VALUE INSIDE
-                if (newContainmentLen > 0){
+                if (newContainmentLen){
                   // CONTAINMENT INSERT REQUEST
-                  $.ajax({
+                  let x = $.ajax({
                     type: 'POST',
                     url: "./php/insertToContain.php",
-                    cache : true,
+                    cache : false,
                     data: {containment2DB:       containment,
                           containmentResp2DB:   containmentResp,
                           containmentWhen2DB:   containmentWhen,
@@ -483,17 +484,17 @@
                           id:                   currentQdnId
                     }
                   });
-                  // console.log("CONTAINMENT INSERT SUCCESS!");
+                  console.log("CONTAINMENT INSERT SUCCESS!", x);
                   // </END OF REQUEST
                 };
                 // CONDITION TO SEND NEW DATA TO CORRECTION DATABASE TBL 
                 // IF THERE IS A VALUE INSIDE
-                if (newCorrectionLen > 0){
+                if (newCorrectionLen){
                   // CORRECTION INSERT REQUEST
                   $.ajax({
                     type: 'POST',
                     url: "./php/insertToCorrection.php",
-                    cache : true,
+                    cache : false,
                     data: {correction2DB:       correction,
                           correctionResp2DB:   correctionResp,
                           correctionWhen2DB:   correctionWhen,
