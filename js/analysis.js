@@ -200,12 +200,93 @@ const appendObject = {
         }
     
 
+    },
+    appendTableContent() {
+        //**Check if parm data is not null
+        // if not attach the item(s) to the DOM or html page
+        if ( this.data ){
+            let dataLen = this.data.length;
+            console.log(dataLen)
+            // LOOP TO HANDLE THE Containments Result
+            for (let i=0;i<dataLen;i++) {
+                let actions = this.data[i]['actions'];
+                let responsible = this.data[i]['responsible'];
+                let when = this.data[i]['when'];
+                let status = this.data[i]['status'];
+
+                const tblRow = document.createElement('tr');
+
+                const tblRowCol = document.createElement('td');
+                const tblRowCol1 = document.createElement('td');
+                const tblRowCol2 = document.createElement('td');
+                const tblRowCol3 = document.createElement('td');
+                
+                tblRow.id = `${this.tableName}` + i;
+
+                tblRowCol.id = `${this.tableName}Act` + i;
+                tblRowCol.contentEditable = true;
+                tblRowCol.className = "pre-wrap";
+                tblRowCol.innerText = actions;
+
+                tblRowCol1.id = `${this.tableName}Resp` + i;
+                tblRowCol1.contentEditable = true;
+                tblRowCol1.className = "pre-wrap";
+                tblRowCol1.innerText = responsible;
+
+                tblRowCol2.id = `${this.tableName}When` + i;
+                tblRowCol2.contentEditable = true;
+                tblRowCol2.className = "pre-wrap";
+                tblRowCol2.innerText = when;
+
+                tblRowCol3.id = `${this.tableName}Status` + i;
+                tblRowCol3.contentEditable = true;
+                tblRowCol3.className = "pre-wrap";
+                tblRowCol3.innerText = status;
+
+                // INSERTING TABLE ROW ABOVE THE CLASS "tdbodyContainment"
+                if (i === 0) {
+                    console.log("i is equal to zero");
+                    $(`.${this.tableName}Tbody`).prepend($(tblRow));
+                    $(tblRow).append(tblRowCol);
+                    $(tblRow).append(tblRowCol1);
+                    $(tblRow).append(tblRowCol2);
+                    $(tblRow).append(tblRowCol3);
+                }
+                else {
+                    console.log("i is greater than 0");
+                    const tblRowNew = document.createElement('tr');
+                    tblRowNew.id = `${this.tableName}` + i;
+                    var newtr = document.getElementById("correction" + (i - 1));
+                    console.log(tblRowNew);
+                    $(newtr).after(tblRow);
+                    $(tblRow).append(tblRowCol);
+                    $(tblRow).append(tblRowCol1);
+                    $(tblRow).append(tblRowCol2);
+                    $(tblRow).append(tblRowCol3);
+                }
+                // INSERTING TABLE ROW BELOW THE THE NEWLY INSERTED ROW
+                // else {
+                
+                // };
+            };
+            // </ END OF LOOP
+        };
+        // </End of checking
     }
 }
-function onloadAppendToDOM(data, selectorIDs) {
+function onloadAppendToDOM(data, selectorIDs, tableName) {
     return Object.create(appendObject, {
         data: {value: data},
-        selectorIDs: {value: selectorIDs}
+        selectorIDs: {value: selectorIDs},
+        analysisTblId: {value: selectorIDs},
+        /**table variables*/
+        tr:{value: document.createElement('tr')},
+        tblRowCol:{value: document.createElement('td')},
+        tblRowCol1:{value: document.createElement('td')},
+        tblRowCol2:{value: document.createElement('td')},
+        tblRowCol3:{value: document.createElement('td')},
+        tblRowNew:{value: document.createElement('tr')},
+        tableName: {value: tableName}
     });
    
 };
@@ -213,8 +294,8 @@ function onloadAppendToDOM(data, selectorIDs) {
     
 $(document).ready(async function () {//*✅*/
     /**
-     * Onload Event
-     * Search the latest qnd
+     * Onload Event ✅
+     * Search the latest qnd ✅
      * Append to the DOM
      * 
      * Input Event
@@ -264,13 +345,24 @@ $(document).ready(async function () {//*✅*/
         const containmentRequest = new onLoadRequestEvent(10, filteredData[19], 'matchedContainment');
         const correctionRequest = new onLoadRequestEvent(11, filteredData[19], 'matchedCorrection');
         const correctiveRequest = new onLoadRequestEvent(10, filteredData[19], 'matchedContainment');
-        /**METHOD  EXECUTION STORING DATA TO CONSTANT VARIABLE*/
+        /**METHOD  EXECUTION STORING DATA TO CONSTANT VARIABLE
+         * Note:
+         * cont = containment
+         * corr = correction
+         * crtv = corrective
+         */
         const cont = await containmentRequest.requestForTableData();
         const corr = await correctionRequest.requestForTableData();
         const crtv = await correctiveRequest.requestForTableData();
+        /*Append instance */
+        const onloadAppendCont = new onloadAppendToDOM(cont, filteredData[19], "containment");
+        // const onloadAppendCorr = new onloadAppendToDOM(corr, filteredData[19], "correction");
+        // const onloadAppendCrtv = new onloadAppendToDOM(crtv, filteredData[19], "corrective");
+        onloadAppendCont.appendTableContent();
+        // onloadAppendCorr.appendTableContent();
+        // onloadAppendCrtv.appendTableContent();
 
-
-        console.log("This is the containment data", cont, corr, crtv);
+        // console.log("This is the containment data", cont);
 
 
     }catch (e){

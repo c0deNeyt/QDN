@@ -48,7 +48,7 @@
   <!------------------------------------------------------------------>
   <script src = "./js/submitForApproval.js" defer></script>
   <!------------------------------------------------------------------>
-  <script src="https://smtpjs.com/v3/smtp.js"></script>
+  <!-- <script src="https://smtpjs.com/v3/smtp.js"></script> -->
   <!------------------------------------------------------------------>
   <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js" ></script>
   <!------------------------------------------------------------------>
@@ -370,7 +370,7 @@
                   <th scope="col">STATUS</th>
                 </tr>
               </thead>
-              <tbody class="tbodyContainment">
+              <tbody class="containmentTbody">
                 <tr id = "conTblRow">
                   <td id="containment" contenteditable="true" class="pre-wrap"></td>
                   <td id= "containmentResp" contenteditable="true" class="pre-wrap"></td>
@@ -388,7 +388,7 @@
                   <th scope="col">STATUS</th>
                 </tr>
               </thead>
-              <tbody class = "tbodyCorrection">
+              <tbody class = "correctionTbody">
                 <tr id = "correctionTblRow"> 
                   <td id="correction" contenteditable="true" cols="3" class="pre-wrap"> </td>
                   <td id="correctionResp" contenteditable="true" class="pre-wrap"></td>
@@ -407,7 +407,7 @@
                   <th scope="col">STATUS</th>
                 </tr>
               </thead>
-              <tbody class = "tbodyCorrective">
+              <tbody class = "correctiveTbody">
                 <tr id = "correctiveTblRow">
                   <td id="corrective" contenteditable="true" cols="3" class="pre-wrap"></td>
                   <td id="correctiveResp" contenteditable="true" class="pre-wrap"></td>
