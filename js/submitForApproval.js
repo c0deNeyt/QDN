@@ -201,7 +201,6 @@ $(document).ready(function(){
             }
             xhr.open("POST", "./php/getDetails.php");
             xhr.send(data);
-
         });
     };//**🔚 
     //**FUNCTION THAT WILL GET QDN REASSIGMENT PRODUCTLINE VALUE */
