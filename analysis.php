@@ -74,7 +74,7 @@
         <div class="row col-md-12 mb-3">
           <div class="errorSpan col-sm-4">
             <label for="qdnNumber" class="form-label">QDN #:</label>
-            <input autocomplete = "off" type="text" class="form-control" id="qdnNumber" required>
+            <input autocomplete = "off" type="text" class="form-control" id="qdnNumber">
           </div>
         </div>
         <!--
@@ -262,10 +262,12 @@
           </div>
         </div> -->
 
-        <div id="reAssignDiv" class="form-check form-switch mb-3 justify-content-center d-flex justify-content-center">
-          <input class="form-check-input" type="checkbox" id="reAssign">
-          <label class="form-check-label" for="reAssign">Reassign</label>
-        </div>
+        <script class="reAssignmentBtn" type="text/x-custom-template">
+          <div id="reAssignDiv" class="form-check form-switch mb-3 justify-content-center d-flex justify-content-center">
+            <input class="form-check-input" type="checkbox" id="reAssign">
+            <label class="form-check-label" for="reAssign">Reassign</label>
+          </div>
+        </script>
 
         <script id="analysisSection" type="text/x-custom-template">
           <div class="analysisSection">
@@ -425,7 +427,7 @@
               </div>
             </div>
           </div>
-        </script>
+        </>
       </form>
     </div>   
   </div>

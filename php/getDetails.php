@@ -214,10 +214,10 @@ switch ($request) {
         $matchedQdnNum = $_POST["matchedQdnNum"];
         $dataRequest = "SELECT * FROM 
                             `telford_db`.`analysis_tbl`
-                        WHERE 
-                            `analysis_tbl`.`status` = 0  
-                        AND 
-                            `analysis_tbl`.`qdnNo` = '$matchedQdnNum'";
+                        WHERE
+                            `analysis_tbl`.`qdnNo` = '$matchedQdnNum'  
+                        AND
+                            `analysis_tbl`.`status` = 0";
         $dataFromDatabase = $db->prepare($dataRequest);
         $dataFromDatabase -> execute();
 
@@ -244,17 +244,17 @@ switch ($request) {
             $cause_of_defects_des   = $row['cause_of_defects_des'];
             $status                 = $row['status'];
 
-            $data[] = array(
-                "id" => $id, "qdnNo" => $qdnNo, "issuedByName" => $issuedByName,
-                "issuedByTeam" => $issuedByTeam, "issuedToName" => $issuedToName,
-                "issuedToTeam" => $issuedToTeam, "dateTime" => $dateTime,
-                "customer" => $customer, "station" => $station,
-                "teamResp" => $teamResp, "machine" => $machine, 
-                "packageType" => $packageType,"deviceName" => $deviceName, 
-                "lotId" => $lotId, "classification" => $classification, 
-                "defects" => $defects, "failure_mode" => $failure_mode, "disposition" => $disposition, 
-               "cause_of_defects" => $cause_of_defects, "cause_of_defects_des" => $cause_of_defects_des
-            );
+            $data[] = array("qdnNo" => $qdnNo, "issuedByName" => $issuedByName,
+            "issuedByTeam" => $issuedByTeam, "issuedToName" => $issuedToName,
+            "issuedToTeam" => $issuedToTeam, "dateTime" => $dateTime,
+            "customer" => $customer, "station" => $station,
+            "teamResp" => $teamResp, "machine" => $machine, 
+            "packageType" => $packageType,"deviceName" => $deviceName, 
+            "lotId" => $lotId, "classification" => $classification,
+            "defects" => $defects, "failure_mode" => $failure_mode,
+            "disposition" => $disposition, "cause_of_defects" => $cause_of_defects, 
+            "cause_of_defects_des" => $cause_of_defects_des, "qdnId" => $id     
+        );
         }
         if ( $data ){
             echo json_encode($data);

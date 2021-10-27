@@ -425,7 +425,6 @@ $(document).ready(function () {//*✅*/
                                 "color": "",
                                 "border": "1px solid #63f200"
                             });
-
                     };
                 },
                 error: function () {

@@ -1,5 +1,7 @@
+/** OBJECT RESPONSIBLE FOR DATABASE REQUEST */
 const requestObject = {
-    request() {
+    /**Request for latest QDN DETAILS */
+    latestQdn() {
         return $.ajax({
             type: 'POST',
             url: "./php/getDetails.php",
@@ -8,6 +10,7 @@ const requestObject = {
             dataType: "json",
         });
     },
+    /**Request for Reassignment details */
     requestForReassignment(){
         return $.ajax({
             type: 'POST',
@@ -17,6 +20,7 @@ const requestObject = {
             dataType: "json"
         });
     },
+    /**request for containment, correction or corrective data */
     requestForTableData() {
         return new Promise ((resolve, reject) => {
             let xhr = new XMLHttpRequest;
@@ -37,16 +41,26 @@ const requestObject = {
             xhr.send(formData);
         });
     },
-}
-
+    searchQdnDetails() {
+        return $.ajax({
+            type: 'POST',
+            url: "./php/getDetails.php",
+            data: { matchedQdnNum: this.usrInput, request: this.requestNum },
+            cache: false,
+            dataType: "json",
+        });
+    },
+};
+/**OBJECT CREATION AND ASSIGNING PROPERTIES*/
 function onLoadRequestEvent(requestNum, findThis, name){
     return Object.create(requestObject, {
         requestNum :{value: requestNum},
         findThis :{value: findThis},
         name :{value: name},
+        usrInput: {value: findThis}
     })
 };
-
+/** OBJECT RESPONSIBLE FOR APPENDING DATA TO THE DOM */
 const appendObject = {
     /**Appending to the fieldset or
      * for instance the card below the qnd
@@ -74,7 +88,7 @@ const appendObject = {
                 break;
             }
         };
-    },
+    },/**METHOD ENDS HERE*/
     /**Appending Radio Value if exist */
     appendRadio() {
         const selectorIDsLen = this.selectorIDs.length;
@@ -97,7 +111,8 @@ const appendObject = {
                 break;
             }
         }   
-    },
+    },/**METHOD ENDS HERE*/
+    /**Appending reassignment details*/
     appendReassignment() {
         if (this.data){
             let dataLen = this.data.length;
@@ -200,19 +215,18 @@ const appendObject = {
         }
     
 
-    },
+    },/**METHOD ENDS HERE*/
     appendTableContent() {
-        //**Check if parm data is not null
-        // if not attach the item(s) to the DOM or html page
-        if ( this.data ){
+        /**Check if data is not null*/
+        if ( this.data ) {
             let dataLen = this.data.length;
-            console.log(dataLen)
-            // LOOP TO HANDLE THE Containments Result
-            for (let i=0;i<dataLen;i++) {
-                let actions = this.data[i]['actions'];
-                let responsible = this.data[i]['responsible'];
-                let when = this.data[i]['when'];
-                let status = this.data[i]['status'];
+            /**LOOP TO HANDLE THE Containments Result*/
+            for (var i=0;i<dataLen;i++) {
+                var actions = this.data[i]['actions'];
+                var responsible = this.data[i]['responsible'];
+                var when = this.data[i]['when'];
+                var status = this.data[i]['status'];
+                var fetchedId = this.data[i]['analysis_tbl_id'];
 
                 const tblRow = document.createElement('tr');
 
@@ -220,7 +234,8 @@ const appendObject = {
                 const tblRowCol1 = document.createElement('td');
                 const tblRowCol2 = document.createElement('td');
                 const tblRowCol3 = document.createElement('td');
-                
+
+                /**Assigning for the element attributes */
                 tblRow.id = `${this.tableName}` + i;
 
                 tblRowCol.id = `${this.tableName}Act` + i;
@@ -242,67 +257,105 @@ const appendObject = {
                 tblRowCol3.contentEditable = true;
                 tblRowCol3.className = "pre-wrap";
                 tblRowCol3.innerText = status;
+                /**END OF Assigning*/
 
-                // INSERTING TABLE ROW ABOVE THE CLASS "tdbodyContainment"
-                if (i === 0) {
-                    console.log("i is equal to zero");
+                /**INSERTING TABLE ROW ABOVE THE CLASS "tdboyCorrection"*/
+                if ((fetchedId === this.analysisTblId) && (!i)) {
                     $(`.${this.tableName}Tbody`).prepend($(tblRow));
                     $(tblRow).append(tblRowCol);
                     $(tblRow).append(tblRowCol1);
                     $(tblRow).append(tblRowCol2);
                     $(tblRow).append(tblRowCol3);
                 }
-                else {
-                    console.log("i is greater than 0");
+                /**INSERTING TABLE ROW BELOW THE THE NEWLY INSERTED ROW*/
+                else if ((fetchedId === this.analysisTblId) && (i)) {
                     const tblRowNew = document.createElement('tr');
                     tblRowNew.id = `${this.tableName}` + i;
-                    var newtr = document.getElementById("correction" + (i - 1));
-                    console.log(tblRowNew);
+                    var newtr = document.getElementById(`${this.tableName}` + (i - 1));
                     $(newtr).after(tblRow);
                     $(tblRow).append(tblRowCol);
                     $(tblRow).append(tblRowCol1);
                     $(tblRow).append(tblRowCol2);
                     $(tblRow).append(tblRowCol3);
-                }
-                // INSERTING TABLE ROW BELOW THE THE NEWLY INSERTED ROW
-                // else {
-                
-                // };
-            };
-            // </ END OF LOOP
-        };
-        // </End of checking
-    }
-}
+                };
+            };/**</ END OF LOOP*/
+        }/**END OF IF STATEMENT*/
+    },/**METHOD ENDS HERE*/
+};
+/**OBJECT CREATION AND ASSIGNING PROPERTIES*/
 function onloadAppendToDOM(data, selectorIDs, tableName) {
     return Object.create(appendObject, {
         data: {value: data},
         selectorIDs: {value: selectorIDs},
         analysisTblId: {value: selectorIDs},
         /**table variables*/
-        tr:{value: document.createElement('tr')},
-        tblRowCol:{value: document.createElement('td')},
-        tblRowCol1:{value: document.createElement('td')},
-        tblRowCol2:{value: document.createElement('td')},
-        tblRowCol3:{value: document.createElement('td')},
-        tblRowNew:{value: document.createElement('tr')},
         tableName: {value: tableName}
     });
    
 };
-
-    
-$(document).ready(async function () {//*✅*/
-    /**
-     * Onload Event ✅
-     * Search the latest qnd ✅
-     * Append to the DOM
-     * 
-     * Input Event
-     * Search for the matched qnd
-     * Matched True: Append the data to the dom 
-     * Matched False: set the DOM TO default
-         */
+/**OBJECT RESPONSIBLE FOR ALERTS*/
+const alertObject = {
+     /** ERROR ALERT */
+    async errorAlert() {
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-right',
+        iconColor: 'white',
+        customClass: {
+            popup: 'colored-toast'
+        },
+        allowEscapeKey: false,
+        showConfirmButton: false,
+        timer: 5000,
+        timerProgressBar: true,
+        //**This will let you pause and play the alert loading*/
+        didOpen: (toast) => { 
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+        await Toast.fire({
+            icon: 'error',
+            title: 'Something Went Wrong at analysis.js!',
+            html:"<b style ='color:red;'>"+  `${this.data}` +"</b>",
+        });
+    },
+    /** SUCCESS ALERT */
+    async successAlert() {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-right',
+            iconColor: 'white',
+            customClass: {
+              popup: 'colored-toast'
+            },
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: true,
+            //**This will let you pause and play the alert loading*/
+            didOpen: (toast) => { 
+              toast.addEventListener('mouseenter', Swal.stopTimer)
+              toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
+        await Toast.fire({
+            icon: 'success',
+            title: 'Access Granted!',
+        }).then(()=>{
+            // window.location.replace("approval.php?qdnNumber=T71221-1");
+        });
+    }
+};
+/**OBJECT CREATION AND ASSIGNING PROPERTIES*/
+function alertFactory(data) {
+    return Object.create(alertObject, {
+        data: {value: data}
+    });
+   
+};
+/**SET DEFAULT VALUE FUNCTION FUNCTION*/
+async function appendToDOM(filteredData) {
     const selectorsIDs = ["qdnNumber", "ibName","ibTeam","itName",
     "itTeam", "dateTime", "customer", "station",
     "teamResp", "machine", "pkgType","partName",
@@ -312,12 +365,6 @@ $(document).ready(async function () {//*✅*/
                             "splitLot", "shutdown", "shipBack", "production",
                             "process", "Maintenance", "Facilities", "QA","Others"];
     try{
-        /*INSTANCE OF ONLOAD REQUEST*/
-        const onloadRequest = new onLoadRequestEvent(8.2);
-        /**ONLOAD RAW DATA */
-        const result = await onloadRequest.request();
-        /**CONVERTING THE OJECT INTO ARRAY OF OBJECT VALUE*/
-        const filteredData = Object.values(result[0]);
         /**INSTANCE OF ONLOAD APPEND OBJECT*/
         const onloadAppendEvent = new onloadAppendToDOM(filteredData, selectorsIDs);
         // /**INSTANCE OF ONLOAD APPEND OBJECT*/
@@ -340,7 +387,6 @@ $(document).ready(async function () {//*✅*/
         const onloadAppendReass = new onloadAppendToDOM(reAssRawData);
         /**EXECUTION OF METHOD APPEND REASSIGNMENT IF EXIST*/
         onloadAppendReass.appendReassignment();
-
         /**CONTAINMENT, CORRECTION, AND CORRECTIVE INSTANCE */
         const containmentRequest = new onLoadRequestEvent(10, filteredData[19], 'matchedContainment');
         const correctionRequest = new onLoadRequestEvent(11, filteredData[19], 'matchedCorrection');
@@ -349,28 +395,112 @@ $(document).ready(async function () {//*✅*/
          * Note:
          * cont = containment
          * corr = correction
-         * crtv = corrective
-         */
+         * crtv = corrective*/
         const cont = await containmentRequest.requestForTableData();
         const corr = await correctionRequest.requestForTableData();
         const crtv = await correctiveRequest.requestForTableData();
-        /*Append instance */
+        /**Instance of appending table data.
+         * Note:
+         * onloadAppendToDOM accept 3 parameters as follows:
+         * First : array/object contain either containment, correction and corrective details
+         * Second : the ID of the latest QDN number
+         * Third : the table body class name.*/
         const onloadAppendCont = new onloadAppendToDOM(cont, filteredData[19], "containment");
-        // const onloadAppendCorr = new onloadAppendToDOM(corr, filteredData[19], "correction");
-        // const onloadAppendCrtv = new onloadAppendToDOM(crtv, filteredData[19], "corrective");
+        const onloadAppendCorr = new onloadAppendToDOM(corr, filteredData[19], "correction");
+        const onloadAppendCrtv = new onloadAppendToDOM(crtv, filteredData[19], "corrective");
+        /**Execution of method(appendTableContent) from object onloadAppendToDOM*/
         onloadAppendCont.appendTableContent();
-        // onloadAppendCorr.appendTableContent();
-        // onloadAppendCrtv.appendTableContent();
+        onloadAppendCorr.appendTableContent();
+        onloadAppendCrtv.appendTableContent();
 
-        // console.log("This is the containment data", cont);
-
-
+        var analysisSectionTemplate = $('#analysisSection').html();
+        let reAssBtn = $('.reAssignmentBtn').html();
+        $('.issueDetails').after(reAssBtn);
+        $('#reAssignDiv').after(analysisSectionTemplate);
     }catch (e){
+        /**Error HANDLING*/
         console.log(e);
+        const error = new alertFactory(e);
+        error.errorAlert();
+    }
+};
+/**FUNCTION TO UNSET LOADED DATA*/
+function unsetData() {
+    /**REMOVING ELEMENT WITH .fromdbResult CLASS*/
+    let spanElement = document.querySelectorAll('.fromdbResutl');
+    for(let i=0;i<spanElement.length;i++){
+        $(spanElement[i]).html("");
+    };
+    /**REMOVING REASSIGNMENT */
+    let reAssignment = document.querySelectorAll(".fromDbData");
+    for(let i=0;i<reAssignment.length;i++){
+        reAssignment[i].remove();
+    }
+    /**REMOVING input fields*/
+    $(".analysisSection").remove();
+    /** */
+
+}   
+(async function() {//*✅*/
+    /**
+     * Onload Event ✅
+     * Search the latest qnd ✅
+     * Append to the DOM ✅
+     * Check if there is custom url  ✅
+     * Check if the param if valid. ✅
+     * If custom URL is valid
+     *  
+     * If custom URL is invalid removed the d
+     * 
+     * 
+     * Input Event
+     * Search for the matched qnd
+     * Matched True: Append the data to the dom 
+     * Matched False: set the DOM TO default
+    */
+    const parameter = new URLSearchParams(window.location.search)
+    const urlParam = parameter.get('qdnNo');
+    const qdnNumberInput = document.getElementById("qdnNumber");
+    /**CHECK IF THE CUSTOM URL IS VALID */
+    if (urlParam){
+        console.log("Custom URL is",true);
+        document.getElementById("qdnNumber").value = urlParam;
+        /**ADD BOOTSTRAP VALIDATION valid*/
+        qdnNumberInput.classList.add("is-valid");
+        try{
+            /*INSTANCE OF ONLOAD REQUEST*/
+            const onloadRequest = new onLoadRequestEvent(8, urlParam);
+            /**MATCHED QDN NUMBER FROM urlParam Parameter */
+            let details = await onloadRequest.searchQdnDetails();
+            const filteredDetails = Object.values(details[0]);
+            appendToDOM(filteredDetails);
+        }
+        catch(e){
+            /**ERROR HANDLING*/
+            console.log(e);
+            /**ADD BOOTSTRAP VALIDATION INVALID*/
+            qdnNumberInput.classList.add("is-invalid");
+            if (e.readyState === 4){
+                /**INSTANCE OF ALERT FACTORY */
+                const error = new alertFactory(`Invalid URL 😈😈😈.<br>
+                Status: ${e.status} <br>
+                statusText: " ${e.statusText} "`);
+                /**METHOD EXECUTION*/
+                await error.errorAlert();
+            }
+        }
+    }
+    else{
+        console.log("Custom URL is",false);
+        /*INSTANCE OF ONLOAD REQUEST*/
+        const onloadRequest = new onLoadRequestEvent(8.2);
+        /**ONLOAD RAW DATA */
+        const result = await onloadRequest.latestQdn();
+        /**CONVERTING THE OJECT INTO ARRAY OF OBJECT VALUE*/
+        const filteredData = Object.values(result[0]);
+        appendToDOM(filteredData);
     }
    
-   
-
     //=====================================================>
     // START OF ANALYSIS AUTOCOMPLETE(AC) KEYUP FUNCTION
     //=====================================================>
@@ -378,54 +508,17 @@ $(document).ready(async function () {//*✅*/
         /** .replace will removed excess spaces */
         let usrInput = $(this).val().replace(/\s/g,'');
         let usrInputLen = usrInput.length;
-        // let selectorsIDs = ["qdnNumber", "ibName","ibTeam","itName",
-        //                     "itTeam", "dateTime", "customer", "station",
-        //                     "teamResp", "machine", "pkgType","partName",
-        //                     "lotId", "classification", "defects",];
-        // const onloadRequest = new onLoadRequestEvent(8.2);
-        // const result = await onloadRequest.request();
-        // const filteredData = Object.values(result[0]);
-        // const onloadAppendEvent = new onloadAppendToDOM(filteredData, selectorsIDs);
-        // onloadAppendEvent.append();
-
-        // console.log("THIS IS THE REQUEST RESULT", filteredData);
-        // if (usrInputLen){
-        //     /*Instantiate AnalysisReq*/
-        //     const analysisRequest = new AnalysisRequest(usrInput);
-        //     const analysisEvt = new AnalysisEvent(); 
-            
-        //     try{
-        //         let result = await analysisRequest.qdnDetails();
-        //         let qndRawValue = Object.values(result[0]);
-        //         let selectorsIDs = ["ibName","ibTeam","itName",
-        //                             "itTeam", "dateTime", "customer",
-        //                             "station", "teamResp", "machine",
-        //                             "pkgType","partName","lotId",
-        //                             "classification","defects",];
-        //         analysisEvt.qdnResultFound();
-        //         $("#reAssignDiv").after(analysisSectionTemplate);
-        //         for(let i=0;i<qndRawValue.length;i++){
-        //             switch (i){
-        //                 case 16:
-        //                     // console.log("This is the case 16", qndRawValue[i]);
-        //                     if(qndRawValue[i] !== null){
-
-        //                     }
-        //                 break;
-        //                 default:
-        //                     $(`#${selectorsIDs[i]}`).html(qndRawValue[i+2]);
-        //                 break;
-        //             };
-                    
-        //         } 
-        //         console.log(Object.keys(result[0]), Object.values(result[0]));
-        //     }catch{
-        //         analysisEvt.noQdnResultFound();
-        //         console.log("the noQdnResultFound!!");
-        //     }
-            
-        // }else{
-
-        // }
+        try{
+             /*INSTANCE OF ONLOAD REQUEST*/
+             const onloadRequest = new onLoadRequestEvent(8, usrInput);
+             /**MATCHED QDN NUMBER FROM urlParam Parameter */
+             let details = await onloadRequest.searchQdnDetails();
+             const filteredDetails = Object.values(details[0]);
+             appendToDOM(filteredDetails);
+        }
+        catch (e){
+            /**ERROR HANDLING*/
+            unsetData();
+        }
     });
-});
+})();

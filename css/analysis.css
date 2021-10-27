@@ -124,6 +124,7 @@ div.content {
   }
   #qdnNumber {
     font-weight: bold;
+    border: 0.05rem solid #800000;
     color: blue;
     font-size: 1.3rem;
   }
