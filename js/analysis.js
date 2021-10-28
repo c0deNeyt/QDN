@@ -68,7 +68,7 @@ const appendObject = {
     append() {
         const dataLen = this.data.length;
         $('.analysisSection').remove();
-        $(".reAssignDiv").remove();
+        $("#reAssignDiv").remove();
         $(".issueDetails").after($('.reAssignmentBtn').html());
         $("#reAssignDiv").after($('#analysisSection').html());
         /**LOOP TO THE DATA*/
@@ -500,9 +500,10 @@ function unsetData() {
         }
     });
 
-    $('#reAssign').change(async function() {
+    $(document).on("change", "#reAssign", async function () {
         // this will contain a reference to the checkbox   
-        if (this.checked) {
+        console.log(this.checked)
+        if (this.checked === true) {
             // the checkbox is now checked 
             console.log("Reassigning!!");
             $(".analysisSection").remove();
@@ -513,6 +514,17 @@ function unsetData() {
         else {
             $("#reAssignment, #submitReassignment").remove();
             $("#reAssignDiv").after($('#analysisSection').html());
+            let reAssignment = document.querySelectorAll(".fromDbData");
+            for(let i=0;i<reAssignment.length;i++){
+                reAssignment[i].remove();
+            }
+            let currentMatchedQdnNum = $("#qdnNumber").val();
+             /*INSTANCE OF ONLOAD REQUEST*/
+             const onloadRequest = new onLoadRequestEvent(8, currentMatchedQdnNum);
+             /**MATCHED QDN NUMBER FROM urlParam Parameter */
+             let details = await onloadRequest.searchQdnDetails();
+             const filteredDetails = Object.values(details[0]);
+             appendToDOM(filteredDetails);
         }
     });
 
