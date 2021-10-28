@@ -68,6 +68,8 @@ const appendObject = {
     append() {
         const dataLen = this.data.length;
         $('.analysisSection').remove();
+        $(".reAssignDiv").remove();
+        $(".issueDetails").after($('.reAssignmentBtn').html());
         $("#reAssignDiv").after($('#analysisSection').html());
         /**LOOP TO THE DATA*/
         for(let i=0;i<dataLen;i++){
@@ -116,10 +118,8 @@ const appendObject = {
     appendReassignment() {
         if (this.data){
             let dataLen = this.data.length;
-            let count = 0;
             // LOOP TO CHECK IF THERE IS A MATCHED ID BETWEEN ANALYSIS AND REASSIGNMENT TABLE
-            for (let i = 0; i < dataLen; i++) {
-                let fetchedData = this.data[i]['analysis_tbl_id'];
+            for (let i=0;i<dataLen;i++) {
                 // FORMAT OF CUSTOM ELEMENT TO APPEND IF THERE IS A REASSIGNMENT
                 const colDiv = document.createElement("div");
                 const row1Div = document.createElement("div");
@@ -130,23 +130,23 @@ const appendObject = {
                 const row2Lbl = document.createElement("label");
 
                 colDiv.className = "fromDbData row";
-                colDiv.id = count;
+                colDiv.id = i;
                 row1Div.className = "col-sm-2";
                 row2Div.className = "col";
                 row3Div.className = "col-sm-2";
                 row4Div.className = "col";
 
                 row1Lbl.className = "telfordRed col-form-label";
-                row1Lbl.id = "labelSpanName" + count;
+                row1Lbl.id = "labelSpanName" + i;
                 row1Lbl.innerText = "Reassigned To: "
 
                 row2Lbl.className = "telfordRed col-form-label";
-                row2Lbl.id = "labelSpanTeam" + count;
+                row2Lbl.id = "labelSpanTeam" + i;
                 row2Lbl.innerText = "Team: ";
                 // END OF FORMAT 
 
                 // CHECKING THE COUNTER
-                if (!count) {
+                if (!i) {
                     let reAssEmpName = this.data[i]["reAssignedName"];
                     let reAssignedTeam = this.data[i]["reAssignedTeam"];
 
@@ -154,11 +154,11 @@ const appendObject = {
                     const span2 = document.createElement("span");
 
                     span.className = "fromdbResutl";
-                    span.id = "reAssignToNameSpan" + count;
+                    span.id = "reAssignToNameSpan" + i;
                     span.innerText = " " + reAssEmpName;
 
                     span2.className = "fromdbResutl";
-                    span2.id = "reAssignToTeamSpan" + count;
+                    span2.id = "reAssignToTeamSpan" + i;
                     span2.innerText = " " + reAssignedTeam;
 
                     $("#issuedToDiv").after(colDiv);
@@ -174,23 +174,21 @@ const appendObject = {
                     $(row2Div).append(span);
                     // Team Span
                     $(row4Div).append(span2);
-
-                    count++;
                 }
                 else {
                     let reAssEmpName = this.data[i]["reAssignedName"];
                     let reAssignedTeam = this.data[i]["reAssignedTeam"];
-                    let newId = document.getElementById(count - 1);
+                    let newId = document.getElementById(i - 1);
 
                     const span = document.createElement("span");
                     const span2 = document.createElement("span");
 
                     span.className = "fromdbResutl";
-                    span.id = "reAssignToNameSpan" + count;
+                    span.id = "reAssignToNameSpan" + i;
                     span.innerText = " " + reAssEmpName;
 
                     span2.className = "fromdbResutl";
-                    span2.id = "reAssignToTeamSpan" + count;
+                    span2.id = "reAssignToTeamSpan" + i;
                     span2.innerText = " " + reAssignedTeam;
 
                     // console.log("MORE REASS", reAssEmpName, reAssignedTeam, newId)
@@ -208,13 +206,9 @@ const appendObject = {
                     $(row2Div).append(span);
                     // Team Span
                     $(row4Div).append(span2);
-
-                    count++;
                 };
             };
         }
-    
-
     },/**METHOD ENDS HERE*/
     appendTableContent() {
         /**Check if data is not null*/
@@ -412,11 +406,6 @@ async function appendToDOM(filteredData) {
         onloadAppendCont.appendTableContent();
         onloadAppendCorr.appendTableContent();
         onloadAppendCrtv.appendTableContent();
-
-        var analysisSectionTemplate = $('#analysisSection').html();
-        let reAssBtn = $('.reAssignmentBtn').html();
-        $('.issueDetails').after(reAssBtn);
-        $('#reAssignDiv').after(analysisSectionTemplate);
     }catch (e){
         /**Error HANDLING*/
         console.log(e);
@@ -438,22 +427,10 @@ function unsetData() {
     }
     /**REMOVING input fields*/
     $(".analysisSection").remove();
-    /** */
-
+    $("#reAssignDiv").remove();
 }   
 (async function() {//*✅*/
-    /**
-     * Onload Event ✅
-     * Search the latest qnd ✅
-     * Append to the DOM ✅
-     * Check if there is custom url  ✅
-     * Check if the param if valid. ✅
-     * If custom URL is valid
-     *  
-     * If custom URL is invalid removed the d
-     * 
-     * 
-     * Input Event
+    /**Input Event
      * Search for the matched qnd
      * Matched True: Append the data to the dom 
      * Matched False: set the DOM TO default
@@ -466,6 +443,7 @@ function unsetData() {
         console.log("Custom URL is",true);
         document.getElementById("qdnNumber").value = urlParam;
         /**ADD BOOTSTRAP VALIDATION valid*/
+        qdnNumberInput.classList.remove("is-invalid")
         qdnNumberInput.classList.add("is-valid");
         try{
             /*INSTANCE OF ONLOAD REQUEST*/
@@ -479,6 +457,7 @@ function unsetData() {
             /**ERROR HANDLING*/
             console.log(e);
             /**ADD BOOTSTRAP VALIDATION INVALID*/
+            qdnNumberInput.classList.remove("is-valid")
             qdnNumberInput.classList.add("is-invalid");
             if (e.readyState === 4){
                 /**INSTANCE OF ALERT FACTORY */
@@ -507,7 +486,6 @@ function unsetData() {
     $("#qdnNumber").on("input", async function () {
         /** .replace will removed excess spaces */
         let usrInput = $(this).val().replace(/\s/g,'');
-        let usrInputLen = usrInput.length;
         try{
              /*INSTANCE OF ONLOAD REQUEST*/
              const onloadRequest = new onLoadRequestEvent(8, usrInput);
@@ -521,4 +499,21 @@ function unsetData() {
             unsetData();
         }
     });
+
+    $('#reAssign').change(async function() {
+        // this will contain a reference to the checkbox   
+        if (this.checked) {
+            // the checkbox is now checked 
+            console.log("Reassigning!!");
+            $(".analysisSection").remove();
+            var reAssignmentInputs = "<div id='reAssignment'><div  class='row'><div class='col-4'><label for='reAssignTo' class='col-form-label'>ReassignTo</label><input id='reAssignTo' type='number' class='form-control' placeholder='Employee #...' required/></div><div class='col-5'><label class='col-form-label' for='reAssignToName'>Emp. Name:</label><input id='reAssignToName' type='text' class='form-control' disabled/></div><div class='col-3'><label class='col-form-label'>Team:</label><input id='reAssignToTeam' type='text' class='form-control' disabled/></div></div><div class='row'><div class = 'col-4'></div><div class = 'col-5'><label class='col-form-label' for='dept' >Department:</label><input id='dept' type='text' class='form-control' disabled/></div><div class = 'col-3'></div></div><div class='row col-form-label-lg mt-3'><div class='col'><label class='col-form-label'>Reassignment Description:</label><textarea id='reAssignmentDes' class='form-control text-center w-50' rows='2' required></textarea></div></div></div>";
+            var forReAssBtn = "<button class='submitReassignment w-100 btn btn-primary btn-lg mt-3' id='submitReassignment'>Submit for Reassignment</button>";
+            $("#reAssignDiv").after(reAssignmentInputs, forReAssBtn);
+        } 
+        else {
+            $("#reAssignment, #submitReassignment").remove();
+            $("#reAssignDiv").after($('#analysisSection').html());
+        }
+    });
+
 })();

@@ -245,16 +245,16 @@ switch ($request) {
             $status                 = $row['status'];
 
             $data[] = array("qdnNo" => $qdnNo, "issuedByName" => $issuedByName,
-            "issuedByTeam" => $issuedByTeam, "issuedToName" => $issuedToName,
-            "issuedToTeam" => $issuedToTeam, "dateTime" => $dateTime,
-            "customer" => $customer, "station" => $station,
-            "teamResp" => $teamResp, "machine" => $machine, 
-            "packageType" => $packageType,"deviceName" => $deviceName, 
-            "lotId" => $lotId, "classification" => $classification,
-            "defects" => $defects, "failure_mode" => $failure_mode,
-            "disposition" => $disposition, "cause_of_defects" => $cause_of_defects, 
-            "cause_of_defects_des" => $cause_of_defects_des, "qdnId" => $id     
-        );
+                "issuedByTeam" => $issuedByTeam, "issuedToName" => $issuedToName,
+                "issuedToTeam" => $issuedToTeam, "dateTime" => $dateTime,
+                "customer" => $customer, "station" => $station,
+                "teamResp" => $teamResp, "machine" => $machine, 
+                "packageType" => $packageType,"deviceName" => $deviceName, 
+                "lotId" => $lotId, "classification" => $classification,
+                "defects" => $defects, "failure_mode" => $failure_mode,
+                "disposition" => $disposition, "cause_of_defects" => $cause_of_defects, 
+                "cause_of_defects_des" => $cause_of_defects_des, "qdnId" => $id     
+            );
         }
         if ( $data ){
             echo json_encode($data);

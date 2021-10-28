@@ -16,8 +16,10 @@
   <title>Quality Deviation Notice</title>
   <!------------------------------------------------------------------>
   <!-- Bootstrap core CSS-->
-  <link href="./bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <!-- <link href="./bootstrap/css/bootstrap.min.css" rel="stylesheet"> -->
+  <link href="./bootstrap-4.0/css/bootstrap.min.css" rel="stylesheet">
   <link href="./bootstrap/css/bootstrap.css" rel="stylesheet">
+  <link href="./css/switch/component-custom-switch.css" rel="stylesheet">
   <!------------------------------------------------------------------>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
   <!------------------------------------------------------------------>
@@ -263,9 +265,15 @@
         </div> -->
 
         <script class="reAssignmentBtn" type="text/x-custom-template">
-          <div id="reAssignDiv" class="form-check form-switch mb-3 justify-content-center d-flex justify-content-center">
-            <input class="form-check-input" type="checkbox" id="reAssign">
-            <label class="form-check-label" for="reAssign">Reassign</label>
+          <div id="reAssignDiv" class="custom-switch custom-switch-label-yesno custom-switch-xs pl-0">
+            <input class="custom-switch-input" id="reAssign" type="checkbox">
+            <label class="custom-switch-btn" for="reAssign"></label>
+            <div class="custom-switch-content-checked my-3">
+              <span class="text-success">Reassigning...</span>
+            </div>
+            <div class="custom-switch-content-unchecked my-3">
+              <span class="text-danger">Reassign?</span>
+            </div>
           </div>
         </script>
 
@@ -427,11 +435,10 @@
               </div>
             </div>
           </div>
-        </>
+        </script>
       </form>
     </div>   
   </div>
- 
 </body>
 </html>
 n

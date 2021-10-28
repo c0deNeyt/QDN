@@ -63,7 +63,7 @@
         html:"QDN " + "<b style ='color:red;'>"+  `${this.currentQdnNum} ` +"</b>"
         + " updated! 🎉 🥳 🎉",
       }).then(()=>{
-        // window.location.href = "analysis.php?";
+        window.location.href = `analysis.php?qdnNo=${this.currentQdnNum}`;
       });
     };
     //**🔚</END OF ALERT WHEN INSERTING TO THE DATABASE
@@ -343,10 +343,10 @@
                         var status  = data[i]['status']; 
                         var combine = action + resp + when + status;
         
-                        var containAct          = document.getElementById('containAct' + i);
-                        var containResp         = document.getElementById('containResp' + i);
-                        var containWhen         = document.getElementById('containWhen' + i);
-                        var containStatus       = document.getElementById('containStatus' + i);
+                        var containAct          = document.getElementById('containmentAct' + i);
+                        var containResp         = document.getElementById('containmentResp' + i);
+                        var containWhen         = document.getElementById('containmentWhen' + i);
+                        var containStatus       = document.getElementById('containmentStatus' + i);
                         var containActVal       = containAct.innerText ;
                         var containRespVal      = containResp.innerText;
                         var containWhenVal      = containWhen.innerText;
@@ -507,7 +507,7 @@
                 };
                 // CONDITION TO SEND NEW DATA TO CORRECTIVE DATABASE TBL 
                 // IF THERE IS A VALUE INSIDE
-                if (newCorrectiveLen > 0){
+                if (newCorrectiveLen){
                   // CORRECTIVE INSERT REQUEST
                   $.ajax({
                   type: 'POST',

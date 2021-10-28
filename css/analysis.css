@@ -212,6 +212,16 @@ div.swal2-content {
   color: white;
 }
 
+/*=======================
+  SWITCH
+=========================*/
+.custom-switch.custom-switch-label-yesno.custom-switch-xs.pl-0 {
+  display: flex;
+  gap: .5rem;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 /*==============================================================
                     "RESPONSIVE STYLE"
 ================================================================*/
