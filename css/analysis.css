@@ -182,6 +182,7 @@ div.swal2-content {
 /* FOR SWEET ALERT */
 .colored-toast.swal2-icon-success {
   background-color: #a5dc86 !important;
+  width: 5rem;
 }
 
 .colored-toast.swal2-icon-error {

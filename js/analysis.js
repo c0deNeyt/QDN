@@ -1,6 +1,6 @@
 "use strict";
 var strict = (function() { return !this; })();
-console.log("STRICT MODE: ",strict);
+console.log("STRICT MODE: " ,strict);
 // ES6 Modules or TypeScript
 // import Swal from './sweetalert2.all.min';
 
@@ -328,29 +328,62 @@ const alertObject = {
     },
     /** SUCCESS ALERT */
     async successAlert() {
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-right',
-            iconColor: 'white',
-            customClass: {
-              popup: 'colored-toast'
-            },
-            allowEscapeKey: false,
-            showConfirmButton: false,
-            timer: 5000,
-            timerProgressBar: true,
-            //**This will let you pause and play the alert loading*/
-            didOpen: (toast) => { 
-              toast.addEventListener('mouseenter', Swal.stopTimer)
-              toast.addEventListener('mouseleave', Swal.resumeTimer)
-            }
-        })
-        await Toast.fire({
-            icon: 'success',
-            title: 'Access Granted!',
-        }).then(()=>{
-            // window.location.replace("approval.php?qdnNumber=T71221-1");
-        });
+        const currentMonth = month[date.getMonth()];
+        const currentDay = date.getDate();
+        const dates = `${currentMonth}${currentDay}`;
+        const monthOnly = `${currentMonth}`;
+        let url;
+        switch(monthOnly){
+            case `October`: 
+                /** XMAS TREE  */
+                url = `https://cdnb.artstation.com/p/assets/images/images/021/609/273/original/karin-tai-2019-halloween-pig.gif?1572319822`;
+            break;
+            case `December`: 
+                /** XMAS TREE  */
+                url = `https://media1.giphy.com/media/7XAD7iitnID83tQ1WC/giphy.gif?cid=790b761152b64de91be33877a796668f91bee073cff09ee8&rid=giphy.gif&ct=s`;
+            break;
+            default:
+                /**BEE */
+                url = `https://boholbeefarm.com/img/buzzbee.gif`;
+            break;
+        }
+        Swal.fire({
+            title: 'Custom width, padding, background.',
+            width: 600,
+            padding: '3em',
+            background: '#fff url(/images/trees.png)',
+            backdrop: `
+            rgb(127 127 7 / 60%)
+              url("${url}")
+              left top
+              no-repeat
+            `
+          })
+        //   url("https://boholbeefarm.com/img/buzzbee.gif")
+        // const Toast = Swal.mixin({
+        //     toast: true,
+        //     position: 'top-right',
+        //     iconColor: 'white',
+        //     customClass: {
+        //       popup: 'colored-toast'
+        //     },
+        //     allowEscapeKey: false,
+        //     showConfirmButton: false,
+        //     timer: 500000,
+        //     timerProgressBar: true,
+        //     //**This will let you pause and play the alert loading*/
+        //     didOpen: (toast) => { 
+        //       toast.addEventListener('mouseenter', Swal.stopTimer)
+        //       toast.addEventListener('mouseleave', Swal.resumeTimer)
+        //     }
+        // })
+        // await Toast.fire({
+        //     icon: 'success',
+        //     title: 'GOOD JOB!',
+        //     html: "<b style ='color:#fff;'>"+  `${this.data}` +"</b>",
+        // }).then(()=>{
+        //     // window.location.replace("approval.php?qdnNumber=T71221-1");
+        // });
     }
 };
 /**OBJECT CREATION AND ASSIGNING PROPERTIES*/

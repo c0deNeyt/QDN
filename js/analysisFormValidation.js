@@ -141,7 +141,13 @@
         if (!form.checkValidity()) {
           event.preventDefault();
           event.stopPropagation();
+          let reAssignToName    = $("#reAssignToName").val();
+              let reAssignToDept    = $("#dept").val();
           // console.log("ok this is invalid", window.location.href);
+          const error = new alertFactory(`Reassigned Success! 🎉 🥳 🎉.<br>
+                      To: ${reAssignToName} <br>
+                      Department: ${reAssignToDept}`);
+                      error.successAlert();
         }
         //**🔚 End of checking Form 
         // CONDITION IF THE CHECKING OF INPUTS ARE VALID
@@ -229,7 +235,10 @@
                   cache : false, 
                   success: function(data){
                       reAssignmentMail();
-                      reAssignmentAlert();
+                      const error = new alertFactory(`Reassigned! 🎉 🥳 🎉.<br>
+                      To: ${reAssignToName} <br>
+                      Department: ${reAssignToDept}`);
+                      error.successAlert();
                   },
                   error: function() {
                     alert ("No receiver Found! Error form file (analysisFormValidation.js) Line 120!");
