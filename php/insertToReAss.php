@@ -10,15 +10,17 @@ if(isset($_POST)){
 	$reAssignToDept2Db 		= $_POST['reAssignToDept2Db'];
 	$reAssignToDes2Db 		= $_POST['reAssignToDes2Db'];
 	$openQdnID2Db 			= $_POST['openQdnID2Db'];
-	$Insert = "INSERT INTO 
-			reassignments_tbl
-			(reAssignedTo, reAssignedName, reAssignedTeam, department, reAssignDescription, analysis_tbl_id)
-			VALUES (?, ?, ?, ?, ?, ?)"; 
+	$Insert = "INSERT INTO `telford_db`.`reassignments_tbl`
+				(`reAssignedTo`,
+				`reAssignedName`,
+				`reAssignedTeam`,
+				`department`,
+				`reAssignDescription`,
+				`analysis_tbl_id`)
+				VALUES
+				(?, ?, ?, ?, ?, ?)"; 
 	$stmtinsert = $db->prepare($Insert);
 	$result = $stmtinsert->execute([$reAssignTo2Db, $reAssignToName2Db, $reAssignToTeam2Db, $reAssignToDept2Db, $reAssignToDes2Db, $openQdnID2Db]);
-	if($result){
-		echo "Insert SUCCESS!!";
-	};
 };
 	
 ?>

@@ -1,3 +1,11 @@
+"use strict";
+var strict = (function() { return !this; })();
+console.log("STRICT MODE: ",strict);
+// ES6 Modules or TypeScript
+// import Swal from './sweetalert2.all.min';
+
+// CommonJS
+// const Swal = require('sweetalert2')
 /** OBJECT RESPONSIBLE FOR DATABASE REQUEST */
 const requestObject = {
     /**Request for latest QDN DETAILS */
@@ -46,6 +54,15 @@ const requestObject = {
             type: 'POST',
             url: "./php/getDetails.php",
             data: { matchedQdnNum: this.usrInput, request: this.requestNum },
+            cache: false,
+            dataType: "json",
+        });
+    },
+    searchForEmployee() {
+        return $.ajax({
+            type: 'POST',
+            url: "./php/getDetails.php",
+            data: { employeeId: this.usrInput, request: this.requestNum },
             cache: false,
             dataType: "json",
         });
@@ -190,9 +207,7 @@ const appendObject = {
                     span2.className = "fromdbResutl";
                     span2.id = "reAssignToTeamSpan" + i;
                     span2.innerText = " " + reAssignedTeam;
-
                     // console.log("MORE REASS", reAssEmpName, reAssignedTeam, newId)
-
                     $(newId).after(colDiv);
                     $(colDiv).append(row1Div);
                     $(colDiv).append(row2Div);
@@ -215,12 +230,12 @@ const appendObject = {
         if ( this.data ) {
             let dataLen = this.data.length;
             /**LOOP TO HANDLE THE Containments Result*/
-            for (var i=0;i<dataLen;i++) {
-                var actions = this.data[i]['actions'];
-                var responsible = this.data[i]['responsible'];
-                var when = this.data[i]['when'];
-                var status = this.data[i]['status'];
-                var fetchedId = this.data[i]['analysis_tbl_id'];
+            for (let i=0;i<dataLen;i++) {
+                let actions = this.data[i]['actions'];
+                let responsible = this.data[i]['responsible'];
+                let when = this.data[i]['when'];
+                let status = this.data[i]['status'];
+                let fetchedId = this.data[i]['analysis_tbl_id'];
 
                 const tblRow = document.createElement('tr');
 
@@ -228,7 +243,6 @@ const appendObject = {
                 const tblRowCol1 = document.createElement('td');
                 const tblRowCol2 = document.createElement('td');
                 const tblRowCol3 = document.createElement('td');
-
                 /**Assigning for the element attributes */
                 tblRow.id = `${this.tableName}` + i;
 
@@ -252,7 +266,6 @@ const appendObject = {
                 tblRowCol3.className = "pre-wrap";
                 tblRowCol3.innerText = status;
                 /**END OF Assigning*/
-
                 /**INSERTING TABLE ROW ABOVE THE CLASS "tdboyCorrection"*/
                 if ((fetchedId === this.analysisTblId) && (!i)) {
                     $(`.${this.tableName}Tbody`).prepend($(tblRow));
@@ -285,29 +298,28 @@ function onloadAppendToDOM(data, selectorIDs, tableName) {
         /**table variables*/
         tableName: {value: tableName}
     });
-   
 };
 /**OBJECT RESPONSIBLE FOR ALERTS*/
 const alertObject = {
      /** ERROR ALERT */
     async errorAlert() {
-    const Toast = Swal.mixin({
-        toast: true,
-        position: 'top-right',
-        iconColor: 'white',
-        customClass: {
-            popup: 'colored-toast'
-        },
-        allowEscapeKey: false,
-        showConfirmButton: false,
-        timer: 5000,
-        timerProgressBar: true,
-        //**This will let you pause and play the alert loading*/
-        didOpen: (toast) => { 
-            toast.addEventListener('mouseenter', Swal.stopTimer)
-            toast.addEventListener('mouseleave', Swal.resumeTimer)
-        }
-    });
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-right',
+            iconColor: 'white',
+            customClass: {
+                popup: 'colored-toast'
+            },
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: true,
+            //**This will let you pause and play the alert loading*/
+            didOpen: (toast) => { 
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
         await Toast.fire({
             icon: 'error',
             title: 'Something Went Wrong at analysis.js!',
@@ -406,6 +418,8 @@ async function appendToDOM(filteredData) {
         onloadAppendCont.appendTableContent();
         onloadAppendCorr.appendTableContent();
         onloadAppendCrtv.appendTableContent();
+        /**TO REMOVED ASSIGNMENT INPUT SECTION IF EXIST*/
+        $("#reAssignment").remove();    
     }catch (e){
         /**Error HANDLING*/
         console.log(e);
@@ -420,27 +434,22 @@ function unsetData() {
     for(let i=0;i<spanElement.length;i++){
         $(spanElement[i]).html("");
     };
-    /**REMOVING REASSIGNMENT */
-    let reAssignment = document.querySelectorAll(".fromDbData");
-    for(let i=0;i<reAssignment.length;i++){
-        reAssignment[i].remove();
-    }
+    reAssignEvent.unsetReAssignmentData();
     /**REMOVING input fields*/
     $(".analysisSection").remove();
     $("#reAssignDiv").remove();
+    $("#reAssignment").remove();
 }   
 (async function() {//*✅*/
     /**Input Event
      * Search for the matched qnd
      * Matched True: Append the data to the dom 
-     * Matched False: set the DOM TO default
-    */
+     * Matched False: set the DOM TO default */
     const parameter = new URLSearchParams(window.location.search)
     const urlParam = parameter.get('qdnNo');
     const qdnNumberInput = document.getElementById("qdnNumber");
     /**CHECK IF THE CUSTOM URL IS VALID */
     if (urlParam){
-        console.log("Custom URL is",true);
         document.getElementById("qdnNumber").value = urlParam;
         /**ADD BOOTSTRAP VALIDATION valid*/
         qdnNumberInput.classList.remove("is-invalid")
@@ -455,7 +464,6 @@ function unsetData() {
         }
         catch(e){
             /**ERROR HANDLING*/
-            console.log(e);
             /**ADD BOOTSTRAP VALIDATION INVALID*/
             qdnNumberInput.classList.remove("is-valid")
             qdnNumberInput.classList.add("is-invalid");
@@ -487,45 +495,55 @@ function unsetData() {
         /** .replace will removed excess spaces */
         let usrInput = $(this).val().replace(/\s/g,'');
         try{
-             /*INSTANCE OF ONLOAD REQUEST*/
-             const onloadRequest = new onLoadRequestEvent(8, usrInput);
-             /**MATCHED QDN NUMBER FROM urlParam Parameter */
-             let details = await onloadRequest.searchQdnDetails();
-             const filteredDetails = Object.values(details[0]);
-             appendToDOM(filteredDetails);
+            /*INSTANCE OF ONLOAD REQUEST*/
+            const onloadRequest = new onLoadRequestEvent(8, usrInput);
+            /**MATCHED QDN NUMBER FROM urlParam Parameter */
+            let details = await onloadRequest.searchQdnDetails();
+            const filteredDetails = Object.values(details[0]);
+            appendToDOM(filteredDetails);
+            reAssignEvent.unsetReAssignmentData();
         }
         catch (e){
             /**ERROR HANDLING*/
             unsetData();
         }
     });
-
-    $(document).on("change", "#reAssign", async function () {
+    $(document).on("change", "#reAssign", function () {
         // this will contain a reference to the checkbox   
-        console.log(this.checked)
         if (this.checked === true) {
             // the checkbox is now checked 
-            console.log("Reassigning!!");
             $(".analysisSection").remove();
-            var reAssignmentInputs = "<div id='reAssignment'><div  class='row'><div class='col-4'><label for='reAssignTo' class='col-form-label'>ReassignTo</label><input id='reAssignTo' type='number' class='form-control' placeholder='Employee #...' required/></div><div class='col-5'><label class='col-form-label' for='reAssignToName'>Emp. Name:</label><input id='reAssignToName' type='text' class='form-control' disabled/></div><div class='col-3'><label class='col-form-label'>Team:</label><input id='reAssignToTeam' type='text' class='form-control' disabled/></div></div><div class='row'><div class = 'col-4'></div><div class = 'col-5'><label class='col-form-label' for='dept' >Department:</label><input id='dept' type='text' class='form-control' disabled/></div><div class = 'col-3'></div></div><div class='row col-form-label-lg mt-3'><div class='col'><label class='col-form-label'>Reassignment Description:</label><textarea id='reAssignmentDes' class='form-control text-center w-50' rows='2' required></textarea></div></div></div>";
-            var forReAssBtn = "<button class='submitReassignment w-100 btn btn-primary btn-lg mt-3' id='submitReassignment'>Submit for Reassignment</button>";
-            $("#reAssignDiv").after(reAssignmentInputs, forReAssBtn);
+            $("#reAssignDiv").after(reAssignmentInputs);
         } 
         else {
-            $("#reAssignment, #submitReassignment").remove();
-            $("#reAssignDiv").after($('#analysisSection').html());
-            let reAssignment = document.querySelectorAll(".fromDbData");
-            for(let i=0;i<reAssignment.length;i++){
-                reAssignment[i].remove();
-            }
-            let currentMatchedQdnNum = $("#qdnNumber").val();
-             /*INSTANCE OF ONLOAD REQUEST*/
-             const onloadRequest = new onLoadRequestEvent(8, currentMatchedQdnNum);
-             /**MATCHED QDN NUMBER FROM urlParam Parameter */
-             let details = await onloadRequest.searchQdnDetails();
-             const filteredDetails = Object.values(details[0]);
-             appendToDOM(filteredDetails);
+            /**FROM globalVariables.js */
+           reAssignEvent.toggleOff();
         }
     });
-
+    $(document).on("keyup", "#reAssignTo", async function () {
+        try{
+            /*INSTANCE OF ONLOAD REQUEST*/
+            const onloadRequest = new onLoadRequestEvent(3, $(this).val());
+            /**MATCHED QDN NUMBER FROM urlParam Parameter */
+            let response = await onloadRequest.searchForEmployee();
+            $(this).removeClass("is-invalid");
+            $(this).addClass("is-valid");
+            /**FROM globalVariables.js */
+            reAssignEvent.autoComplete(response);
+        }
+        catch (e){
+            $(this).removeClass("is-valid");
+            $(this).addClass("is-invalid");
+            $("#reAssignToName, #reAssignToTeam, #dept")
+            .val("")
+            .attr("placeholder", "Invalid 😡")
+            .css({
+                "color": "red",
+                "border": "1px solid red"
+            });
+            $("#reAssignTo").css("border", "1px solid red");
+        }
+       
+    });
+   
 })();

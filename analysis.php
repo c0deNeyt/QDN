@@ -39,10 +39,10 @@
   <!------------------------------------------------------------------>
   <script src="./bootstrap/js/bootstrap.bundle.js"></script>
   <!------------------------------------------------------------------>
-
   <!--CORE JS-->
   <script type="text/javascript" src="./js/jquery-3.6.0.min.js"></script>
   <!------------------------------------------------------------------>   
+  <script defer type="text/javascript" src="./js/globalVariables.js"></script>
   <!-- <script src="./js/analysis_copy.js" defer></script> -->
   <script src="./js/analysis.js" defer></script>  
   <!------------------------------------------------------------------>
@@ -50,9 +50,9 @@
   <!------------------------------------------------------------------>
   <script src = "./js/submitForApproval.js" defer></script>
   <!------------------------------------------------------------------>
-  <!-- <script src="https://smtpjs.com/v3/smtp.js"></script> -->
+  <script src="https://smtpjs.com/v3/smtp.js"></script>
   <!------------------------------------------------------------------>
-  <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js" ></script>
+  <script src="./js/sweetalert2.all.min.js"></script>
   <!------------------------------------------------------------------>
   <!-- JQUERY UI -->
   <!------------------------------------------------------------------>

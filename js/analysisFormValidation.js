@@ -141,7 +141,7 @@
         if (!form.checkValidity()) {
           event.preventDefault();
           event.stopPropagation();
-          // console.log("ok this is invalid");
+          // console.log("ok this is invalid", window.location.href);
         }
         //**🔚 End of checking Form 
         // CONDITION IF THE CHECKING OF INPUTS ARE VALID
@@ -150,7 +150,7 @@
           event.stopPropagation();
           // @ HANDLES REASSIGNMENT STATE 
           if(document.getElementById('submitReassignment')){
-              var findThis         = $("#qdnNumber").val();
+              var findThis         = $("#qdnNumber").val().replace(/\s/g,'');
               let reAssignTo        = $("#reAssignTo").val();
               let reAssignToName    = $("#reAssignToName").val();
               let reAssignToTeam    = $("#reAssignToTeam").val();
@@ -196,7 +196,7 @@
                         receiver = receiver + ", " + data[i]['emailscol'];
                     };  
                 };
-                // console.log("This is the recievers!", receiver);
+                console.log("This is the recievers!", receiver);
                 Email.send({
                   Host: "smtp.gmail.com",
                   Username : "systemqdn2021@gmail.com",
@@ -205,7 +205,7 @@
                   To : "chanchristianarana@gmail.com",
                   From : "systemqdn2021@gmail.com",
                   Subject : "QDN Area Owner Reassignment",
-                  Body : "This is to notify that QDN number " + "<a href='http://tk-server.tspi.com:999/analysis.php'>" + findThis + "</a>" + " was reassigned under your ownership. <br><br>" +
+                  Body : "This is to notify that QDN number " + `<a href='${window.location.href}?qdnNo=${findThis}'>` + findThis + "</a>" + " was reassigned under your ownership. <br><br>" +
                   "<b>"+ "Description: " + "</b>" +
                   "<pre>    "+ reAssignmentDes +"</pre>" + 
                   "<strong>Note:</strong><br>" +
@@ -228,15 +228,10 @@
                   },
                   cache : false, 
                   success: function(data){
-                    if (data){
                       reAssignmentMail();
                       reAssignmentAlert();
-                    }
-                    else{
-                      alert ("No receiver Found! Error form file (analysisFormValidation.js) Line 116!");
-                    };
                   },
-                  error: () => {
+                  error: function() {
                     alert ("No receiver Found! Error form file (analysisFormValidation.js) Line 120!");
                   },
                 });
@@ -268,7 +263,8 @@
                 dataType: "json",
                 success: function(data){
                   if (data){
-                    var openQdnID = data[0]['id'];
+                    var openQdnID = data[0]['qdnId'];
+                    // console.log(openQdnID)
                     reAssInsertEvent(openQdnID);
                   }
                   else{
