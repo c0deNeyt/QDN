@@ -326,70 +326,111 @@ const alertObject = {
             html:"<b style ='color:red;'>"+  `${this.data}` +"</b>",
         });
     },
+    defaultThemeSetting() {
+        console.log("Default ||", date.getDate());
+        fontColor = "#595959";
+        bgColor = `#fff`;
+        /**DEFAULT LINEAR radial gradient*/
+        bdColor = `radial-gradient(circle, rgba(128,0,0, 0.6) 0%, rgba(127,127,7,0.6) 46%)`;
+        /**HALLOWEEN*/
+        // bdColor = `linear-gradient(94deg, rgba(186,59,0,0.6) 0%, rgba(0,0,0,0.6) 100%)`;
+        /**BEE GIF */
+        bdGifUrl = `https://boholbeefarm.com/img/buzzbee.gif`;
+        bdPosition = `center`
+    },
+    halloweenThemeSetting() {
+        console.log("Default ||", date.getDate());
+        fontColor = "#fff";
+        bgColor = `#000`;
+        /**broom with pumpkin image*/
+        bgColorImage = `#000 url(https://images.pexels.com/photos/5408080/pexels-photo-5408080.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260)`;
+        /**HALLOWEEN*/
+        bdColor = `linear-gradient(94deg, rgba(186,59,0,0.6) 0%, rgba(0,0,0,0.6) 100%)`;
+        /**GHOST GIF**/
+        bdGifUrl = `https://images.squarespace-cdn.com/content/v1/57fc473b6a496313f1bf59ea/1597463916534-UJCWHLQ8HC1I591ZWVIS/giphy-ghost-alt.gif`;
+        bdPosition = `center`;
+    },
+    christmasThemeSetting() {
+        console.log("Default ||", date.getDate());
+        fontColor = "#fff";
+        bgColorImage = `linear-gradient(45deg, rgba(4,186,0,1) 0%, rgba(200,7,7,1) 100%)`;
+        /**CHRISTMAS GRADIENT*/
+        bdColor =`linear-gradient(45deg, rgba(17,121,0, 0.6) 0%, rgba(215,166,0, 0.6) 51%, rgba(184,0,0, 0.6) 100%)`;
+        /**GHOST GIF**/
+        bdGifUrl = `https://i.giphy.com/media/7XAD7iitnID83tQ1WC/giphy.webp`;
+        bdPosition = `bottom left`;
+    },
+    newYearThemeSetting() {
+        console.log("Default ||", date.getDate());
+        fontColor = "#fff";
+        bgColorImage = `radial-gradient(circle, rgba(0,0,0,1) 0%, rgba(185,185,185,1) 100%)`;
+        /**CHRISTMAS GRADIENT*/
+        bdColor =`linear-gradient(45deg, rgba(17,121,0, 0.6) 0%, rgba(215,166,0, 0.6) 51%, rgba(184,0,0, 0.6) 100%)`;
+        /**GHOST GIF**/
+        bdGifUrl = `https://i.giphy.com/media/7XAD7iitnID83tQ1WC/giphy.webp`;
+        bdPosition = `bottom left`;
+    },
     /** SUCCESS ALERT */
     async successAlert() {
         const currentMonth = month[date.getMonth()];
         const currentDay = date.getDate();
         const dates = `${currentMonth}${currentDay}`;
         const monthOnly = `${currentMonth}`;
-        let url;
         switch(monthOnly){
-            case `October`: 
-                /** XMAS TREE  */
-                url = `https://cdnb.artstation.com/p/assets/images/images/021/609/273/original/karin-tai-2019-halloween-pig.gif?1572319822`;
+            case "November":
+                if (dates === "November"){
+                    console.log("November 2 na!!");
+                   this.halloweenThemeSetting();
+                }
+                else{
+                    // this.defaultThemeSetting();
+                    // this.halloweenThemeSetting();    
+                    // this.christmasThemeSetting();
+                    this.newYearThemeSetting();
+                }
             break;
             case `December`: 
-                /** XMAS TREE  */
-                url = `https://media1.giphy.com/media/7XAD7iitnID83tQ1WC/giphy.gif?cid=790b761152b64de91be33877a796668f91bee073cff09ee8&rid=giphy.gif&ct=s`;
+                /**CHRISTMAS GRADIENT*/
+                this.christmasThemeSetting();
             break;
             default:
-                /**BEE */
-                url = `https://boholbeefarm.com/img/buzzbee.gif`;
+                this.defaultThemeSetting();
             break;
         }
         Swal.fire({
-            title: 'Custom width, padding, background.',
+            title: `<h2 style="color: ${fontColor}; font-weight: bold;"> ${this.tittle}</h2>`,
+            html:`<b style ='color:${fontColor}; font-size: 1.5rem'>`+  `${this.body}` +"</b>",
             width: 600,
-            padding: '3em',
-            background: '#fff url(/images/trees.png)',
-            backdrop: `
-            rgb(127 127 7 / 60%)
-              url("${url}")
-              left top
-              no-repeat
-            `
-          })
-        //   url("https://boholbeefarm.com/img/buzzbee.gif")
-        // const Toast = Swal.mixin({
-        //     toast: true,
-        //     position: 'top-right',
-        //     iconColor: 'white',
-        //     customClass: {
-        //       popup: 'colored-toast'
-        //     },
-        //     allowEscapeKey: false,
-        //     showConfirmButton: false,
-        //     timer: 500000,
-        //     timerProgressBar: true,
-        //     //**This will let you pause and play the alert loading*/
-        //     didOpen: (toast) => { 
-        //       toast.addEventListener('mouseenter', Swal.stopTimer)
-        //       toast.addEventListener('mouseleave', Swal.resumeTimer)
-        //     }
-        // })
-        // await Toast.fire({
-        //     icon: 'success',
-        //     title: 'GOOD JOB!',
-        //     html: "<b style ='color:#fff;'>"+  `${this.data}` +"</b>",
-        // }).then(()=>{
-        //     // window.location.replace("approval.php?qdnNumber=T71221-1");
-        // });
+            /**SUCCESS GIF*/
+            imageUrl: 'https://images.squarespace-cdn.com/content/v1/5063b09ee4b016af496f9ae8/1580760898623-CS6M1E5EM0S45D4328ZG/success_celebration_400.gif',
+            imageWidth: 200,
+            imageHeight: 200,
+            padding: '1.2rem',
+            timer: 2500000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: false, 
+            background: `${bgColorImage}`,
+            backdrop: `${bdColor},
+            url("${bdGifUrl}")
+            ${bdPosition}
+            no-repeat`,
+            //**This will let you pause and play the alert loading*/
+            didOpen: (toast) => { 
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        }); 
     }
 };
 /**OBJECT CREATION AND ASSIGNING PROPERTIES*/
-function alertFactory(data) {
+function alertFactory(tittle, body, data ) {
     return Object.create(alertObject, {
-        data: {value: data}
+        data: {value: data},
+        tittle: {value: tittle},
+        body: {value: body}
     });
    
 };
@@ -453,11 +494,12 @@ async function appendToDOM(filteredData) {
         onloadAppendCrtv.appendTableContent();
         /**TO REMOVED ASSIGNMENT INPUT SECTION IF EXIST*/
         $("#reAssignment").remove();    
-    }catch (e){
+    }
+    catch (e){
         /**Error HANDLING*/
         console.log(e);
-        const error = new alertFactory(e);
-        error.errorAlert();
+        // const error = new alertFactory(e);
+        // error.errorAlert();
     }
 };
 /**FUNCTION TO UNSET LOADED DATA*/

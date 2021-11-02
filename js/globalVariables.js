@@ -46,6 +46,13 @@ month[9] = "October";
 month[10] = "November";
 month[11] = "December";
 const date = new Date();
+let fontColor;
+let bgOverlayColor;
+let bgColorImage;
+let bgColor;
+let bdGifUrl;
+let bdPosition;
+let bdColor;
 
 const reAssignEvent = {
     unsetReAssignmentData: function(){

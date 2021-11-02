@@ -141,13 +141,13 @@
         if (!form.checkValidity()) {
           event.preventDefault();
           event.stopPropagation();
-          let reAssignToName    = $("#reAssignToName").val();
-              let reAssignToDept    = $("#dept").val();
-          // console.log("ok this is invalid", window.location.href);
-          const error = new alertFactory(`Reassigned Success! 🎉 🥳 🎉.<br>
-                      To: ${reAssignToName} <br>
-                      Department: ${reAssignToDept}`);
-                      error.successAlert();
+          let reAssignToName    = "Christian";
+          let reAssignToDept    = "MIS";
+          console.log("ok this is invalid", reAssignToName);
+          const error = new alertFactory(`Reassigned Success! 🎉 🥳 🎉.<br>`, 
+          `To: ${reAssignToName} <br>
+          Department: ${reAssignToDept}`);
+          error.successAlert();
         }
         //**🔚 End of checking Form 
         // CONDITION IF THE CHECKING OF INPUTS ARE VALID
