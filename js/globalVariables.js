@@ -45,7 +45,10 @@ month[8] = "September";
 month[9] = "October";
 month[10] = "November";
 month[11] = "December";
+
 const date = new Date();
+const currentDay = date.getDate();
+/**ALERTS GLOBAL VARIABLES*/
 let fontColor;
 let bgOverlayColor;
 let bgColorImage;

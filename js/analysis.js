@@ -327,19 +327,15 @@ const alertObject = {
         });
     },
     defaultThemeSetting() {
-        console.log("Default ||", date.getDate());
         fontColor = "#595959";
         bgColor = `#fff`;
         /**DEFAULT LINEAR radial gradient*/
         bdColor = `radial-gradient(circle, rgba(128,0,0, 0.6) 0%, rgba(127,127,7,0.6) 46%)`;
-        /**HALLOWEEN*/
-        // bdColor = `linear-gradient(94deg, rgba(186,59,0,0.6) 0%, rgba(0,0,0,0.6) 100%)`;
         /**BEE GIF */
-        bdGifUrl = `https://boholbeefarm.com/img/buzzbee.gif`;
+        bdGifUrl = `url("https://boholbeefarm.com/img/buzzbee.gif")`;
         bdPosition = `center`
     },
     halloweenThemeSetting() {
-        console.log("Default ||", date.getDate());
         fontColor = "#fff";
         bgColor = `#000`;
         /**broom with pumpkin image*/
@@ -347,57 +343,53 @@ const alertObject = {
         /**HALLOWEEN*/
         bdColor = `linear-gradient(94deg, rgba(186,59,0,0.6) 0%, rgba(0,0,0,0.6) 100%)`;
         /**GHOST GIF**/
-        bdGifUrl = `https://images.squarespace-cdn.com/content/v1/57fc473b6a496313f1bf59ea/1597463916534-UJCWHLQ8HC1I591ZWVIS/giphy-ghost-alt.gif`;
-        bdPosition = `center`;
+        bdGifUrl = `url("https://images.squarespace-cdn.com/content/v1/57fc473b6a496313f1bf59ea/1597463916534-UJCWHLQ8HC1I591ZWVIS/giphy-ghost-alt.gif")`;
+        bdPosition = `top left`;
     },
     christmasThemeSetting() {
-        console.log("Default ||", date.getDate());
         fontColor = "#fff";
         bgColorImage = `linear-gradient(45deg, rgba(4,186,0,1) 0%, rgba(200,7,7,1) 100%)`;
         /**CHRISTMAS GRADIENT*/
-        bdColor =`linear-gradient(45deg, rgba(17,121,0, 0.6) 0%, rgba(215,166,0, 0.6) 51%, rgba(184,0,0, 0.6) 100%)`;
+        bdColor ='linear-gradient(45deg, rgba(17,121,0, 0.6) 0%, rgba(215,166,0, 0.6) 51%, rgba(184,0,0, 0.6) 100%)';
         /**GHOST GIF**/
-        bdGifUrl = `https://i.giphy.com/media/7XAD7iitnID83tQ1WC/giphy.webp`;
+        bdGifUrl = 'url("https://i.giphy.com/media/7XAD7iitnID83tQ1WC/giphy.webp")';
         bdPosition = `bottom left`;
     },
     newYearThemeSetting() {
-        console.log("Default ||", date.getDate());
         fontColor = "#fff";
-        bgColorImage = `radial-gradient(circle, rgba(0,0,0,1) 0%, rgba(185,185,185,1) 100%)`;
-        /**CHRISTMAS GRADIENT*/
-        bdColor =`linear-gradient(45deg, rgba(17,121,0, 0.6) 0%, rgba(215,166,0, 0.6) 51%, rgba(184,0,0, 0.6) 100%)`;
-        /**GHOST GIF**/
-        bdGifUrl = `https://i.giphy.com/media/7XAD7iitnID83tQ1WC/giphy.webp`;
-        bdPosition = `bottom left`;
+        bgColorImage = `radial-gradient(circle, rgba(0,0,0,1) 40%, rgba(185,185,185,1) 100%)`;
+        /**NEW YEAR GRADIENT*/
+        bdColor =`radial-gradient(circle, rgba(0,0,0,0.8687850140056023) 70%, rgba(185,185,185,0) 100%)`;
+        /**FIREWORKS GIF**/
+        bdGifUrl = `url("https://i.giphy.com/media/3OvuH0GxGvbiakzthp/giphy.webp")`;
+        bdPosition = `center`;
+    },
+    setTheme(){
+        const currentDay = date.getDate();
+        switch(this.monthOnly){
+            case "November":
+                if ((currentDay > 0) && (15 >= currentDay)){
+                    this.halloweenThemeSetting();/**HALLOWEEN*/
+                }
+                else{
+                    this.christmasThemeSetting();/**CHRISTMAS*/
+                }
+            break;
+            case "December": 
+                this.christmasThemeSetting();/**CHRISTMAS*/
+            break;
+            case "January": 
+                this.newYearThemeSetting();/**NEW YEAR*/
+            break;
+            default:
+                this.defaultThemeSetting();/**DEFAULT*/
+            break;
+        }
     },
     /** SUCCESS ALERT */
     async successAlert() {
-        const currentMonth = month[date.getMonth()];
-        const currentDay = date.getDate();
-        const dates = `${currentMonth}${currentDay}`;
-        const monthOnly = `${currentMonth}`;
-        switch(monthOnly){
-            case "November":
-                if (dates === "November"){
-                    console.log("November 2 na!!");
-                   this.halloweenThemeSetting();
-                }
-                else{
-                    // this.defaultThemeSetting();
-                    // this.halloweenThemeSetting();    
-                    // this.christmasThemeSetting();
-                    this.newYearThemeSetting();
-                }
-            break;
-            case `December`: 
-                /**CHRISTMAS GRADIENT*/
-                this.christmasThemeSetting();
-            break;
-            default:
-                this.defaultThemeSetting();
-            break;
-        }
-        Swal.fire({
+        this.setTheme();
+        return Swal.fire({
             title: `<h2 style="color: ${fontColor}; font-weight: bold;"> ${this.tittle}</h2>`,
             html:`<b style ='color:${fontColor}; font-size: 1.5rem'>`+  `${this.body}` +"</b>",
             width: 600,
@@ -406,17 +398,19 @@ const alertObject = {
             imageWidth: 200,
             imageHeight: 200,
             padding: '1.2rem',
-            timer: 2500000,
+            timer: 2500,
             timerProgressBar: true,
             showConfirmButton: false,
             allowOutsideClick: false,
             allowEscapeKey: false,
             allowEnterKey: false, 
             background: `${bgColorImage}`,
-            backdrop: `${bdColor},
-            url("${bdGifUrl}")
+            backdrop: `
             ${bdPosition}
-            no-repeat`,
+            no-repeat
+            ${bdGifUrl},
+            ${bdColor}
+            ${bdPosition}`,
             //**This will let you pause and play the alert loading*/
             didOpen: (toast) => { 
                 toast.addEventListener('mouseenter', Swal.stopTimer)
@@ -430,9 +424,9 @@ function alertFactory(tittle, body, data ) {
     return Object.create(alertObject, {
         data: {value: data},
         tittle: {value: tittle},
-        body: {value: body}
+        body: {value: body},
+        monthOnly: {value: month[date.getMonth()]}
     });
-   
 };
 /**SET DEFAULT VALUE FUNCTION FUNCTION*/
 async function appendToDOM(filteredData) {
@@ -470,7 +464,7 @@ async function appendToDOM(filteredData) {
         /**CONTAINMENT, CORRECTION, AND CORRECTIVE INSTANCE */
         const containmentRequest = new onLoadRequestEvent(10, filteredData[19], 'matchedContainment');
         const correctionRequest = new onLoadRequestEvent(11, filteredData[19], 'matchedCorrection');
-        const correctiveRequest = new onLoadRequestEvent(10, filteredData[19], 'matchedContainment');
+        const correctiveRequest = new onLoadRequestEvent(12, filteredData[19], 'matchedCorrective');
         /**METHOD  EXECUTION STORING DATA TO CONSTANT VARIABLE
          * Note:
          * cont = containment
