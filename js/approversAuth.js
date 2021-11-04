@@ -374,12 +374,6 @@ class appendAuth extends approverReq{
         };
         return selector;
     };
-    // URL TO SEAR QND NUMBER
-    // test() {
-    //     const parameter = (new URL(document.location)).searchParams;
-    //     const urlParam = parameter.get('qndNo');
-    //     document.getElementById("qdnNumber").value = urlParam;
-    // }
 };
 //FUNCTION TO RESPONSIBLE FOR INSTANTIATING
 let executeApprovers = async () =>{
@@ -421,7 +415,6 @@ let executeApprovers = async () =>{
     /** Others parameter binding */
     const executeOBind = approverEvtExec.credValidation.bind(O);
     executeOBind();
-
     // console.log("I need this QDN Number %c OKAY LANG", 'background: #000; color: lightGreen;');   
 };
 window.onload = ()=>{
@@ -447,7 +440,7 @@ window.onload = ()=>{
             let res = await secondApproverEvent.getQdnContainment();  
             console.log("This is the response ", res)
         }catch(e){
-            console.log("this is the error", e, objectValues[objectValues.length -1])
+            console.log("this is the error", e, objectValues[objectValues.length - 1])
         }
         /** instantiating approverEvt*/
         const approverEvent = new approverEvt(approverSectionIds, objectValues);
@@ -461,11 +454,5 @@ window.onload = ()=>{
         console.log(this.value);
     });
 }   
-// console.log("This is x", x)
-/**TO OD LIST 
- * >> CREATE A REQUEST FOR QDN DEATAILS 
- * >> LOAD THE REQUEST TO THE HTML DOM
- * >> INTEGREATE SERACH FUNCTINO
- */
 
   

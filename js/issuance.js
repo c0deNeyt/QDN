@@ -96,7 +96,7 @@ $(document).ready(function(){
     //=========================================================================>
     $("#issuedByEmpNumber").keyup(function(){
         var userInput     = $("#issuedByEmpNumber").val();
-
+       
         if (userInput != null){
             //==================================================>
             //START OF ISSUED BY REQUEST AJAX (AUTOFILL FEATURE)
@@ -108,7 +108,6 @@ $(document).ready(function(){
                 cache : false,
                 dataType: "json",
                 success:function(response){
-    
                     if(response != null){// if data is NOT EMPTY
                         // VARIABLE FOR EACH ROW RESULT FROM DATABASE
                         var empName         = response[0]['EMP_NAME'];
@@ -127,8 +126,10 @@ $(document).ready(function(){
                         });
                         $("#station")  
                         .attr("placeholder", "");
-                        $("#issuedByEmpName, #issuedByEmpTeam, #issuedByEmpNumber, #station")
+                        $("#issuedByEmpName, #issuedByEmpTeam, #station")
                         .css({"color":"", "border-bottom": "1px solid #63f200"});
+                        document.getElementById("issuedByEmpNumber").classList.remove("is-invalid");
+                        document.getElementById("issuedByEmpNumber").classList.add("is-valid");   
                     };
                 }
             });
@@ -144,9 +145,10 @@ $(document).ready(function(){
             "color": "red",
             "border-bottom": "1px solid red"
         }); 
-        $("#issuedByEmpNumber").css("border-bottom", "1px solid red");
         $('#issuedToDiv').css('visibility', 'hidden');
-        $("#issuedToEmpName,#issuedToEmpTeam, #issuedToEmpNumber").val("");       
+        $("#issuedToEmpName,#issuedToEmpTeam").val(""); 
+        document.getElementById("issuedByEmpNumber").classList.remove("is-valid");
+        document.getElementById("issuedByEmpNumber").classList.add("is-invalid");      
     });
       //=======================================================================>
      //END OF ISSUED BY KEYUP FUNCTION 
@@ -169,6 +171,7 @@ $(document).ready(function(){
                 cache : false,
                 dataType: "json",
                 success:function(response){
+                   
                    if(response != null){ // if data is NOT NULL
                     // VARIABLE FOR EACH ROW RESULT FROM DATABASE
                     var empName         = response[0]['EMP_NAME'];
@@ -178,13 +181,15 @@ $(document).ready(function(){
                     $('#issuedToEmpName').val(empName);
                     $('#issuedToEmpTeam').val(empTeam); 
                     $('#teamResp').val(empDept); 
-                    $("#issuedToEmpName,#issuedToEmpTeam, #issuedToEmpNumber")
+                    $("#issuedToEmpName,#issuedToEmpTeam")
                     .css({
                         "color":"",
                         "border-bottom": "1px solid #63f200"
                     });   
                     $("#teamResp").css({"color":"", "border-bottom": "1px solid #63f200"});      
                    }
+                   document.getElementById("issuedToEmpNumber").classList.remove("is-invalid");
+                   document.getElementById("issuedToEmpNumber").classList.add("is-valid");
                 },
             });
             //=========================================>
@@ -206,8 +211,9 @@ $(document).ready(function(){
             "color":"",
             "border-bottom": "1px solid red"
         });      
-        $("#issuedToEmpNumber").css("border-bottom", "1px solid red");
-        $("#teamResp").val();               
+        $("#teamResp").val();    
+        document.getElementById("issuedToEmpNumber").classList.remove("is-valid");
+        document.getElementById("issuedToEmpNumber").classList.add("is-invalid");           
     });
       //=======================================================================>
      //END OF ISSUED TO KEYUP FUNCTION

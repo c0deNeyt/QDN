@@ -12,15 +12,11 @@
   <meta http-equiv='pragma' content='no-cache'>
   <!-- Cache Control Ends Here -->
   <link rel="icon" href="images/asti.ico"  type="image/x-icon">
-  <title>Quality Deviation Noticedfs</title>
+  <title>Quality Deviation Noticed</title>
   <!------------------------------------------------------------------>
   <!-- Bootstrap core CSS-->
+  <link href="./bootstrap-4.0/css/bootstrap.min.css" rel="stylesheet">
   <!------------------------------------------------------------------>
-  <link href="./bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <!------------------------------------------------------------------>
-  <link href="./bootstrap/css/bootstrap.css" rel="stylesheet">
-  <!------------------------------------------------------------------>
-  <!-- Custom styles for this template -->
   <link href="./css/simple-sidebar.css" rel="stylesheet">
   <!------------------------------------------------------------------>
   <link href="./css/index.css" rel="stylesheet">
@@ -41,6 +37,9 @@
   <!------------------------------------------------------------------>
   <!-- JS-->
   <script type="text/javascript" src="./js/jquery-3.6.0.min.js"></script>
+  <!------------------------------------------------------------------>
+  <script defer type="text/javascript" src="./js/globalVariables.js"></script>
+
   <script defer src="./js/form-validation.js"></script>
   <!------------------------------------------------------------------> 
   <script src="./js/issuance.js" defer></script>
@@ -57,15 +56,8 @@
   <!------------------------------------------------------------------>
   <!-- JQUERY UI -->
   <!------------------------------------------------------------------>
-  <script src="./js/jquery-ui-1.12.1/external/jquery/jquery.js"></script>
-  <!------------------------------------------------------------------>
   <script src="./js/jquery-ui-1.12.1/jquery-ui.js"></script>
   <!------------------------------------------------------------------>
-  <script src="./js/j_ui/jquery-ui.js"></script>
-  <!------------------------------------------------------------------>
-  <script src="./js/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-  <!------------------------------------------------------------------>
-
 </head>
 <body>
   <div class="sidebar">
@@ -96,6 +88,9 @@
           <div class="col-md-4">
             <label for="Issued By Employee Number" class="col-form-label">Issued By:</label>
             <input id="issuedByEmpNumber" inputName = "Issued By Employee Number" type="number" class="form-control" placeholder="Employee #" required/>
+            <div class="invalid-feedback">
+              Required field.
+            </div>  
           </div>
           <div class="col-md-5">
             <label class="col-form-label">Emp. Name:</label>
@@ -155,7 +150,7 @@
         <div class="row col-md-12">
           <div class="col-md-4">
             <label class="col-form-label">Customer:</label>
-              <select class="form-select" id="customer" inputName = "Customer" required>
+              <select class="custom-select" id="customer" inputName = "Customer" required>
                 <option value="" disabled selected hidden></option>
                 <option>N/A</option>
                 <option>ADLT</option>
@@ -168,7 +163,7 @@
           </div>
           <div class="col-md-4">
             <label for="packageType" class="col-form-label">Package Type:</label>
-            <input class="autofill" id="packageType" type="text" class="form-control"  inputName = "Package Type" required/>
+            <input class="autofill" id="packageType" type="text" class="form-control"  inputName = "Package Type" disabled/>
           </div>
         </div>
         <!--
@@ -194,10 +189,15 @@
         <label class="col-md-3   mt-4 col-form-label-lg">Classification:</label>
         <div class="row col-md-12 mb-4">
           <div class="col-md-6 ml-4">
-              <input type="radio" class="form-check-input " inputName = "Classification" name="classification" id="minor" value="Minor" required> 
-              <label for="minor" class="form-check-label">Minor</label>
-              <input type="radio" class="form-check-input " name="classification" id="major" value="Major" required>
-              <label for="major" class="form-check-label">Major</label></label>
+              <div class="form-check form-check-inline">
+                <input type="radio" class="form-check-input" inputName="Classification" name="classification" id="minor" value="Minor" required>
+                <label for="minor" class="form-check-label">Minor</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input type="radio" class="form-check-input " name="classification" id="major" value="Major" required>
+                <label for="major" class="form-check-label">Major</label></label>
+              </div>
+          </div>
           </div>
         </div>
         <!--

@@ -560,7 +560,7 @@ switch ($request) {
                             WHERE 
                                 `analysis_tbl`.`id` = $matchedCorrective 
                             AND 
-                                `correctives`.`analysis_tbl_id` = $matchedCorrective ";
+                                `correctives`.`analysis_tbl_id` = $matchedCorrective";
         $dataFromDatabase = $db->prepare($dataRequest);
         $dataFromDatabase -> execute();
 

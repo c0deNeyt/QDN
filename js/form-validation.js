@@ -3,6 +3,15 @@
 // Example starter JavaScript for disabling form submissions if there are invalid fields
 (async function () {
   'use strict'
+  /**OBJECT CREATION AND ASSIGNING PROPERTIES*/
+  function alertFactory(tittle, body, data ) {
+    return Object.create(alertObject, {
+        data: {value: data},
+        tittle: {value: tittle},
+        body: {value: body},
+        monthOnly: {value: month[date.getMonth()]}
+    });
+  };
   class mainObject  {
     constructor (){
       this.qdnNumber         = $("#qdnNumber").html();
@@ -59,7 +68,13 @@
           // This will send an emails
           initiateMainObj.sendEmail(receivers);
           // This will execute the success alert method
-          initiateMainObj.successAlert();          
+          // initiateMainObj.successAlert(); 
+          const alertFormat = new alertFactory(`ISSUANCE SUCCESS!<br> 🎉 🥳 🎉`, 
+          `QDN <em>${$("#qdnNumber").html()}</em> Sent for analysis!`);
+          /**METHOD EXECUTION*/
+          alertFormat.successAlert().then(()=>{
+            window.location.href = `?qdnNo=${$("#qdnNumber").html()}`;
+          });         
           return response;
         }
         else{
@@ -70,33 +85,33 @@
     };
     //🔚* Method to insert into the database Ends Here!
     //**Method for success alert!*/
-    successAlert  = async() => {
-      const Toast = Swal.mixin({
-        toast: true,
-        position: 'top-right',
-        iconColor: 'white',
-        customClass: {
-          popup: 'colored-toast'
-        },
-        allowEscapeKey: false,
-        showConfirmButton: false,
-        timer: 5000,
-        timerProgressBar: true,
-        //**This will let you pause and play the alert loading*/
-        didOpen: (toast) => { 
-          toast.addEventListener('mouseenter', Swal.stopTimer)
-          toast.addEventListener('mouseleave', Swal.resumeTimer)
-        }
-      })
-      await Toast.fire({
-        icon: 'success',
-        title: 'Success!',
-        html:"QDN " + "<b style ='color:red;'>"+  `${this.qdnNumber}` +"</b>"
-        + " Sent for analysis!",
-      }).then(()=>{
-        window.location.replace("index.php");
-      });
-    };
+    // successAlert  = async() => {
+    //   const Toast = Swal.mixin({
+    //     toast: true,
+    //     position: 'top-right',
+    //     iconColor: 'white',
+    //     customClass: {
+    //       popup: 'colored-toast'
+    //     },
+    //     allowEscapeKey: false,
+    //     showConfirmButton: false,
+    //     timer: 5000,
+    //     timerProgressBar: true,
+    //     //**This will let you pause and play the alert loading*/
+    //     didOpen: (toast) => { 
+    //       toast.addEventListener('mouseenter', Swal.stopTimer)
+    //       toast.addEventListener('mouseleave', Swal.resumeTimer)
+    //     }
+    //   })
+    //   await Toast.fire({
+    //     icon: 'success',
+    //     title: 'Success!',
+    //     html:"QDN " + "<b style ='color:red;'>"+  `${this.qdnNumber}` +"</b>"
+    //     + " Sent for analysis!",
+    //   }).then(()=>{
+    //     window.location.replace("index.php");
+    //   });
+    // };
     //🔚* Method for success alert Ends Here!
     //**METHOD TO GET EMAIL RECEIVERS*/
     fetchEmail() {

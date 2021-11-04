@@ -141,16 +141,6 @@ div.swal2-content {
     cursor: not-allowed;
 }
 
-/* #teamResp, #station, #packageType {
-    border-top: none;
-    border-right: none;
-    border-left: none;
-    border-radius: 0;
-    cursor: not-allowed;
-  } */
-
-
-
 /*======================================
   "SYSTEM TITTLE STYLE INSIDE SIDEBAR"
 ========================================*/
@@ -196,10 +186,6 @@ div.content {
     height: 3rem;
   }
 
-  input[value="Minor"],
-  input[value="Major"] {
-    margin: 0px 3px 0px 20px;
-  }
 
 /*==============================================================
                     "RESPONSIVE STYLE"

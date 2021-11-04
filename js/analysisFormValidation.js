@@ -235,7 +235,7 @@
                     Department: ${reAssignToDept}`);
                     /**METHOD EXECUTION*/
                     alertFormat.successAlert().then(()=>{
-                      window.location.href = `analysis.php?qdnNo=${$("#qdnNumber").val().replace(/\s/g,'')}`;
+                      window.location.href = `?qdnNo=${$("#qdnNumber").val().replace(/\s/g,'')}`;
                     });
                   },
                   error: function() {
@@ -325,53 +325,52 @@
               var newCorrectiveVal  = newCorrective.innerText;
               var newCorrectiveLen  = $.trim(newCorrectiveVal).length;
 
-              // REQUEST FOR CONTAINMENT DETAILS (request 10)
-              $.ajax({
-                type: 'POST',
-                url: "./php/getDetails.php",
-                data: {matchedContainment: currentQdnId, request: 10},
-                cache : false,
-                dataType: "json",
-                success: containmentInfo,
-              });
-              // </ END OF REQUEST 
-              // FUNCTION TO HANDLE CONTAINMENT DETAILS
-              function containmentInfo(data){
-                  var containDataLen = data.length;
-                  for (var i = 0; i < containDataLen; i++ ){
-                      var containmentId = data[i]['id'];
-                      var action  = data[i]['actions'];
-                      var resp    = data[i]['responsible'];
-                      var when    = data[i]['when'];
-                      var status  = data[i]['status']; 
-                      var combine = action + resp + when + status;
-      
-                      var containAct          = document.getElementById('containmentAct' + i);
-                      var containResp         = document.getElementById('containmentResp' + i);
-                      var containWhen         = document.getElementById('containmentWhen' + i);
-                      var containStatus       = document.getElementById('containmentStatus' + i);
-                      var containActVal       = containAct.innerText ;
-                      var containRespVal      = containResp.innerText;
-                      var containWhenVal      = containWhen.innerText;
-                      var containStatusVal    = containStatus.innerText;
-                      var newCombine   = containActVal + containRespVal + containWhenVal + containStatusVal;
-                      // IF STATEMENT TO CHECK IF THERE IS A CHANGES
-                      if (combine != newCombine){
-                        $.ajax({
-                          url: './php/update_containments.php',
-                          type: 'POST',
-                          data:{id:               containmentId,
-                              containAct2Db:      containActVal,
-                              containResp2Db:     containRespVal,
-                              containWhen2Db:     containWhenVal,
-                              containStatus2Db:   containStatusVal 
-                          },
-                          cache : false
-                        });
-                      };
-                  };
-              };
+            // // REQUEST FOR CONTAINMENT DETAILS (request 10)
+            // $.ajax({
+            //   type: 'POST',
+            //   url: "./php/getDetails.php",
+            //   data: {matchedContainment: currentQdnId, request: 10},
+            //   cache : false,
+            //   dataType: "json",
+            //   success: containmentInfo,
+            // });
+            // </ END OF REQUEST 
+            // FUNCTION TO HANDLE CONTAINMENT DETAILS
+            // function containmentInfo(data){
+            //   var containDataLen = data.length;
+            //   for (var i = 0; i < containDataLen; i++ ){
+            //       var containmentId = data[i]['id'];
+            //       var action  = data[i]['actions'];
+            //       var resp    = data[i]['responsible'];
+            //       var when    = data[i]['when'];
+            //       var status  = data[i]['status']; 
+            //       var combine = action + resp + when + status;
 
+            //       var containAct          = document.getElementById('containmentAct' + i);
+            //       var containResp         = document.getElementById('containmentResp' + i);
+            //       var containWhen         = document.getElementById('containmentWhen' + i);
+            //       var containStatus       = document.getElementById('containmentStatus' + i);
+            //       var containActVal       = containAct.innerText ;
+            //       var containRespVal      = containResp.innerText;
+            //       var containWhenVal      = containWhen.innerText;
+            //       var containStatusVal    = containStatus.innerText;
+            //       var newCombine   = containActVal + containRespVal + containWhenVal + containStatusVal;
+            //       // IF STATEMENT TO CHECK IF THERE IS A CHANGES
+            //       if (combine != newCombine){
+            //         $.ajax({
+            //           url: './php/update_containments.php',
+            //           type: 'POST',
+            //           data:{id:               containmentId,
+            //               containAct2Db:      containActVal,
+            //               containResp2Db:     containRespVal,
+            //               containWhen2Db:     containWhenVal,
+            //               containStatus2Db:   containStatusVal 
+            //           },
+            //           cache : false
+            //         });
+            //       };
+            //   };
+            // };
               // REQUEST FOR CORRECTION DETAILS (request 11)
               $.ajax({
                 type: 'POST',
@@ -476,7 +475,7 @@
               // IF THERE IS A VALUE INSIDE
               if (newContainmentLen){
                 // CONTAINMENT INSERT REQUEST
-                let x = $.ajax({
+                $.ajax({
                   type: 'POST',
                   url: "./php/insertToContain.php",
                   cache : false,
@@ -487,8 +486,54 @@
                         id:                   currentQdnId
                   }
                 });
-                console.log("CONTAINMENT INSERT SUCCESS!", x);
+                console.log("CONTAINMENT INSERT SUCCESS!");
                 // </END OF REQUEST
+              }else{
+                // REQUEST FOR CORRECTION DETAILS (request 11)
+                $.ajax({
+                  type: 'POST',
+                  url: "./php/getDetails.php",
+                  data: {matchedContainment: currentQdnId, request: 10},
+                  cache : false,
+                  dataType: "json",
+                  success: containmentInfo,
+                });
+                function containmentInfo(data){
+                  var containDataLen = data.length;
+                  for (var i = 0; i < containDataLen; i++ ){
+                      var containmentId = data[i]['id'];
+                      var action  = data[i]['actions'];
+                      var resp    = data[i]['responsible'];
+                      var when    = data[i]['when'];
+                      var status  = data[i]['status']; 
+                      var combine = action + resp + when + status;
+
+                      var containAct          = document.getElementById('containmentAct' + i);
+                      var containResp         = document.getElementById('containmentResp' + i);
+                      var containWhen         = document.getElementById('containmentWhen' + i);
+                      var containStatus       = document.getElementById('containmentStatus' + i);
+                      var containActVal       = containAct.innerText ;
+                      var containRespVal      = containResp.innerText;
+                      var containWhenVal      = containWhen.innerText;
+                      var containStatusVal    = containStatus.innerText;
+                      var newCombine   = containActVal + containRespVal + containWhenVal + containStatusVal;
+                      // IF STATEMENT TO CHECK IF THERE IS A CHANGES
+                      if (combine != newCombine){
+                        $.ajax({
+                          url: './php/update_containments.php',
+                          type: 'POST',
+                          data:{id:               containmentId,
+                              containAct2Db:      containActVal,
+                              containResp2Db:     containRespVal,
+                              containWhen2Db:     containWhenVal,
+                              containStatus2Db:   containStatusVal 
+                          },
+                          cache : false
+                        });
+                      };
+                  };
+                };  
+                  
               };
               // CONDITION TO SEND NEW DATA TO CORRECTION DATABASE TBL 
               // IF THERE IS A VALUE INSIDE
@@ -526,12 +571,12 @@
               //  console.log("CORRECTIVE INSERT SUCCESS!");
               // </END OF REQUEST
               };
-               /**Success Alert for  Reassignment */
-               const alertFormat = new alertFactory(`UPDATE SUCCESS! <br> 🎉 🥳 🎉`,
-               `<b style="color:#c4c4c4;">QDN Number:</b> <em>${$("#qdnNumber").val().replace(/\s/g,'')}</em>`);
-               /**METHOD EXECUTION*/
-               alertFormat.successAlert().then(()=>{
-                window.location.href = `analysis.php?qdnNo=${$("#qdnNumber").val().replace(/\s/g,'')}`;
+              /**Success Alert for  Reassignment */
+              const alertFormat = new alertFactory(`UPDATE SUCCESS! <br> 🎉 🥳 🎉`,
+              `<b style="color:#c4c4c4;">QDN Number:</b> <em>${$("#qdnNumber").val().replace(/\s/g,'')}</em>`);
+              /**METHOD EXECUTION*/
+              alertFormat.successAlert().then(()=>{
+                window.location.href = `?qdnNo=${$("#qdnNumber").val().replace(/\s/g,'')}`;
               });
             }
             catch (error){
