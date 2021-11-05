@@ -52,10 +52,12 @@ function FetchApprover(selectorID, qndNumber){
 }
 /** CLASS FOR THE REQUEST */
 class approverReq {
-    constructor(param1, param2){
+    constructor(param1, param2, param3){
         this.selectorID = param1;
         this.approverName = param2;
         this.qdnDbId = param1;
+        this.requestNumber = param2;
+        this.customParam = param3;
     }
     /** REQUEST FOR APPROVERS LIST METHOD */
     approversListReq(reqNum) {
@@ -124,15 +126,23 @@ class approverReq {
     }
     /**Request for containment details*/
     getQdnContainment() {
-        let r = "This is the qdnDbID " + this.qdnDbId +  typeof this.qdnDbId;
-        // return r;
-        return $.ajax({
-            type: 'POST',
-            url: "./php/getDetails.php",    
-            data: {matchedContainment: this.qdnDbId, request: 11 },
-            cache: false,
-            dataType: "json"
+        return new Promise ((resolve, reject) => {
+            let formData = new FormData;
+            formData.append(`${this.customParam}`,  this.qdnDbId);
+            formData.append('request', this.requestNumber);
+            fetch('./php/getDetails.php', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(result => {
+                resolve(result);
+            })
+            .catch(error => {
+                resolve(error)
+            });
         });
+    
     }
 };
 /** CLASS FOR ALL ALERTS */
@@ -434,18 +444,29 @@ window.onload = ()=>{
                                    "rootCause", "defects", "codDes" ]; 
         /**rawData of latest QDN Details */
         let objectValues = Object.values(reqResult[0]);
-        const secondApproverEvent =  new approverReq(objectValues[objectValues.length -1]);  
+        /**INSTANCE OF approversReq Class */
+        const contInstance =  new approverReq(objectValues[objectValues.length -1], 10,"matchedContainment");  
+        const corrInstance =  new approverReq(objectValues[objectValues.length -1], 11,"matchedCorrection");  
+        const crtvInstance =  new approverReq(objectValues[objectValues.length -1], 12,"matchedCorrective");  
         
         try{
-            let res = await secondApproverEvent.getQdnContainment();  
-            console.log("This is the response ", res)
+            let cont = await contInstance.getQdnContainment();
+            let corr = await corrInstance.getQdnContainment();
+            let crtv = await crtvInstance.getQdnContainment();
+            console.log("This is the containment ", cont);
+            console.log("This is the correction ", corr);
+            console.log("This is the corrective  ", crtv);
+            /** instantiating approverEvt*/
+            const approverEvent = new approverEvt(approverSectionIds, objectValues);
+            /**Execution of onloadAppendItem Method*/
+            approverEvent.onloadAppendItem();          
+           
         }catch(e){
-            console.log("this is the error", e, objectValues[objectValues.length - 1])
-        }
-        /** instantiating approverEvt*/
-        const approverEvent = new approverEvt(approverSectionIds, objectValues);
-        /**Execution of onloadAppendItem Method*/
-        approverEvent.onloadAppendItem();          
+            console.log("this is the error", e, objectValues[objectValues.length - 1]);
+            const hideCommands = approval.hideCommands("none");
+        };
+        
+      
         // console.log("And this the the result of request -->", containmentDetails);
 
     })();

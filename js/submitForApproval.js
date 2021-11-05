@@ -69,7 +69,6 @@ $(document).ready(function(){
             // const containmentDetails = await this.getContainmentDetails(qdnId);
             // console.log("This is the", containmentDetails);
         };
-
     };
     // INTERVAL FUNCTION TO CHECK THE STATUS OF QDN EVERY 500 Millisecond
     setInterval( function(){ 
@@ -301,27 +300,12 @@ $(document).ready(function(){
             "<i>  This notification is an automated message. Please do not reply directly to this email.</i>" 
         });
         // ALERT WHEN STATUS SUCCESSFULLY SET TO 1
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            iconColor: 'white',
-            customClass: {
-                popup: 'colored-toast'
-            },
-            showConfirmButton: false,
-            timer: 3500,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-                toast.addEventListener('mouseenter', Swal.stopTimer)
-                toast.addEventListener('mouseleave', Swal.resumeTimer)
-            }
-        })
-        Toast.fire({
-            icon:'success',
-            title:'Sent!',
-            html:"QDN " + "<b style ='color:red;'>"+ qndNumber +"</b>"
-            + " Sent for approval!",
-            showConfirmButton: false
+        /**Success Alert for  Reassignment */
+        const alertFormat = new alertFactory(`SUCCESS! <br> 🎉 🥳 🎉`,
+        `<b style="color:#c4c4c4;">QDN Number:</b> <em>${qndNumber}</em> Sent for approval!`);
+        /**METHOD EXECUTION*/
+        alertFormat.successAlert().then(()=>{
+          window.location.href = `?`;
         });
     };//🔚**FUNCTION FOR SENDING EMAIL AND ALERT ENDS HERE!*/
 
@@ -463,10 +447,10 @@ $(document).ready(function(){
                 const othersApproverList = generateEmailReceivers(othersApprovers);
                 const combinedEmails2 = combinedEmails.concat(othersApproverList);
                 
-                //**IF THERE IS REASSIGNMENT WILL RETURN EMP DATIALS WITH PRODUCTLINE TO CHECK */
+                //**IF THERE IS REASSIGNMENT WILL RETURN EMP DETAILS WITH PRODUCTLINE TO CHECK */
                 // IF THE EMP IS G&A OR NOT
                 const reassPLDetails = await fetchReassPlDetails(qdnNumber);
-                //**IF NO REASSIGNMENT THIS WILL RETURN DATIALS WITH PRODUCTLINE TO CHECK */
+                //**IF NO REASSIGNMENT THIS WILL RETURN DETAILS WITH PRODUCTLINE TO CHECK */
                 // IF THE EMP IS G&A OR NOT 
                 const empPLDetails = await fetchPlDetails(qdnNumber);
             
@@ -486,7 +470,7 @@ $(document).ready(function(){
                             default:
                                 //**FUNCTION EXECUTION TO REMOVE DUPLICATE EMAILS*/
                                 const emailsNotGandA = removeDupMails(combinedEmails);
-                                // console.log("G & A NOOOOOOOOT DETECTED!!", emailsNotGandA);
+                                // console.log("G & A NOOOOOOT DETECTED!!", emailsNotGandA);
                                 forApprovalDialogBox(emailsNotGandA, qdnNumber);
                             break;
                         };

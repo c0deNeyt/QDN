@@ -3,7 +3,6 @@ $(document).ready(function () {
     // ** ATTACHED DETAILS TO THE PAGE ✅
     // ** REQUEST IF CONTAINMENT, CORRECTION, CORRECTIVE DETAILS ✅
     // ** ATTACHED CONTAINMENT, CORRECTION, CORRECTIVE DETAILS ✅
-
     //=================================================
     // REQUEST FOR APPROVAL QDN DETAILS (request 19)
     //=================================================
@@ -21,7 +20,6 @@ $(document).ready(function () {
     //=================================================
     // </END OF REQUEST FOR APPROVAL QNd DETAILS
     //=================================================
-
     //=================================================
     //FUNCTION TO HANDLE FOR APPROVAL QDN DETAILS
     //=================================================
@@ -279,7 +277,6 @@ $(document).ready(function () {
             // </END OF FUNCTION TO HANDLE CORRECTIVE DETAILS
         }
         else {
-
             $("#ibName, #ibTeam, #ibTeam, #itName, #itTeam, #customer, #machine, #pkgType, #partName, #station, #lotId, #teamResp, #dateTime, #classification, #defects, #failureMode, #disposition, #rooCause, #codDes").html("");
 
         };
