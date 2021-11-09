@@ -1168,6 +1168,64 @@ switch ($request) {
             echo json_encode($qdnNoData);           
         };
     break;
+    case 19.2:
+        $matchedQdnNum = $_POST["matchedQdnNum"];
+        $dataRequest = "SELECT * 
+                        FROM 
+                            `telford_db`.`analysis_tbl`
+                        WHERE
+                            `analysis_tbl`.`qdnNo` = '$matchedQdnNum'
+                        AND
+                        `analysis_tbl`.`status` = 1";
+        $dataFromDatabase = $db->prepare($dataRequest);
+        $dataFromDatabase ->execute();
+        while($row =$dataFromDatabase->fetch(PDO::FETCH_ASSOC)){
+            $id                     = $row['id'];
+            $qdnNo                  = $row['qdnNo'];
+            $issuedByName           = $row['issuedByName'];
+            $issuedByTeam           = $row['issuedByTeam'];
+            $issuedToName           = $row['issuedToName'];
+            $issuedToTeam           = $row['issuedToTeam'];
+            $customer               = $row['customer'];
+            $packageType            = $row['packageType'];
+            $machine                = $row['machine'];
+            $deviceName             = $row['deviceName'];
+            $station                = $row['station'];
+            $lotId                  = $row['lotId'];
+            $teamResp               = $row['teamResp'];
+            $dateTime               = $row['dateTime'];
+            $classification         = $row['classification'];
+            $defects                = $row['defects'];
+            $failure_mode           = $row['failure_mode'];
+            $disposition            = $row['disposition'];
+            $cause_of_defects       = $row['cause_of_defects'];
+            $cause_of_defects_des   = $row['cause_of_defects_des'];
+            $prod_auth_col          = $row['prod_auth_col'];
+            $ee_auth_col            = $row['ee_auth_col'];
+            $pe_auth_col            = $row['pe_auth_col'];
+            $qa_auth_col            = $row['qa_auth_col'];
+            $others_auth_col        = $row['others_auth_col'];
+            // STORING DATA TO AN ARRAY
+            $qndNoData[] = array("qdnNo" => $qdnNo, "issuedByName" => $issuedByName,
+                "issuedByTeam" => $issuedByTeam, "issuedToName" => $issuedToName,
+                "issuedToTeam" => $issuedToTeam, "dateTime" => $dateTime,
+                "customer" => $customer, "station" => $station,
+                "teamResp" => $teamResp, "machine" => $machine, 
+                "packageType" => $packageType,"deviceName" => $deviceName, 
+                "lotId" => $lotId, "classification" => $classification, 
+                "failure_mode" => $failure_mode, "disposition" => $disposition, 
+                "defects" => $defects, "cause_of_defects" => $cause_of_defects, 
+                "cause_of_defects_des" => $cause_of_defects_des, "prod_auth_col" => $prod_auth_col, 
+                "ee_auth_col" => $ee_auth_col,"pe_auth_col" => $pe_auth_col, 
+                "qa_auth_col" => $qa_auth_col, "others_auth_col" => $others_auth_col,
+                "qdnId" => $id     
+            );
+        }
+        // ENCODING ARRAY TO JSON FORMAT
+        if ( $qndNoData ){
+            echo json_encode($qndNoData);
+        };
+    break;
     //=========================================
     // REQUEST FOR QDN REASSIGNMENT 
     //===========================================
