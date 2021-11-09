@@ -64,7 +64,7 @@ async function appendToDOM(filteredData) {
          *filteredData[19] for findThis */
         const reassignmentRequest = new onLoadRequestEvent(9, filteredData[19]);
         /**EXECUTING THE METHOD TO FETCH THE DATA FROM THE AJAX REQUEST */
-        let reAssRawData = await reassignmentRequest.requestForReassignment();
+        const reAssRawData = await reassignmentRequest.requestForReassignment();
         /**INSTANCE OF APPEND OBJECT */
         const onloadAppendReass = new onloadAppendToDOM(reAssRawData);
         /**EXECUTION OF METHOD APPEND REASSIGNMENT IF EXIST*/
@@ -99,7 +99,8 @@ async function appendToDOM(filteredData) {
     }
     catch (e){
         /**Error HANDLING*/
-        console.log(e);
+        console.log("USUALLY EMAIL MISSING RECEIVER's CAUSING THIS", e);
+        // return e;
         // const error = new alertFactory(e);
         // error.errorAlert();
     }
@@ -116,13 +117,11 @@ function unsetData() {
     $(".analysisSection").remove();
     $("#reAssignDiv").remove();
     $("#reAssignment").remove();
-}   
+};
 (async function() {//*✅*/
-    /**Input Event
-     * Search for the matched qnd
-     * Matched True: Append the data to the dom 
-     * Matched False: set the DOM TO default */
-    const parameter = new URLSearchParams(window.location.search)
+    /**INSTANCE OF URSearchParams */
+    const parameter = new URLSearchParams(window.location.search);
+    /**FETCHING param name */
     const urlParam = parameter.get('qdnNo');
     const qdnNumberInput = document.getElementById("qdnNumber");
     /**CHECK IF THE CUSTOM URL IS VALID */
@@ -135,8 +134,9 @@ function unsetData() {
             /*INSTANCE OF ONLOAD REQUEST*/
             const onloadRequest = new onLoadRequestEvent(8, urlParam);
             /**MATCHED QDN NUMBER FROM urlParam Parameter */
-            let details = await onloadRequest.searchQdnDetails();
+            const details = await onloadRequest.searchQdnDetails();
             const filteredDetails = Object.values(details[0]);
+            console.log(filteredDetails);
             appendToDOM(filteredDetails);
         }
         catch(e){
@@ -146,7 +146,8 @@ function unsetData() {
             qdnNumberInput.classList.add("is-invalid");
             if (e.readyState === 4){
                 /**INSTANCE OF ALERT FACTORY */
-                const error = new alertFactory(`Invalid URL 😈😈😈.<br>
+                const error = new alertFactory(`Something Went Wrong 🤔!`,
+                `Invalid URL 😈😈😈.<br>
                 Status: ${e.status} <br>
                 statusText: " ${e.statusText} "`);
                 /**METHOD EXECUTION*/
@@ -174,7 +175,7 @@ function unsetData() {
             /*INSTANCE OF ONLOAD REQUEST*/
             const onloadRequest = new onLoadRequestEvent(8, usrInput);
             /**MATCHED QDN NUMBER FROM urlParam Parameter */
-            let details = await onloadRequest.searchQdnDetails();
+            const details = await onloadRequest.searchQdnDetails();
             const filteredDetails = Object.values(details[0]);
             appendToDOM(filteredDetails);
             reAssignEvent.unsetReAssignmentData();

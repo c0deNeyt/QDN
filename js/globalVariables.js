@@ -57,6 +57,9 @@ let bdGifUrl;
 let bdPosition;
 let bdColor;
 
+/**APPROVAL QDN NUMBER INPUT */
+const qdnNumberInput = document.getElementById("qdnNumber");
+
 /**OBJECT RESPONSIBLE FOR ALERTS*/
 const alertObject = {
     /** ERROR ALERT */
@@ -80,8 +83,8 @@ const alertObject = {
        });
        await Toast.fire({
            icon: 'error',
-           title: 'Something Went Wrong at analysis.js!',
-           html:"<b style ='color:red;'>"+  `${this.data}` +"</b>",
+           title: `${this.title}`,
+           html:"<b style ='color:red;'>"+  `${this.body}` +"</b>",
        });
    },
    defaultThemeSetting() {
@@ -182,8 +185,8 @@ const reAssignEvent = {
         /**REMOVING REASSIGNMENT */
         let reAssignment = document.querySelectorAll(".fromDbData");
         for(let i=0;i<reAssignment.length;i++){
-        reAssignment[i].remove();
-    }
+            reAssignment[i].remove();
+        }
     },
     toggleOff: async function() {
         $("#reAssignment, #submitReassignment").remove();
@@ -204,7 +207,7 @@ const reAssignEvent = {
         var empDepart = response[0]['DEPARTMENT'];
         // console.log("Details from Database", empName, "Team", empTeam);
         // PARSING VARIABLE TO THE HTML ELEMENT
-        $('#reAssignToName').val(empName);
+        $('#reAssignToName').val(empName);/
         $('#reAssignToTeam').val(empTeam);
         $('#dept').val(empDepart);
         $("#reAssignToName,#reAssignToTeam, #reAssignTo, #dept")
@@ -257,7 +260,9 @@ const requestObject = {
                     resolve(receiver);
                 }
                 else{
+                    console.log(window.location.href);
                     reject(xhr.statusText);
+                   
                 };
             }
             xhr.open("POST", "./php/getDetails.php");
@@ -494,4 +499,70 @@ const appendObject = {
             };/**</ END OF LOOP*/
         }/**END OF IF STATEMENT*/
     },/**METHOD ENDS HERE*/
+    appendApproverTableContent() {
+        /**Check if data is not null*/
+        if ( this.data ) {
+            let dataLen = this.data.length;
+            /**LOOP TO HANDLE THE Containments Result*/
+            for (let i=0;i<dataLen;i++) {
+                let actions = this.data[i]['actions'];
+                let responsible = this.data[i]['responsible'];
+                let when = this.data[i]['when'];
+                let status = this.data[i]['status'];
+                /**INSERTING TABLE ROW ABOVE THE CLASS "tdboyCorrection"*/
+                if (!i) {
+                    /**APPENDING DATA TO THE EXISTING TABLE LAYOUT */
+                    document.getElementById(`${this.tableName}Col`).innerText = actions;
+                    document.getElementById(`${this.tableName}RespCol`).innerText = responsible;
+                    document.getElementById(`${this.tableName}WhenCol`).innerText = when;
+                    document.getElementById(`${this.tableName}StatCol`).innerText = status;
+                }
+                /**INSERTING TABLE ROW BELOW THE THE NEWLY INSERTED ROW*/
+                else {
+                    /**CREATING ROW ELEMENT */
+                    const trElement = document.createElement('tr');
+                    trElement.classList.add(`${this.tableName}Row${i}`);
+                    /**ADDING THIS CLASS WILL ALLOW US TO REMOVED THE INSERTED ROWS */
+                    trElement.classList.add(`insertedRow`);
+                    /**CREATING ROW COLUMN*/
+                    /**COLUMN ACTIONS */
+                    const actElement = document.createElement('td');
+                    actElement.innerText = actions;
+                    /**COLUMN RESPONSIBLE */
+                    const respElement = document.createElement('td');
+                    respElement.innerText = responsible;
+                    /**COLUMN WHEN */
+                    const whenElement = document.createElement('td');
+                    whenElement.innerText = when;
+                    /**COLUMN STATUS */
+                    const statElement = document.createElement('td');
+                    statElement.innerText = status;
+                    /**APPENDING ROW ELEMENT TO THE TABLE BODY */
+                    $(`#${this.tableName}Tbody`).append(trElement);
+                    /**APPENDING ROW CELL DATA*/
+                    $(trElement).append(actElement);
+                    $(trElement).append(respElement);
+                    $(trElement).append(whenElement);
+                    $(trElement).append(statElement);
+                };
+            };/**</ END OF LOOP*/
+        }/**END OF IF STATEMENT*/
+    },/**METHOD ENDS HERE*/
+};
+const unsetInsertedData = {
+    /**REMOVED THE INSERTED ROWS
+     * SET DEFAULT VALUE OF TABLES  */
+    approvalRemovedInsertedRwo(){
+        let reAssignment = document.querySelectorAll(".insertedRow");
+        for(let i=0;i<reAssignment.length;i++){
+            reAssignment[i].remove();
+        }
+    },
+    approvalSetTableDefaultValue(){
+        let defaultColumn = document.querySelectorAll('.defaultCol');
+        for(let i=0;i<defaultColumn.length;i++){
+            $(defaultColumn[i]).html("Blank");
+        };
+    }
+
 };
