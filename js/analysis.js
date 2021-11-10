@@ -171,8 +171,14 @@ function unsetData() {
     $("#qdnNumber").on("input", async function () {
         /** .replace will removed excess spaces */
         let usrInput = $(this).val().replace(/\s/g,'');
-        const ACSuggestion = new onLoadRequestEvent(7.1, usrInput, 0);
-        const analysisSuggestions = await ACSuggestion.ACRawDataToArray();
+         /**AUTOCOMPLETE SETTING PARAMETERS INSTANCE*/
+        const analInstanceACSuggestion = new onLoadRequestEvent(7.1, usrInput,0);
+        /**approversOnLoadRequestEvent METHOD*/
+        const analACSuggestion = await analInstanceACSuggestion.autoCompleteDataRequest();
+        /**AC APPENDING RESULT*/
+        const acRawData = new onloadAppendToDOM(analACSuggestion);
+        /**onloadAppendToDOM METHOD*/
+        const analysisSuggestions = await acRawData.ACRawDataToArray();
         try{
             /*INSTANCE OF ONLOAD REQUEST*/
             const onloadRequest = new onLoadRequestEvent(8, usrInput);

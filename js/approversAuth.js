@@ -534,6 +534,8 @@ const approvalUrlParam = parameter.get('qdnNo');
 
 })();
 function unsetApproval() {
+    qdnNumberInput.classList.remove("is-valid");
+    qdnNumberInput.classList.add("is-invalid");
     /**REMOVING ELEMENT WITH .fromdbResult CLASS*/
     let spanElement = document.querySelectorAll('.fromdbResutl');
     for(let i=0;i<spanElement.length;i++){
@@ -546,11 +548,14 @@ function unsetApproval() {
 $('#qdnNumber').on('input', async function(){
     /** .replace will removed excess spaces */
     let usrInput = $(this).val().replace(/\s/g,'');
-    /**AUTOCOMPLETE INSTANCE*/
-    const ACSuggestion = new approversOnLoadRequestEvent(7.1, usrInput, 1);
-    const suggestions = await ACSuggestion.ACRawDataToArray();
-    const test = await ACSuggestion.autoCompleteMethod();
-
+    /**AUTOCOMPLETE SETTING PARAMETERS INSTANCE*/
+    const instanceACSuggestion = new approversOnLoadRequestEvent(7.1, usrInput, 1);
+    /**approversOnLoadRequestEvent METHOD*/
+    const ACSuggestion = await instanceACSuggestion.autoCompleteDataRequest();
+    /**AC APPENDING RESULT*/
+    const instanceOnloadAppendToDOM = new onloadAppendToDOM(ACSuggestion);
+    /**onloadAppendToDOM METHOD*/
+    const suggestions = await instanceOnloadAppendToDOM.ACRawDataToArray();
     try{
         /**THIS WILL REMOVED IF THERE IS A PREVIOUS DATA 
          * PASSED TO THE DOM*/
