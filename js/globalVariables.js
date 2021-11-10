@@ -204,7 +204,7 @@ const alertObject = {
             ${bdPosition}`,
             focusConfirm: false,
             preConfirm: () => {
-                return new Promise(function (resolve) {
+                return new Promise(async function (resolve) {
                     const empId = Swal.getPopup().querySelector('#login').value
                     const password = Swal.getPopup().querySelector('#password').value
 
@@ -212,26 +212,40 @@ const alertObject = {
                     var empPass = $.trim(password);
                     // REQUEST TO VALIDATE DATE APPROVER PASSWORD 
                     // BASED ON THE PASSWORD INPUT (result parameter)  
-                    console.log (empPass)
-                    $.ajax({
-                        type: 'POST',
-                        url: './php/getDetails.php',
-                        data: { userPassInput: empPass, empId: employeeId, request: 22},
-                        dataType: 'json',
-                        success: function (response) {
-                            if(response){
-                                reprocessTheQdn();
-                                alert();
-                            }
-                            else{
-                                Swal.showValidationMessage(`Invalid approver or password`);
-                            };
-                        },
-                        error: function () {
-                            // ERROR HANDLING ALERT WHEN PASSWORD NOT MATCHED
-                            Swal.showValidationMessage(`Invalid approver or password`);
-                        }
-                    });
+                    console.log (employeeId, empPass);
+                    const instanceCredVal = new credValidation(22, employeeId, empPass);
+                    const credVal = await instanceCredVal.reprocessCredValRequest();
+                    console.log(credVal);
+                    /**TODO
+                     * VALIDATE PASSWORD
+                     * IF VALID:
+                     *      # SUCCESS ALERT
+                     *      # CHECK IF REASSIGNMENT EXITS
+                     *      # EXIST: GET THE EMAILS RECEIVERS data[0]['to']
+                     *      # EXIST FALSE: GET THE EMAILS RECEIVERS OF data[i]['issuedTo']
+                     *      # SET STATUS TO 0
+                     * IF INVALID;
+                     *      # JUST SWAL VALIDATION MESSAGE     
+                     */
+                    // $.ajax({
+                    //     type: 'POST',
+                    //     url: './php/getDetails.php',
+                    //     data: { userPassInput: empPass, empId: employeeId, request: 22},
+                    //     dataType: 'json',
+                    //     success: function (response) {
+                    //         if(response){
+                    //             reprocessTheQdn();
+                    //             alert();
+                    //         }
+                    //         else{
+                    //             Swal.showValidationMessage(`Invalid approver or password`);
+                    //         };
+                    //     },
+                    //     error: function () {
+                    //         // ERROR HANDLING ALERT WHEN PASSWORD NOT MATCHED
+                    //         Swal.showValidationMessage(`Invalid approver or password`);
+                    //     }
+                    // });
                     setTimeout(function () {
                         resolve();
                     }, 250);    
@@ -348,7 +362,7 @@ const requestObject = {
         });
     },
     /**RETURN SUGGESTION JSON DATA*/
-    autoCompleteMethod(){
+    autoCompleteDataRequest(){
         return new Promise ((resolve, reject)=>{
             $.ajax({
                 type: 'POST',
@@ -364,23 +378,29 @@ const requestObject = {
                 }
             });
         });
-    },
-    /**THIS WILL QDN NUMBERS AS ARRAY */
-    async ACRawDataToArray(){
-        /**INSTANCE OF LOCAL METHOD autoCompleteMethod */
-        const data = await this.autoCompleteMethod();
-        /**This will hold the loop result */
-        let qdnNumbers = [];
-        /**storing length in variable will make
-         * the script run faster than usual*/
-        let dataLen = data.length;
-        /**LOOP TO push the QDN Numbers*/
-        for (var i = 0; i < dataLen; i++) {
-            qdnNumbers.push(data[i]['qdnNo']);
-        };
-        return qdnNumbers;
-    },
 
+    },
+    /**RETURN SUGGESTION JSON DATA*/
+    reprocessCredValRequest(){
+        let creds = new FormData;
+        creds.append('empId',  this.emID);
+        creds.append('userPassInput',  this.password);
+        creds.append('request', this.requestNum);
+        $.ajax({
+            type: 'POST',
+            url: "./php/getDetails.php",
+            data: creds,
+            cache: false,
+            dataType: "json",
+        });
+    },
+};
+function credValidation(param1, param2, param3){
+    return Object.create(requestObject, {
+        requestNum :{value: param1},
+        emID :{value: param2},
+        password :{value: param3},
+    })
 };
 /** OBJECT RESPONSIBLE FOR APPENDING DATA TO THE DOM */
 const eventsObject = {
@@ -644,16 +664,14 @@ const eventsObject = {
     },/**METHOD ENDS HERE*/
     /**THIS WILL QDN NUMBERS AS ARRAY */
     async ACRawDataToArray(){
-    /**INSTANCE OF LOCAL METHOD autoCompleteMethod */
-    const data = await this.autoCompleteMethod();
     /**This will hold the loop result */
     let qdnNumbers = [];
     /**storing length in variable will make
      * the script run faster than usual*/
-    let dataLen = data.length;
+    let dataLen = this.data.length;
     /**LOOP TO push the QDN Numbers*/
     for (var i = 0; i < dataLen; i++) {
-        qdnNumbers.push(data[i]['qdnNo']);
+        qdnNumbers.push(this.data[i]['qdnNo']);
     };
     return qdnNumbers;
 },
