@@ -59,99 +59,105 @@ let bdColor;
 
 /**APPROVAL QDN NUMBER INPUT */
 const qdnNumberInput = document.getElementById("qdnNumber");
-
 /**OBJECT RESPONSIBLE FOR ALERTS*/
 const alertObject = {
     /** ERROR ALERT */
-   async errorAlert() {
-       const Toast = Swal.mixin({
-           toast: true,
-           position: 'top-right',
-           iconColor: 'white',
-           customClass: {
-               popup: 'colored-toast'
-           },
-           allowEscapeKey: false,
-           showConfirmButton: false,
-           timer: 5000,
-           timerProgressBar: true,
-           //**This will let you pause and play the alert loading*/
-           didOpen: (toast) => { 
-               toast.addEventListener('mouseenter', Swal.stopTimer)
-               toast.addEventListener('mouseleave', Swal.resumeTimer)
-           }
-       });
-       await Toast.fire({
-           icon: 'error',
-           title: `${this.title}`,
-           html:"<b style ='color:red;'>"+  `${this.body}` +"</b>",
-       });
-   },
-   defaultThemeSetting() {
-       fontColor = "#595959";
-       bgColor = `#fff`;
-       /**DEFAULT LINEAR radial gradient*/
-       bdColor = `radial-gradient(circle, rgba(128,0,0, 0.6) 0%, rgba(127,127,7,0.6) 46%)`;
-       /**BEE GIF */
-       bdGifUrl = `url("https://boholbeefarm.com/img/buzzbee.gif")`;
-       bdPosition = `center`
-   },
-   halloweenThemeSetting() {
-       fontColor = "#fff";
-       bgColor = `#000`;
-       /**broom with pumpkin image*/
-       bgColorImage = `#000 url(https://images.pexels.com/photos/5408080/pexels-photo-5408080.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260)`;
-       /**HALLOWEEN*/
-       bdColor = `linear-gradient(94deg, rgba(186,59,0,0.6) 0%, rgba(0,0,0,0.6) 100%)`;
-       /**GHOST GIF**/
-       bdGifUrl = `url("https://images.squarespace-cdn.com/content/v1/57fc473b6a496313f1bf59ea/1597463916534-UJCWHLQ8HC1I591ZWVIS/giphy-ghost-alt.gif")`;
-       bdPosition = `top left`;
-   },
-   christmasThemeSetting() {
-       fontColor = "#fff";
-       bgColorImage = `linear-gradient(45deg, rgba(4,186,0,1) 0%, rgba(200,7,7,1) 100%)`;
-       /**CHRISTMAS GRADIENT*/
-       bdColor ='linear-gradient(45deg, rgba(17,121,0, 0.6) 0%, rgba(215,166,0, 0.6) 51%, rgba(184,0,0, 0.6) 100%)';
-       /**GHOST GIF**/
-       bdGifUrl = 'url("https://i.giphy.com/media/7XAD7iitnID83tQ1WC/giphy.webp")';
-       bdPosition = `bottom left`;
-   },
-   newYearThemeSetting() {
-       fontColor = "#fff";
-       bgColorImage = `radial-gradient(circle, rgba(0,0,0,1) 40%, rgba(185,185,185,1) 100%)`;
-       /**NEW YEAR GRADIENT*/
-       bdColor =`radial-gradient(circle, rgba(0,0,0,0.8687850140056023) 70%, rgba(185,185,185,0) 100%)`;
-       /**FIREWORKS GIF**/
-       bdGifUrl = `url("https://i.giphy.com/media/3OvuH0GxGvbiakzthp/giphy.webp")`;
-       bdPosition = `center`;
-   },
-   setTheme(){
-       const currentDay = date.getDate();
-       switch(this.monthOnly){
-           case "November":
-               if ((currentDay > 0) && (15 >= currentDay)){
-                   this.halloweenThemeSetting();/**HALLOWEEN*/
-               }
-               else{
-                   this.christmasThemeSetting();/**CHRISTMAS*/
-               }
-           break;
-           case "December": 
-               this.christmasThemeSetting();/**CHRISTMAS*/
-           break;
-           case "January": 
-               this.newYearThemeSetting();/**NEW YEAR*/
-           break;
-           default:
-               this.defaultThemeSetting();/**DEFAULT*/
-           break;
-       }
-   },
-   /** SUCCESS ALERT */
-   async successAlert() {
-       this.setTheme();
+    async errorAlert() {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-right',
+            iconColor: 'white',
+            customClass: {
+                popup: 'colored-toast'
+            },
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: true,
+            //**This will let you pause and play the alert loading*/
+            didOpen: (toast) => { 
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+        await Toast.fire({
+            icon: 'error',
+            title: `${this.title}`,
+            html:"<b style ='color:red;'>"+  `${this.body}` +"</b>",
+        });
+    },
+    /**DEFAULT ALERT THEME*/
+    defaultThemeSetting() {
+        fontColor = "#595959";
+        bgColor = `#fff`;
+        /**DEFAULT LINEAR radial gradient*/
+        bdColor = `radial-gradient(circle, rgba(128,0,0, 0.6) 0%, rgba(127,127,7,0.6) 46%)`;
+        /**BEE GIF */
+        bdGifUrl = `url("https://boholbeefarm.com/img/buzzbee.gif")`;
+        bdPosition = `center`
+    },
+    /**HALLOWEEN ALERT THEME*/
+    halloweenThemeSetting() {
+        fontColor = "#fff";
+        bgColor = `#000`;
+        /**broom with pumpkin image*/
+        bgColorImage = `#000 url(https://images.pexels.com/photos/5408080/pexels-photo-5408080.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260)`;
+        /**HALLOWEEN*/
+        bdColor = `linear-gradient(94deg, rgba(186,59,0,0.6) 0%, rgba(0,0,0,0.6) 100%)`;
+        /**GHOST GIF**/
+        bdGifUrl = `url("https://images.squarespace-cdn.com/content/v1/57fc473b6a496313f1bf59ea/1597463916534-UJCWHLQ8HC1I591ZWVIS/giphy-ghost-alt.gif")`;
+        bdPosition = `top left`;
+    },
+    /**CHRISTMAS ALERT THEME */
+    christmasThemeSetting() {
+        fontColor = "#fff";
+        bgColorImage = `linear-gradient(45deg, rgba(4,186,0,1) 0%, rgba(200,7,7,1) 100%)`;
+        /**CHRISTMAS GRADIENT*/
+        bdColor ='linear-gradient(45deg, rgba(17,121,0, 0.6) 0%, rgba(215,166,0, 0.6) 51%, rgba(184,0,0, 0.6) 100%)';
+        /**GHOST GIF**/
+        bdGifUrl = 'url("https://i.giphy.com/media/7XAD7iitnID83tQ1WC/giphy.webp")';
+        bdPosition = `bottom left`;
+    },
+    /**NEW YEAR'S ALERT THEME*/
+    newYearThemeSetting() {
+        fontColor = "#fff";
+        bgColorImage = `radial-gradient(circle, rgba(0,0,0,1) 40%, rgba(185,185,185,1) 100%)`;
+        /**NEW YEAR GRADIENT*/
+        bdColor =`radial-gradient(circle, rgba(0,0,0,0.8687850140056023) 70%, rgba(185,185,185,0) 100%)`;
+        /**FIREWORKS GIF**/
+        bdGifUrl = `url("https://i.giphy.com/media/3OvuH0GxGvbiakzthp/giphy.webp")`;
+        bdPosition = `center`;
+    },
+    /**METHOD FOR CHECKING WHAT THEME 
+     * SHOULD WE USE BASED ON THE DATE*/
+    setTheme(){
+        const currentDay = date.getDate();
+        
+        switch(this.monthOnly){
+            case "November":
+                if ((currentDay > 0) && (15 >= currentDay)){
+                    this.halloweenThemeSetting();/**HALLOWEEN*/
+                }
+                else{
+                    this.christmasThemeSetting();/**CHRISTMAS*/
+                }
+            break;
+            case "December": 
+                this.christmasThemeSetting();/**CHRISTMAS*/
+            break;
+            case "January": 
+                this.newYearThemeSetting();/**NEW YEAR*/
+            break;
+            default:
+                this.defaultThemeSetting();/**DEFAULT*/
+            break;
+        };
+    },
+    /** SUCCESS ALERT */
+    successAlert() {
+        this.setTheme();
         return Swal.fire({
-            title: `<h2 style="color: ${fontColor}; font-weight: bold;"> ${this.tittle}</h2>`,
+            title: `<h2 style="color: ${fontColor}; font-weight: bold;"> ${this.title}</h2>`,
             html:`<b style ='color:${fontColor}; font-size: 1.5rem'>`+  `${this.body}` +"</b>",
             width: 600,
             /**SUCCESS GIF*/
@@ -178,8 +184,63 @@ const alertObject = {
                 toast.addEventListener('mouseleave', Swal.resumeTimer)
             }
         }); 
-   }    
+    },
+    /** SUCCESS ALERT */
+    reprocessAlert() {
+        this.setTheme();
+        return Swal.fire({
+            title: `<span style="color: ${fontColor}; font-weight: bold;">${this.title}</span>`,
+            html: `<input style="color: ${fontColor};" type="text" id="login" class="swal2-input" placeholder="Username">
+            <input style="color: ${fontColor};" type="password" id="password" class="swal2-input" placeholder="Password">`,
+            confirmButtonText: 'Submit!',
+            width: 600,
+            padding: '1.2rem',
+            background: `${bgColorImage}`,
+            backdrop: `
+            ${bdPosition}
+            no-repeat
+            ${bdGifUrl},
+            ${bdColor}
+            ${bdPosition}`,
+            focusConfirm: false,
+            preConfirm: () => {
+                return new Promise(function (resolve) {
+                    const empId = Swal.getPopup().querySelector('#login').value
+                    const password = Swal.getPopup().querySelector('#password').value
+
+                    var employeeId = $.trim(empId);
+                    var empPass = $.trim(password);
+                    // REQUEST TO VALIDATE DATE APPROVER PASSWORD 
+                    // BASED ON THE PASSWORD INPUT (result parameter)  
+                    console.log (empPass)
+                    $.ajax({
+                        type: 'POST',
+                        url: './php/getDetails.php',
+                        data: { userPassInput: empPass, empId: employeeId, request: 22},
+                        dataType: 'json',
+                        success: function (response) {
+                            if(response){
+                                reprocessTheQdn();
+                                alert();
+                            }
+                            else{
+                                Swal.showValidationMessage(`Invalid approver or password`);
+                            };
+                        },
+                        error: function () {
+                            // ERROR HANDLING ALERT WHEN PASSWORD NOT MATCHED
+                            Swal.showValidationMessage(`Invalid approver or password`);
+                        }
+                    });
+                    setTimeout(function () {
+                        resolve();
+                    }, 250);    
+                });
+            }
+        }); 
+    }       
 };
+/**OBJECT RESPONSIBLE FOR REASSIGNMENT EVENT*/
 const reAssignEvent = {
     unsetReAssignmentData: function(){
         /**REMOVING REASSIGNMENT */
@@ -207,7 +268,7 @@ const reAssignEvent = {
         var empDepart = response[0]['DEPARTMENT'];
         // console.log("Details from Database", empName, "Team", empTeam);
         // PARSING VARIABLE TO THE HTML ELEMENT
-        $('#reAssignToName').val(empName);/
+        $('#reAssignToName').val(empName);
         $('#reAssignToTeam').val(empTeam);
         $('#dept').val(empDepart);
         $("#reAssignToName,#reAssignToTeam, #reAssignTo, #dept")
@@ -223,7 +284,6 @@ const reAssignEvent = {
             });
     },
 };
-
 /** OBJECT RESPONSIBLE FOR DATABASE REQUEST */
 const requestObject = {
     /**Request for latest QDN DETAILS */
@@ -287,9 +347,43 @@ const requestObject = {
             dataType: "json",
         });
     },
+    /**RETURN SUGGESTION JSON DATA*/
+    autoCompleteMethod(){
+        return new Promise ((resolve, reject)=>{
+            $.ajax({
+                type: 'POST',
+                url: "./php/getDetails.php",
+                data:{request: this.requestNum, searchForThisQdnNo: this.usrInput, status: this.status},
+                cache: false,
+                dataType: "json",
+                success: function(response){
+                    resolve(response);
+                },
+                error: function(e){
+                    reject(e);
+                }
+            });
+        });
+    },
+    /**THIS WILL QDN NUMBERS AS ARRAY */
+    async ACRawDataToArray(){
+        /**INSTANCE OF LOCAL METHOD autoCompleteMethod */
+        const data = await this.autoCompleteMethod();
+        /**This will hold the loop result */
+        let qdnNumbers = [];
+        /**storing length in variable will make
+         * the script run faster than usual*/
+        let dataLen = data.length;
+        /**LOOP TO push the QDN Numbers*/
+        for (var i = 0; i < dataLen; i++) {
+            qdnNumbers.push(data[i]['qdnNo']);
+        };
+        return qdnNumbers;
+    },
+
 };
 /** OBJECT RESPONSIBLE FOR APPENDING DATA TO THE DOM */
-const appendObject = {
+const eventsObject = {
     /**Appending to the fieldset or
      * for instance the card below the qnd
      * number input*/
@@ -548,6 +642,21 @@ const appendObject = {
             };/**</ END OF LOOP*/
         }/**END OF IF STATEMENT*/
     },/**METHOD ENDS HERE*/
+    /**THIS WILL QDN NUMBERS AS ARRAY */
+    async ACRawDataToArray(){
+    /**INSTANCE OF LOCAL METHOD autoCompleteMethod */
+    const data = await this.autoCompleteMethod();
+    /**This will hold the loop result */
+    let qdnNumbers = [];
+    /**storing length in variable will make
+     * the script run faster than usual*/
+    let dataLen = data.length;
+    /**LOOP TO push the QDN Numbers*/
+    for (var i = 0; i < dataLen; i++) {
+        qdnNumbers.push(data[i]['qdnNo']);
+    };
+    return qdnNumbers;
+},
 };
 const unsetInsertedData = {
     /**REMOVED THE INSERTED ROWS

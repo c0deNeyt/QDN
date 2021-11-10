@@ -1,7 +1,7 @@
 'use strict'
 /**OBJECT CREATION AND ASSIGNING PROPERTIES*/
 function onloadAppendToDOM(data, selectorIDs, tableName) {
-    return Object.create(appendObject, {
+    return Object.create(eventsObject, {
         data: {value: data},
         selectorIDs: {value: selectorIDs},
         analysisTblId: {value: selectorIDs},
@@ -9,12 +9,13 @@ function onloadAppendToDOM(data, selectorIDs, tableName) {
         tableName: {value: tableName}
     });
 };
-function approversOnLoadRequestEvent(requestNum, findThis, name){
+function approversOnLoadRequestEvent(param1, param2, param3){
     return Object.create(requestObject, {
-        requestNum :{value: requestNum},
-        findThis :{value: findThis},
-        name :{value: name},
-        usrInput: {value: findThis}
+        requestNum :{value: param1},
+        findThis :{value: param2},
+        name :{value: param3},
+        usrInput: {value: param2},
+        status: {value: param3}
     })
 };
 /**OBJECT CREATION AND ASSIGNING PROPERTIES*/
@@ -23,6 +24,7 @@ function approverAlertFactory(param1, param2, param3 ) {
         title: {value: param1},
         body: {value: param2},
         data: {value: param3},
+        monthOnly: {value: month[date.getMonth()]}
     });
 };
 // CONSTRUCTOR FUNCTION
@@ -542,10 +544,14 @@ function unsetApproval() {
     approval.hideCommands("none");
 }
 $('#qdnNumber').on('input', async function(){
+    /** .replace will removed excess spaces */
     let usrInput = $(this).val().replace(/\s/g,'');
+    /**AUTOCOMPLETE INSTANCE*/
+    const ACSuggestion = new approversOnLoadRequestEvent(7.1, usrInput, 1);
+    const suggestions = await ACSuggestion.ACRawDataToArray();
+    const test = await ACSuggestion.autoCompleteMethod();
+
     try{
-        /** .replace will removed excess spaces */
-        // console.log("Searching for...", usrInput);
         /**THIS WILL REMOVED IF THERE IS A PREVIOUS DATA 
          * PASSED TO THE DOM*/
         unsetApproval();
@@ -560,7 +566,30 @@ $('#qdnNumber').on('input', async function(){
     catch(e){
         // console.log("SEARCH NOT FOUND!");
         unsetApproval();
-    }
+    };
+    $(this).autocomplete({
+        source: suggestions,
+        select: async function(event, ui){
+            let selectedItem =  ui["item"]["value"];
+            /**THIS WILL REMOVED IF THERE IS A PREVIOUS DATA 
+             * PASSED TO THE DOM*/
+            unsetApproval();
+            /*INSTANCE OF ONLOAD REQUEST*/
+            qdnNumberInput.classList.remove("is-invalid");
+            qdnNumberInput.classList.add("is-valid");
+            const searchRequest = new approversOnLoadRequestEvent(19.2, selectedItem);
+            /**MATCHED QDN NUMBER FROM urlParam Parameter */
+            const approverDetails = await searchRequest.searchQdnDetails();
+            executeApprovers(approverDetails);
+        },
+    });
+});
+$('#reProcess').on('click', async function(){
+    let qndNum = $("#qdnNumber").val().replace(/\s/g,'');
+    /**Success Alert for  Reassignment */
+    const approverAlertFormat = new approverAlertFactory(`Reprocess QDN #<em>${qndNum}</em>`);
+    /**METHOD EXECUTION*/
+    approverAlertFormat.reprocessAlert();
 });
 
   
