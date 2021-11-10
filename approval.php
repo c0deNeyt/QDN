@@ -28,7 +28,7 @@
     <link type="text/css" href="./css/approval.css" rel="stylesheet">
     <!------------------------------------------------------------------>
     <!-- JQUERY STYLESHEET -->
-    <link rel="stylesheet" href="./js/jquery-ui-1.12/jquery-ui.css">
+    <link href="./js/jquery-ui-1.13.0/jquery-ui.css" rel="stylesheet">
     <!------------------------------------------------------------------>
     <!-- Bootstrap core JS -->
     <script src="./bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -37,7 +37,6 @@
     <!------------------------------------------------------------------>
     <script src="./bootstrap/js/bootstrap.bundle.js"></script>
     <!------------------------------------------------------------------>
-
     <!--CORE JS-->
     <script type="text/javascript" src="./js/jquery-3.6.0.min.js"></script>
     <!------------------------------------------------------------------>   
@@ -52,10 +51,14 @@
     <!------------------------------------------------------------------>
     <!-- JQUERY UI -->
     <!------------------------------------------------------------------>
+    <script defer src="./js/jquery-ui-1.13.0/external/jquery/jquery.js"></script>
+    <!------------------------------------------------------------------>
+    <script defer src="./js/jquery-ui.js"></script>
+    <!------------------------------------------------------------------>
+    <!-- EMAIL API -->
+    <!------------------------------------------------------------------>
     <script src="https://smtpjs.com/v3/smtp.js"></script>
     <!------------------------------------------------------------------>
-    <script src="./js/jquery-ui-1.12/jquery-ui.js"></script>
-    <!-- -------------------------------------------------------------- -->
     <!-- UNCOMMENT TO TEST HOW FAST THE PAGE LOAD
     <script type="text/javascript">
             var timerStart = Date.now();
@@ -431,8 +434,6 @@
         </form>
       </div>  
     </div>
-      
-
     <!-- UNCOMMENT TO TEST HOW FAST IS THE PAGE LOAD -->
     <!-- <script type="text/javascript">
              $(document).ready(function() {

@@ -167,13 +167,21 @@ switch ($request) {
     break;
     case 7.1:
         $searchForThisQdnNo = $_POST["searchForThisQdnNo"];
-        $dataRequest = "SELECT `id`, 
-                                `qdnNo`
-                        FROM `analysis_tbl`
-                        WHERE `qdnNo` 
-                        LIKE '%$searchForThisQdnNo%'
-                        AND `status` = 0 
-                        LIMIT 5";
+        $status = $_POST["status"];
+        $dataRequest = "SELECT 
+                            `analysis_tbl`.`id`, 
+                            `analysis_tbl`.`qdnNo`
+                        FROM 
+                            `telford_db`.`analysis_tbl`
+                        WHERE
+                            `analysis_tbl`.`qdnNo`
+                        LIKE 
+                            '%$searchForThisQdnNo%'
+                        AND 
+                            `analysis_tbl`.`status` = $status
+                        ORDER BY 
+                            `analysis_tbl`.`id` DESC
+                         LIMIT 5";
         $dataFromDatabase = $db->prepare($dataRequest);
         $dataFromDatabase -> execute();
 

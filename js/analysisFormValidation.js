@@ -561,9 +561,7 @@
               newInstantObject.errorAlert(error);
               console.log(error);
             }
-
           };// @ END OF HANDLING UPDATE FOR CURRENT QDN
-
         };// </END OF CONDITION IF THE CHECKING OF INPUTS ARE VALID
 
         form.classList.add('was-validated')

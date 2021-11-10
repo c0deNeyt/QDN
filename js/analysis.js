@@ -7,18 +7,19 @@ console.log("STRICT MODE: " ,strict);
 // CommonJS
 // const Swal = require('sweetalert2')
 /**OBJECT CREATION AND ASSIGNING PROPERTIES*/
-function onLoadRequestEvent(requestNum, findThis, name){
+function onLoadRequestEvent(param1, param2, param3){
     return Object.create(requestObject, {
-        requestNum :{value: requestNum},
-        findThis :{value: findThis},
-        name :{value: name},
-        usrInput: {value: findThis}
+        requestNum :{value: param1},
+        findThis :{value: param2},
+        name :{value: param3},
+        usrInput: {value: param2},
+        status: {value: param3}
     })
 };
 
 /**OBJECT CREATION AND ASSIGNING PROPERTIES*/
 function onloadAppendToDOM(data, selectorIDs, tableName) {
-    return Object.create(appendObject, {
+    return Object.create(eventsObject, {
         data: {value: data},
         selectorIDs: {value: selectorIDs},
         analysisTblId: {value: selectorIDs},
@@ -136,7 +137,6 @@ function unsetData() {
             /**MATCHED QDN NUMBER FROM urlParam Parameter */
             const details = await onloadRequest.searchQdnDetails();
             const filteredDetails = Object.values(details[0]);
-            console.log(filteredDetails);
             appendToDOM(filteredDetails);
         }
         catch(e){
@@ -171,6 +171,8 @@ function unsetData() {
     $("#qdnNumber").on("input", async function () {
         /** .replace will removed excess spaces */
         let usrInput = $(this).val().replace(/\s/g,'');
+        const ACSuggestion = new onLoadRequestEvent(7.1, usrInput, 0);
+        const analysisSuggestions = await ACSuggestion.ACRawDataToArray();
         try{
             /*INSTANCE OF ONLOAD REQUEST*/
             const onloadRequest = new onLoadRequestEvent(8, usrInput);
@@ -183,7 +185,20 @@ function unsetData() {
         catch (e){
             /**ERROR HANDLING*/
             unsetData();
-        }
+        };
+        $(this).autocomplete({
+            source: analysisSuggestions,
+            select: async function(event, ui){
+                let analysisSelectedItem =  ui["item"]["value"];
+                /*INSTANCE OF ONLOAD REQUEST*/
+                const onloadRequest = new onLoadRequestEvent(8, analysisSelectedItem);
+                /**MATCHED QDN NUMBER FROM urlParam Parameter */
+                const details = await onloadRequest.searchQdnDetails();
+                const filteredDetails = Object.values(details[0]);
+                appendToDOM(filteredDetails);
+                reAssignEvent.unsetReAssignmentData();
+            },
+        });
     });
     $(document).on("change", "#reAssign", function () {
         // this will contain a reference to the checkbox   
