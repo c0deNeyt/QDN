@@ -1321,23 +1321,37 @@ switch ($request) {
     case 22:
         $userPassInput  = $_POST['userPassInput'];
         $empId          = $_POST['empId'];
+        $qdnId          = $_POST['qdnId'];
         $dataRequest = "SELECT `approvers`.`password`,
-                            `approvers`.`EMP_NO`
-                        FROM `telford_db`.`approvers`
-                        WHERE `EMP_NO` = '$empId'"; 
+                                `approvers`.`EMP_NO`,
+                                `emp_masterlist`.`EMP_NAME`,
+                                `emp_masterlist`.`EMP_NO`
+                        FROM
+                            `telford_db`.`approvers`
+                        INNER JOIN
+                            `telford_db`.`emp_masterlist`
+                        ON
+                            `approvers`.`EMP_NO` = `emp_masterlist`.`EMP_NO`
+                        WHERE
+                            `approvers`.`EMP_NO` = '$empId'"; 
         $dataFromDatabase = $db->prepare($dataRequest);
         $dataFromDatabase -> execute();
         while($row = $dataFromDatabase->fetch(PDO::FETCH_ASSOC)){
-            
             $hashed_password = $row['password'];    
             if(password_verify($userPassInput, $hashed_password)) {
                 $EMP_NO   = $row['EMP_NO'];
-                $data[] = array( "EMP_NO" => $EMP_NO
-                );
+                $EMP_NAME   = $row['EMP_NAME'];
+                $data[] = array( "EMP_NAME" => $EMP_NAME);
             }; 
         };
-        if ( $data ){
+        if ($data){
             echo json_encode($data);
+            $Insert = "UPDATE `telford_db`.`analysis_tbl`
+                        SET
+                        `status_resp` = ?
+                        WHERE `analysis_tbl`.`id` = 4 "; 
+            $insertStmt = $db->prepare($Insert);
+            $result = $insertStmt->execute([$EMP_NAME]);
         };
         break;
         //=========================================

@@ -132,7 +132,6 @@ const alertObject = {
      * SHOULD WE USE BASED ON THE DATE*/
     setTheme(){
         const currentDay = date.getDate();
-        
         switch(this.monthOnly){
             case "November":
                 if ((currentDay > 0) && (15 >= currentDay)){
@@ -159,12 +158,11 @@ const alertObject = {
         return Swal.fire({
             title: `<h2 style="color: ${fontColor}; font-weight: bold;"> ${this.title}</h2>`,
             html:`<b style ='color:${fontColor}; font-size: 1.5rem'>`+  `${this.body}` +"</b>",
-            width: 600,
+            width: 400,
             /**SUCCESS GIF*/
             imageUrl: 'https://images.squarespace-cdn.com/content/v1/5063b09ee4b016af496f9ae8/1580760898623-CS6M1E5EM0S45D4328ZG/success_celebration_400.gif',
             imageWidth: 200,
             imageHeight: 200,
-            padding: '1.2rem',
             timer: 2500,
             timerProgressBar: true,
             showConfirmButton: false,
@@ -172,8 +170,7 @@ const alertObject = {
             allowEscapeKey: false,
             allowEnterKey: false, 
             background: `${bgColorImage}`,
-            backdrop: `
-            ${bdPosition}
+            backdrop:`${bdPosition}
             no-repeat
             ${bdGifUrl},
             ${bdColor}
@@ -203,19 +200,31 @@ const alertObject = {
             ${bdColor}
             ${bdPosition}`,
             focusConfirm: false,
-            preConfirm: () => {
+            preConfirm: function() {
                 return new Promise(async function (resolve) {
                     const empId = Swal.getPopup().querySelector('#login').value
                     const password = Swal.getPopup().querySelector('#password').value
-
                     var employeeId = $.trim(empId);
                     var empPass = $.trim(password);
-                    // REQUEST TO VALIDATE DATE APPROVER PASSWORD 
-                    // BASED ON THE PASSWORD INPUT (result parameter)  
-                    console.log (employeeId, empPass);
-                    const instanceCredVal = new credValidation(22, employeeId, empPass);
-                    const credVal = await instanceCredVal.reprocessCredValRequest();
-                    console.log(credVal);
+                    const qndNum = $("#qdnNumber").val().replace(/\s/g,'');
+                    /**TRY CATCH BLOCK TO VALIDATE THE PASSWORD*/ 
+                    try{
+                        /**STORING PARAMETERS INTO OBJECT */
+                        /**NOTE
+                         * a = for ajax request number
+                         * b = for employee Number
+                         * c = for employee Password
+                         * d,e = for ajax name value stored in formData which will used 
+                         * for post request in getDetail.php*/
+                        const parameter = {a: 22, b: employeeId, c: empPass, d: "empId", e: "userPassInput"};
+                        /**INSTANCE OF THE approversOnLoadRequestEvent OBJECT*/
+                        const validate = new approversOnLoadRequestEvent(parameter);
+                        /**METHOD EXECUTION*/
+                        await validate.reprocessCredValRequest();
+                    }
+                    catch{
+                        Swal.showValidationMessage(`Invalid Approver ID or Password!`);
+                    };
                     /**TODO
                      * VALIDATE PASSWORD
                      * IF VALID:
@@ -227,25 +236,6 @@ const alertObject = {
                      * IF INVALID;
                      *      # JUST SWAL VALIDATION MESSAGE     
                      */
-                    // $.ajax({
-                    //     type: 'POST',
-                    //     url: './php/getDetails.php',
-                    //     data: { userPassInput: empPass, empId: employeeId, request: 22},
-                    //     dataType: 'json',
-                    //     success: function (response) {
-                    //         if(response){
-                    //             reprocessTheQdn();
-                    //             alert();
-                    //         }
-                    //         else{
-                    //             Swal.showValidationMessage(`Invalid approver or password`);
-                    //         };
-                    //     },
-                    //     error: function () {
-                    //         // ERROR HANDLING ALERT WHEN PASSWORD NOT MATCHED
-                    //         Swal.showValidationMessage(`Invalid approver or password`);
-                    //     }
-                    // });
                     setTimeout(function () {
                         resolve();
                     }, 250);    
@@ -378,29 +368,43 @@ const requestObject = {
                 }
             });
         });
-
     },
     /**RETURN SUGGESTION JSON DATA*/
     reprocessCredValRequest(){
-        let creds = new FormData;
-        creds.append('empId',  this.emID);
-        creds.append('userPassInput',  this.password);
-        creds.append('request', this.requestNum);
-        $.ajax({
-            type: 'POST',
-            url: "./php/getDetails.php",
-            data: creds,
-            cache: false,
-            dataType: "json",
+        return new Promise ((resolve, reject)=>{
+            const creds = new FormData();
+            creds.append(this.name,  this.userName);
+            creds.append(this.name1,  this.password);
+            creds.append('request', this.request);
+            $.ajax({
+                type: 'POST',
+                url: "./php/getDetails.php",
+                data: creds,
+                processData: false,
+                contentType: false,
+                cache: false,
+                dataType: "json",
+                success: function(response){
+                    resolve(response);
+                    /**Success Alert for  Reassignment */
+                    const reprocessAlertFormat = new alertFactory(`REPROCESS GRANTED!<br> 🎉 🥳 🎉`,
+                    `<b style="color:#c4c4c4;">QDN Number:</b><em>${qndNum}</em>`);
+                    /**METHOD EXECUTION*/
+                    reprocessAlertFormat.successAlert().then(()=>{
+                        window.location.href ='';
+                    });
+                },
+                error: function(e){
+                    reject(e);
+                }
+            });
         });
     },
-};
-function credValidation(param1, param2, param3){
-    return Object.create(requestObject, {
-        requestNum :{value: param1},
-        emID :{value: param2},
-        password :{value: param3},
-    })
+    /**TEST METHOD*/
+    testCases() {
+        const sampleObject = this.one;
+        return sampleObject;
+    }
 };
 /** OBJECT RESPONSIBLE FOR APPENDING DATA TO THE DOM */
 const eventsObject = {
@@ -663,19 +667,21 @@ const eventsObject = {
         }/**END OF IF STATEMENT*/
     },/**METHOD ENDS HERE*/
     /**THIS WILL QDN NUMBERS AS ARRAY */
-    async ACRawDataToArray(){
-    /**This will hold the loop result */
-    let qdnNumbers = [];
-    /**storing length in variable will make
-     * the script run faster than usual*/
-    let dataLen = this.data.length;
-    /**LOOP TO push the QDN Numbers*/
-    for (var i = 0; i < dataLen; i++) {
-        qdnNumbers.push(this.data[i]['qdnNo']);
-    };
-    return qdnNumbers;
-},
+    ACRawDataToArray(){
+        /**This will hold the loop result */
+        let qdnNumbers = [];
+        /**storing length in variable will make
+         * the script run faster than usual*/
+        let dataLen = this.data.length;
+        /**LOOP TO push the QDN Numbers*/
+        for (var i = 0; i < dataLen; i++) {
+            qdnNumbers.push(this.data[i]['qdnNo']);
+        };
+        return qdnNumbers;      
+    },
 };
+/**OBJECT TO UNSET THE INSERTED DATA FROM DATABASE USING SEARCH EVENT
+ * OR SOMETHING*/
 const unsetInsertedData = {
     /**REMOVED THE INSERTED ROWS
      * SET DEFAULT VALUE OF TABLES  */
@@ -692,4 +698,34 @@ const unsetInsertedData = {
         };
     }
 
+};
+/**OBJECT FOR THE EMAIL FORMAT*/
+const emailFormats = {
+    initialEmailFormat(){
+        // SCRIPT FOR EMAIL SENDING AND EMAIL
+        Email.send({
+            Host: "smtp.gmail.com",
+            Username : "systemqdn2021@gmail.com",
+            Password : "tjvxdnvqvepgtwck",
+            // To : this.receiver,
+            To : "chanchristianarana@gmail.com",
+            From : "systemqdn2021@gmail.com",
+            // Subject : "Reanalysis Granted QDN No. " + this.qndNumber ,
+            Subject : this.subject,
+            Body : this.body +
+            "<br><strong>Note:</strong><br>" +
+            "<i>    This notification is an automated message. Please do not reply directly to this email.</i>"
+            // Body : "Need to Reprocess QDN Number " + "<a href='http://127.0.0.1/sandbox/QDN/approval.php'>" + this.qndNumber + "</a> <br>" + "Requested by: " + this.authPerson +   "<br><br>" +
+            // "<strong>Note:</strong><br>" +
+            // "<i>  This notification is an automated message. Please do not reply directly to this email.</i>" 
+        });
+    }
+     
+};
+function sendEmail(details){
+    return Object.create(emailFormats, {
+        receiver :{value: details.r},
+        subject: {value: details.s},
+        body: {value: details.b}
+    })
 };
