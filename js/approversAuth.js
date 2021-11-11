@@ -15,7 +15,12 @@ function approversOnLoadRequestEvent(param1, param2, param3){
         findThis :{value: param2},
         name :{value: param3},
         usrInput: {value: param2},
-        status: {value: param3}
+        status: {value: param3},
+        request: {value: param1.a},
+        userName :{value: param1.b},
+        password :{value: param1.c},
+        name: {value:  param1.d},
+        name1: {value:  param1.e}
     })
 };
 /**OBJECT CREATION AND ASSIGNING PROPERTIES*/
