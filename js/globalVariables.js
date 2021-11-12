@@ -207,8 +207,12 @@ const alertObject = {
                     var employeeId = $.trim(empId);
                     var empPass = $.trim(password);
                     const qndNum = $("#qdnNumber").val().replace(/\s/g,'');
+                    /**SEARCHING FOR QND ID*/
+                    const showQdnID = new approversOnLoadRequestEvent(19.2, qndNum);
+                    const qdnID = await showQdnID.searchQdnDetails();
                     /**TRY CATCH BLOCK TO VALIDATE THE PASSWORD*/ 
                     try{
+                       
                         /**STORING PARAMETERS INTO OBJECT */
                         /**NOTE
                          * a = for ajax request number
@@ -216,25 +220,33 @@ const alertObject = {
                          * c = for employee Password
                          * d,e = for ajax name value stored in formData which will used 
                          * for post request in getDetail.php*/
-                        const parameter = {a: 22, b: employeeId, c: empPass, d: "empId", e: "userPassInput"};
+                        const parameter = {a: 22, b: employeeId, c: empPass, d: "empId", e: "userPassInput", f:qdnID[0]['qdnId']};
                         /**INSTANCE OF THE approversOnLoadRequestEvent OBJECT*/
                         const validate = new approversOnLoadRequestEvent(parameter);
+                        /**METHOD EXECUTION
+                         * VALID USER CREDENTIAL*/
+                        const approversName  = await validate.reprocessCredValRequest();
+                        /**Success Alert for  Reassignment */
+                        const reprocessAlertFormat = new approverAlertFactory(`REPROCESS GRANTED!<br> 🎉 🥳 🎉`,
+                        `<b style="color:#c4c4c4;">Thank you </b><em>${approversName[0]['EMP_NAME']}</em>`);
                         /**METHOD EXECUTION*/
-                        await validate.reprocessCredValRequest();
-                    }
+                        await reprocessAlertFormat.successAlert();
+                    }   
                     catch{
                         Swal.showValidationMessage(`Invalid Approver ID or Password!`);
+                        // console.log(qdnID[0]['qdnId']); 
                     };
                     /**TODO
-                     * VALIDATE PASSWORD
+                     * VALIDATE PASSWORD ✅
                      * IF VALID:
-                     *      # SUCCESS ALERT
-                     *      # CHECK IF REASSIGNMENT EXITS
+                     *      # SUCCESS ALERT ✅
+                     *      # CHECK IF REASSIGNMENT EXITS 
                      *      # EXIST: GET THE EMAILS RECEIVERS data[0]['to']
                      *      # EXIST FALSE: GET THE EMAILS RECEIVERS OF data[i]['issuedTo']
                      *      # SET STATUS TO 0
                      * IF INVALID;
-                     *      # JUST SWAL VALIDATION MESSAGE     
+                     *      # JUST SWAL VALIDATION MESSAGE
+                     * APPEND REASSIGNMENT IF EXIST 
                      */
                     setTimeout(function () {
                         resolve();
@@ -333,6 +345,7 @@ const requestObject = {
             xhr.send(formData);
         });
     },
+    /**METHOD TO SEARCH QND DETAILS BASED QDN NUMBER*/
     searchQdnDetails() {
         return $.ajax({
             type: 'POST',
@@ -369,13 +382,18 @@ const requestObject = {
             });
         });
     },
-    /**RETURN SUGGESTION JSON DATA*/
+    /**THIS WILL VERIFY APPROVERS PASSWORD 
+     * INSERT TO "analysis_tbl" TABLE status_resp COLUMN THIS 
+     * WILL INDICATE THE RESPONSIBLE APPROVERS FOR THE REPROCESS ACTION
+     * FURTHERMORE THIS WILL SET THE STATUS TO 0 WHICH MEAN FOR ANALYSIS*/
     reprocessCredValRequest(){
         return new Promise ((resolve, reject)=>{
             const creds = new FormData();
             creds.append(this.name,  this.userName);
             creds.append(this.name1,  this.password);
+            creds.append('qdnId', this.qdnId);
             creds.append('request', this.request);
+            /**AJAX REQUEST */
             $.ajax({
                 type: 'POST',
                 url: "./php/getDetails.php",
@@ -386,13 +404,6 @@ const requestObject = {
                 dataType: "json",
                 success: function(response){
                     resolve(response);
-                    /**Success Alert for  Reassignment */
-                    const reprocessAlertFormat = new alertFactory(`REPROCESS GRANTED!<br> 🎉 🥳 🎉`,
-                    `<b style="color:#c4c4c4;">QDN Number:</b><em>${qndNum}</em>`);
-                    /**METHOD EXECUTION*/
-                    reprocessAlertFormat.successAlert().then(()=>{
-                        window.location.href ='';
-                    });
                 },
                 error: function(e){
                     reject(e);
