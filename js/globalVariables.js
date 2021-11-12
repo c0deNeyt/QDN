@@ -209,10 +209,10 @@ const alertObject = {
                     const qndNum = $("#qdnNumber").val().replace(/\s/g,'');
                     /**SEARCHING FOR QND ID*/
                     const showQdnID = new approversOnLoadRequestEvent(19.2, qndNum);
+                    /**METHOD FOR SEARCHING REQUEST*/
                     const qdnID = await showQdnID.searchQdnDetails();
                     /**TRY CATCH BLOCK TO VALIDATE THE PASSWORD*/ 
                     try{
-                       
                         /**STORING PARAMETERS INTO OBJECT */
                         /**NOTE
                          * a = for ajax request number
@@ -226,22 +226,56 @@ const alertObject = {
                         /**METHOD EXECUTION
                          * VALID USER CREDENTIAL*/
                         const approversName  = await validate.reprocessCredValRequest();
-                        /**Success Alert for  Reassignment */
+                        /**====================================*/
+                        /**Success Alert for  REPROCESS EVENT */
+                        /**==================================*/
                         const reprocessAlertFormat = new approverAlertFactory(`REPROCESS GRANTED!<br> 🎉 🥳 🎉`,
                         `<b style="color:#c4c4c4;">Thank you </b><em>${approversName[0]['EMP_NAME']}</em>`);
                         /**METHOD EXECUTION*/
                         await reprocessAlertFormat.successAlert();
                     }   
                     catch{
+                        console.log(qdnID);
                         Swal.showValidationMessage(`Invalid Approver ID or Password!`);
-                        // console.log(qdnID[0]['qdnId']); 
+                        const reassignmentCheck = {a:"qdnNum", b:18, c:qndNum};
+                        const instanceGR = new globalRequest(reassignmentCheck);
+                        
+                        try{
+                            let lastReassignment = await instanceGR.requestWith2param();
+                            let empNumberOfResponsible = lastReassignment[0]['to'];
+                            const designatedEmails = {a:"issuedToEmpNo", b:13, c:empNumberOfResponsible};
+                            const instanceGR1 = new globalRequest(designatedEmails);
+                            const rawReceiversData = await instanceGR1.requestWith2param();
+                            let receivers = '';
+                            for (let i=0;i<rawReceiversData.length;i++){
+                                if (receivers){
+                                    let emailResult = rawReceiversData[i]['emailscol'];
+                                    receivers = receivers + ", " + emailResult;
+                                }
+                                else{
+                                    let emailResult = rawReceiversData[i]['emailscol'];
+                                    receivers = emailResult;
+                                };
+                            };
+                            let approversName = "San Pedro";
+                            const details = {r: receivers, s:`QDN No. ${qndNum} for Reprocess`,
+                            b:`Need to Reprocess QDN Number <a href='${window.location.href}?qdnNo=${qndNum}'>${qndNum}</a><br>
+                            Requested by: ${approversName} <br><br>`}
+                            const emailThing = new sendEmail(details);
+                            emailThing.initialEmailFormat();
+                        }
+                        catch{
+                            const reassignmentCheck = {a:"qdnNum", b:20, c:qndNum};
+                            const instanceGR3 = new globalRequest(reassignmentCheck);
+                            console.log("REASSIGNMENT FALSE", instanceGR3);
+                        }
                     };
                     /**TODO
                      * VALIDATE PASSWORD ✅
                      * IF VALID:
                      *      # SUCCESS ALERT ✅
-                     *      # CHECK IF REASSIGNMENT EXITS 
-                     *      # EXIST: GET THE EMAILS RECEIVERS data[0]['to']
+                     *      # CHECK IF REASSIGNMENT EXITS ✅
+                     *      # EXIST: GET THE EMAILS RECEIVERS data[0]['to'] ✅
                      *      # EXIST FALSE: GET THE EMAILS RECEIVERS OF data[i]['issuedTo']
                      *      # SET STATUS TO 0
                      * IF INVALID;
@@ -411,9 +445,32 @@ const requestObject = {
             });
         });
     },
+    requestWith2param(){
+        return new Promise ((resolve, reject)=>{
+            const creds = new FormData();
+            creds.append(this.name,  this.val);
+            creds.append('request', this.requestNum);
+            /**AJAX REQUEST */
+            $.ajax({
+                type: 'POST',
+                url: "./php/getDetails.php",
+                data: creds,
+                processData: false,
+                contentType: false,
+                cache: false,
+                dataType: "json",
+                success: function(response){
+                    resolve(response);
+                },
+                error: function(e){
+                    reject(e);
+                }
+            });
+        });
+    },
     /**TEST METHOD*/
     testCases() {
-        const sampleObject = this.one;
+        const sampleObject = this.requestNum;
         return sampleObject;
     }
 };
@@ -690,6 +747,22 @@ const eventsObject = {
         };
         return qdnNumbers;      
     },
+    reassignmentCheck: async function(){
+        let qndNumber = $("#qdnNumber").val().replace(/\s/g,'');
+        /**NOTE:
+         * PARAM A = AJAX Post request name.
+         * PARAM B = Request number.
+         * PARAM C = QND Number.*/
+        const param = {a:"qdnNum", b:18, c:qndNumber};
+        try{
+            const instanceGR = new globalRequest(param);
+            const reAss = await instanceGR.requestWith2param();
+            console.log("REASSIGNMENT TRUE", reAss);
+        }
+        catch{
+            console.log("REASSIGNMENT FALSE",);
+        }
+    }
 };
 /**OBJECT TO UNSET THE INSERTED DATA FROM DATABASE USING SEARCH EVENT
  * OR SOMETHING*/
@@ -708,35 +781,31 @@ const unsetInsertedData = {
             $(defaultColumn[i]).html("Blank");
         };
     }
-
 };
 /**OBJECT FOR THE EMAIL FORMAT*/
 const emailFormats = {
     initialEmailFormat(){
         // SCRIPT FOR EMAIL SENDING AND EMAIL
-        Email.send({
+        console.log("RECEIVERS FROM emailFormats OBJECT",this.receivers);
+        return Email.send({
             Host: "smtp.gmail.com",
             Username : "systemqdn2021@gmail.com",
-            Password : "tjvxdnvqvepgtwck",
-            // To : this.receiver,
+            Password : "qamkxxsshizhpcge",
+            // To : this.receivers,
             To : "chanchristianarana@gmail.com",
             From : "systemqdn2021@gmail.com",
-            // Subject : "Reanalysis Granted QDN No. " + this.qndNumber ,
             Subject : this.subject,
             Body : this.body +
             "<br><strong>Note:</strong><br>" +
             "<i>    This notification is an automated message. Please do not reply directly to this email.</i>"
-            // Body : "Need to Reprocess QDN Number " + "<a href='http://127.0.0.1/sandbox/QDN/approval.php'>" + this.qndNumber + "</a> <br>" + "Requested by: " + this.authPerson +   "<br><br>" +
-            // "<strong>Note:</strong><br>" +
-            // "<i>  This notification is an automated message. Please do not reply directly to this email.</i>" 
         });
     }
      
 };
-function sendEmail(details){
-    return Object.create(emailFormats, {
-        receiver :{value: details.r},
-        subject: {value: details.s},
-        body: {value: details.b}
-    })
-};
+// function sendEmail(details){
+//     return Object.create(emailFormats, {
+//         receiver :{value: details.r},
+//         subject: {value: details.s},
+//         body: {value: details.b}
+//     })
+// };

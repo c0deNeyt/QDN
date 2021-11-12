@@ -6,7 +6,7 @@ function onloadAppendToDOM(data, selectorIDs, tableName) {
         selectorIDs: {value: selectorIDs},
         analysisTblId: {value: selectorIDs},
         /**table variables*/
-        tableName: {value: tableName}
+        tableName: {value: tableName},
     });
 };
 function approversOnLoadRequestEvent(param1, param2, param3){
@@ -23,7 +23,7 @@ function approversOnLoadRequestEvent(param1, param2, param3){
         password :{value: param1.c},
         name: {value:  param1.d},
         name1: {value:  param1.e},
-        qdnId: {value:  param1.f}
+        qdnId: {value:  param1.f},
     })
 };
 /**OBJECT CREATION AND ASSIGNING PROPERTIES*/
@@ -32,7 +32,25 @@ function approverAlertFactory(param1, param2, param3 ) {
         title: {value: param1},
         body: {value: param2},
         data: {value: param3},
-        monthOnly: {value: month[date.getMonth()]}
+        monthOnly: {value: month[date.getMonth()]},
+    });
+};
+/**OBJECT CREATION AND ASSIGNING PROPERTIES (global request)
+ * This aims to avoid too many parameters in my functions*/
+function globalRequest(param) {
+    return Object.create(requestObject, {
+        name: {value: param.a},
+        requestNum: {value: param.b},
+        val: {value: param.c},
+    });
+};
+/**OBJECT CREATION AND ASSIGNING PROPERTIES
+ * RESPONSIBLE FOR EMAIL PROPERTIES*/
+function sendEmail(details){
+    return Object.create(emailFormats, {
+        receivers :{value: details.r},
+        subject: {value: details.s},
+        body: {value: details.b}
     });
 };
 // CONSTRUCTOR FUNCTION

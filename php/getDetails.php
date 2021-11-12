@@ -941,7 +941,6 @@ switch ($request) {
                                 `approvers`.`EMP_NO` = `emp_masterlist`.`EMP_NO`";
         $dataFromDatabase = $db->prepare($dataRequest);
         $dataFromDatabase -> execute();
-
         while($row = $dataFromDatabase->fetch(PDO::FETCH_ASSOC)){
                 $empName   = $row['EMP_NAME'];
                 $email   = $row['emailscol'];
