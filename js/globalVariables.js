@@ -260,7 +260,7 @@ const alertObject = {
                             let approversName = "San Pedro";
                             const details = {r: receivers, s:`QDN No. ${qndNum} for Reprocess`,
                             b:`Need to Reprocess QDN Number <a href='${window.location.href}?qdnNo=${qndNum}'>${qndNum}</a><br>
-                            Requested by: ${approversName} <br><br>`}
+                            Requested by: ${approversName} <br><br>`};
                             const emailThing = new sendEmail(details);
                             emailThing.initialEmailFormat();
                         }
