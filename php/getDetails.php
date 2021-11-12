@@ -1348,10 +1348,11 @@ switch ($request) {
             echo json_encode($data);
             $Insert = "UPDATE `telford_db`.`analysis_tbl`
                         SET
-                        `status_resp` = ?
-                        WHERE `analysis_tbl`.`id` = 4 "; 
+                        `status_resp` = ?, 
+                        `analysis_tbl`.`status` = 0
+                        WHERE `analysis_tbl`.`id` = ?"; 
             $insertStmt = $db->prepare($Insert);
-            $result = $insertStmt->execute([$EMP_NAME]);
+            $result = $insertStmt->execute([$EMP_NAME, $qdnId]);
         };
         break;
         //=========================================

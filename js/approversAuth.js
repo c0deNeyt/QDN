@@ -16,11 +16,14 @@ function approversOnLoadRequestEvent(param1, param2, param3){
         name :{value: param3},
         usrInput: {value: param2},
         status: {value: param3},
+        /**this custom properties used to 
+         * APPROVERS REPROCESS*/
         request: {value: param1.a},
         userName :{value: param1.b},
         password :{value: param1.c},
         name: {value:  param1.d},
-        name1: {value:  param1.e}
+        name1: {value:  param1.e},
+        qdnId: {value:  param1.f}
     })
 };
 /**OBJECT CREATION AND ASSIGNING PROPERTIES*/
@@ -554,6 +557,10 @@ $('#qdnNumber').on('input', async function(){
     /** .replace will removed excess spaces */
     let usrInput = $(this).val().replace(/\s/g,'');
     /**AUTOCOMPLETE SETTING PARAMETERS INSTANCE*/
+    /**NOTE:
+     * First Param = request Number.
+     * Second Param = QND Number.
+     * Third Param = QDN Status*/
     const instanceACSuggestion = new approversOnLoadRequestEvent(7.1, usrInput, 1);
     /**approversOnLoadRequestEvent METHOD*/
     const ACSuggestion = await instanceACSuggestion.autoCompleteDataRequest();
@@ -565,9 +572,13 @@ $('#qdnNumber').on('input', async function(){
         /**THIS WILL REMOVED IF THERE IS A PREVIOUS DATA 
          * PASSED TO THE DOM*/
         unsetApproval();
-        /*INSTANCE OF ONLOAD REQUEST*/
+        /**THIS WILL SET THE QND INPUT FIELD VALIDITY STATUS*/
         qdnNumberInput.classList.remove("is-invalid");
         qdnNumberInput.classList.add("is-valid");
+        /*INSTANCE OF ONLOAD REQUEST*/
+        /**NOTE:
+         * First Param = request Number.
+         * Second Param = QND Number.*/
         const searchRequest = new approversOnLoadRequestEvent(19.2, usrInput);
         /**MATCHED QDN NUMBER FROM urlParam Parameter */
         const approverDetails = await searchRequest.searchQdnDetails();
