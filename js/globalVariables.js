@@ -219,56 +219,33 @@ const alertObject = {
                          * b = for employee Number
                          * c = for employee Password
                          * d,e = for ajax name value stored in formData which will used 
-                         * for post request in getDetail.php*/
+                         * for post request in getDetail.php */
                         const parameter = {a: 22, b: employeeId, c: empPass, d: "empId", e: "userPassInput", f:qdnID[0]['qdnId']};
                         /**INSTANCE OF THE approversOnLoadRequestEvent OBJECT*/
                         const validate = new approversOnLoadRequestEvent(parameter);
                         /**METHOD EXECUTION
                          * VALID USER CREDENTIAL*/
                         const approversName  = await validate.reprocessCredValRequest();
+                        /**CHECKING FOR REASSIGNMENTS AND SENDING EMAILS*/
+                        const approverFullName = {c:approversName[0]['EMP_NAME']};
+                        /**INSTANCE OF CHECKING REASSIGNMENT EXISTENCE AND SENDING EMAIL*/
+                        const approverNotification = new onloadAppendToDOM(approverFullName);
+                        /**METHOD TO EXECUTE ALL THE INSTANCES AND METHOD A TO THE 
+                         * 
+                        */
+                        await approverNotification.approvalReassignmentCheck();
                         /**====================================*/
                         /**Success Alert for  REPROCESS EVENT */
                         /**==================================*/
                         const reprocessAlertFormat = new approverAlertFactory(`REPROCESS GRANTED!<br> 🎉 🥳 🎉`,
                         `<b style="color:#c4c4c4;">Thank you </b><em>${approversName[0]['EMP_NAME']}</em>`);
                         /**METHOD EXECUTION*/
-                        await reprocessAlertFormat.successAlert();
+                        await reprocessAlertFormat.successAlert().then(()=>{
+                            window.location.href;
+                        });
                     }   
                     catch{
-                        console.log(qdnID);
                         Swal.showValidationMessage(`Invalid Approver ID or Password!`);
-                        const reassignmentCheck = {a:"qdnNum", b:18, c:qndNum};
-                        const instanceGR = new globalRequest(reassignmentCheck);
-                        
-                        try{
-                            let lastReassignment = await instanceGR.requestWith2param();
-                            let empNumberOfResponsible = lastReassignment[0]['to'];
-                            const designatedEmails = {a:"issuedToEmpNo", b:13, c:empNumberOfResponsible};
-                            const instanceGR1 = new globalRequest(designatedEmails);
-                            const rawReceiversData = await instanceGR1.requestWith2param();
-                            let receivers = '';
-                            for (let i=0;i<rawReceiversData.length;i++){
-                                if (receivers){
-                                    let emailResult = rawReceiversData[i]['emailscol'];
-                                    receivers = receivers + ", " + emailResult;
-                                }
-                                else{
-                                    let emailResult = rawReceiversData[i]['emailscol'];
-                                    receivers = emailResult;
-                                };
-                            };
-                            let approversName = "San Pedro";
-                            const details = {r: receivers, s:`QDN No. ${qndNum} for Reprocess`,
-                            b:`Need to Reprocess QDN Number <a href='${window.location.href}?qdnNo=${qndNum}'>${qndNum}</a><br>
-                            Requested by: ${approversName} <br><br>`};
-                            const emailThing = new sendEmail(details);
-                            emailThing.initialEmailFormat();
-                        }
-                        catch{
-                            const reassignmentCheck = {a:"qdnNum", b:20, c:qndNum};
-                            const instanceGR3 = new globalRequest(reassignmentCheck);
-                            console.log("REASSIGNMENT FALSE", instanceGR3);
-                        }
                     };
                     /**TODO
                      * VALIDATE PASSWORD ✅
@@ -277,7 +254,7 @@ const alertObject = {
                      *      # CHECK IF REASSIGNMENT EXITS ✅
                      *      # EXIST: GET THE EMAILS RECEIVERS data[0]['to'] ✅
                      *      # EXIST FALSE: GET THE EMAILS RECEIVERS OF data[i]['issuedTo']
-                     *      # SET STATUS TO 0
+                     *      # SET STATUS TO 0 ✅
                      * IF INVALID;
                      *      # JUST SWAL VALIDATION MESSAGE
                      * APPEND REASSIGNMENT IF EXIST 
@@ -747,20 +724,100 @@ const eventsObject = {
         };
         return qdnNumbers;      
     },
-    reassignmentCheck: async function(){
-        let qndNumber = $("#qdnNumber").val().replace(/\s/g,'');
+    /**REPROCESS INSTANCES AND METHOD EXECUTION*/
+    approvalReassignmentCheck: async function(){
+        const qndNumber = $("#qdnNumber").val().replace(/\s/g,'');
         /**NOTE:
          * PARAM A = AJAX Post request name.
          * PARAM B = Request number.
          * PARAM C = QND Number.*/
-        const param = {a:"qdnNum", b:18, c:qndNumber};
+        /**INSTANCE FOR CHECKING REASSIGNMENT*/
+        const reassignmentCheck = {a:"qdnNum", b:18, c:qndNumber};
+        const instanceGR = new globalRequest(reassignmentCheck);
+        /**INSTANCE FOR NO REASSIGNMENT*/
+        const noReAss = {a:"qdnNum", b:20, c:qndNumber};
+        const instanceGR3 = new globalRequest(noReAss);
+        console.log(this.approversName)
         try{
-            const instanceGR = new globalRequest(param);
-            const reAss = await instanceGR.requestWith2param();
-            console.log("REASSIGNMENT TRUE", reAss);
+            /**METHOD TO GET THE LATEST REASSIGNMENT RAW DATA*/
+            const lastReassignment = await instanceGR.requestWith2param();
+            /**converting THE latestReassignment into EMP Number of emp
+             * responsible*/
+            const empNumberOfResponsible = lastReassignment[0]['to'];
+            /**STORING THE PARAMETERS VALUE INTO AN OBJECT TO REDUCE THE PARAMETERS*/
+            const designatedEmails = {a:"issuedToEmpNo", b:13, c:empNumberOfResponsible};
+            /**INSTANCE TO GET THE APPROVERS EMAIL OF THE PERSON RESPONSIBLE FOR THE QDN */
+            const instanceGR1 = new globalRequest(designatedEmails);
+            /**METHOD EXECUTION WHEN FETCHING EMAILS*/
+            const rawReceiversData = await instanceGR1.requestWith2param();
+            /**INSTANCE TO PROCESS THE FORMAT OF RECEIVERS */
+            const formatReceivers = new onloadAppendToDOM(rawReceiversData);
+            /**METHOD TO FORMAT RECEIVERS*/
+            const receivers = formatReceivers.formatRawDataOfReceivers();
+            /** SEND EMAILS */
+            const approvalNoReAss = {a:receivers, b: qndNumber, c:this.approversName};
+            /**INSTANCE FOR SENDING EMAIL */
+            const sendEmail = new onloadAppendToDOM(approvalNoReAss);
+            /**METHOD THAT WILL SEND AND EMAIL */
+            sendEmail.approvalEmailInstance();
         }
         catch{
-            console.log("REASSIGNMENT FALSE",);
+            /**METHOD TO GET THE LATEST RAW DATA*/
+            const noReassignmentReceiver = await instanceGR3.requestWith2param();
+            /**converting the data into EMP Number of emp responsible*/
+            const empNumberNoReAssResponsible = noReassignmentReceiver[0]['issuedTo'];
+            /**STORING THE PARAMETERS VALUE INTO AN OBJECT TO REDUCE THE PARAMETERS*/
+            const designatedEmails = {a:"issuedToEmpNo", b:13,c:empNumberNoReAssResponsible};
+            /**INSTANCE TO GET THE APPROVERS EMAIL OF THE PERSON RESPONSIBLE FOR THE QDN */
+            const instanceGR1 = new globalRequest(designatedEmails);
+            /**METHOD EXECUTION WHEN FETCHING EMAILS*/
+            const rawNoReAssReceivers = await instanceGR1.requestWith2param();
+            /**INSTANCE TO PROCESS THE FORMAT OF RECEIVERS */
+            const formatReceiversNoReAss = new onloadAppendToDOM(rawNoReAssReceivers);
+            /**METHOD TO FORMAT RECEIVERS*/
+            const noReAssReceivers = formatReceiversNoReAss.formatRawDataOfReceivers();
+            /** SEND EMAILS */
+            const approvalNoReAss = {a:noReAssReceivers, b: qndNumber, c: this.approversName};
+            /**INSTANCE FOR SENDING EMAIL */
+            const noReAssSendEmail = new onloadAppendToDOM(approvalNoReAss);
+            /**METHOD THAT WILL SEND AND EMAIL */
+            noReAssSendEmail.approvalEmailInstance();
+        }
+    },
+    /**METHOD TO FORMAT THE RAW EMAIL DATA INTO STING*/
+    formatRawDataOfReceivers: function(){
+        /**PROCESS RECEIVER */
+        /**LOOP TO SORE THE EMAILS INTO receiver variable */
+        console.log("This is the raw Emails", this.rawEmailData.length)
+        let rawEmailDataLen = this.rawEmailData.length;
+        let receivers = '';
+        for (let i=0;i<rawEmailDataLen;i++){
+            if (receivers){
+                receivers = receivers + ", " + this.rawEmailData[i]['emailscol'];
+            }
+            else{
+                receivers = this.rawEmailData[i]['emailscol'];
+            }
+        };
+        return receivers;
+    },
+    /**METHOD TO EXECUTE SEND REPROCESS EMAIL FORMAT*/
+    approvalEmailInstance: async function(){
+        try{
+            /** SEND EMAILS */
+            const details = {r: this.receivers, s:`QDN No. ${this.qndNum} for Reprocess`,
+            b:`Need to Reprocess QDN Number <a href='${window.location.href}?qdnNo=${this.qndNum}'>${this.qndNum}</a><br>
+            Requested by: ${this.approversName} <br><br>`};
+            const emailThing = new sendEmail(details);
+            emailThing.initialEmailFormat();
+        }
+        catch(e){
+            const sendingEmailError = new approverAlertFactory(`Something Went Wrong 🤔!`,
+            `Sending Email Failed!.<br>
+            Location: globalVariable.js <br>
+            StatusCode: "${e.status}"`);
+            /**METHOD EXECUTION*/
+            await sendingEmailError.errorAlert();
         }
     }
 };
@@ -796,16 +853,9 @@ const emailFormats = {
             From : "systemqdn2021@gmail.com",
             Subject : this.subject,
             Body : this.body +
-            "<br><strong>Note:</strong><br>" +
+            "<strong>Note:</strong><br>" +
             "<i>    This notification is an automated message. Please do not reply directly to this email.</i>"
         });
     }
      
 };
-// function sendEmail(details){
-//     return Object.create(emailFormats, {
-//         receiver :{value: details.r},
-//         subject: {value: details.s},
-//         body: {value: details.b}
-//     })
-// };

@@ -7,6 +7,12 @@ function onloadAppendToDOM(data, selectorIDs, tableName) {
         analysisTblId: {value: selectorIDs},
         /**table variables*/
         tableName: {value: tableName},
+        /**USED IN formatting rawEmail Data*/
+        rawEmailData: {value: data},
+        /**Email Instance (approval)*/
+        receivers:{value: data.a},
+        qndNum: {value: data.b},
+        approversName:{value: data.c}
     });
 };
 function approversOnLoadRequestEvent(param1, param2, param3){
@@ -486,19 +492,28 @@ let executeApprovers = async reqResult =>{
     "rootCause", "defects", "codDes" ]; 
     /**rawData of latest QDN Details */
     let objectValues = Object.values(reqResult[0]);
-    /**INSTANCE OF approversReq Class */
-    const contInstance =  new approverReq(objectValues[objectValues.length -1], 10,"matchedContainment");  
-    const corrInstance =  new approverReq(objectValues[objectValues.length -1], 11,"matchedCorrection");  
-    const crtvInstance =  new approverReq(objectValues[objectValues.length -1], 12,"matchedCorrective"); 
+    const currentQDNId =objectValues[objectValues.length -1];
+    console.log(currentQDNId);
+    /**INSTANCE OF ONLOAD REQUEST with parameter of 9 for requestNum and 
+         *filteredData[19] for findThis (qndID or analysis_tbl id) */
+    const approvalReassignmentRequest = new approversOnLoadRequestEvent(9, currentQDNId);
+    /**EXECUTING THE METHOD TO FETCH THE DATA FROM THE AJAX REQUEST */
+    const approvalReAssRawData = await approvalReassignmentRequest.requestForReassignment();
+    /**INSTANCE OF APPEND OBJECT */
+    const approvalOnloadAppendReass = new onloadAppendToDOM(approvalReAssRawData);
+    /**EXECUTION OF METHOD APPEND REASSIGNMENT IF EXIST*/
+    approvalOnloadAppendReass.appendReassignment();
+    const contInstance =  new approverReq(currentQDNId, 10,"matchedContainment");  
+    const corrInstance =  new approverReq(currentQDNId, 11,"matchedCorrection");  
+    const crtvInstance =  new approverReq(currentQDNId, 12,"matchedCorrective"); 
     /**RAW DATA OF  */
     const cont = await contInstance.getQdnTableDetails();
     const corr = await corrInstance.getQdnTableDetails();
     const crtv = await crtvInstance.getQdnTableDetails();
     /**INSTANCE OF APPENDING */
-    const onloadApproverAppendCont = new onloadAppendToDOM(cont, objectValues[objectValues.length -1], "containment");
-    const onloadApproverAppendCorr = new onloadAppendToDOM(corr, objectValues[objectValues.length -1], "correction");
-    const onloadApproverAppendCrtv = new onloadAppendToDOM(crtv, objectValues[objectValues.length -1], "corrective");
-
+    const onloadApproverAppendCont = new onloadAppendToDOM(cont, currentQDNId, "containment");
+    const onloadApproverAppendCorr = new onloadAppendToDOM(corr, currentQDNId, "correction");
+    const onloadApproverAppendCrtv = new onloadAppendToDOM(crtv, currentQDNId, "corrective");
     /**Execution of method(appendTableContent) from object onloadAppendToDOM*/
     onloadApproverAppendCont.appendApproverTableContent();
     onloadApproverAppendCorr.appendApproverTableContent();
@@ -571,7 +586,7 @@ function unsetApproval() {
     unsetInsertedData.approvalSetTableDefaultValue();
     approval.hideCommands("none");
 }
-$('#qdnNumber').on('input', async function(){
+$('#qdnNumber').on('input keyup', async function(){
     /** .replace will removed excess spaces */
     let usrInput = $(this).val().replace(/\s/g,'');
     /**AUTOCOMPLETE SETTING PARAMETERS INSTANCE*/
@@ -601,10 +616,12 @@ $('#qdnNumber').on('input', async function(){
         /**MATCHED QDN NUMBER FROM urlParam Parameter */
         const approverDetails = await searchRequest.searchQdnDetails();
         executeApprovers(approverDetails);
+        reAssignEvent.unsetReAssignmentData();
     }
     catch(e){
         // console.log("SEARCH NOT FOUND!");
         unsetApproval();
+        reAssignEvent.unsetReAssignmentData();
     };
     $(this).autocomplete({
         source: suggestions,
@@ -620,6 +637,8 @@ $('#qdnNumber').on('input', async function(){
             /**MATCHED QDN NUMBER FROM urlParam Parameter */
             const approverDetails = await searchRequest.searchQdnDetails();
             executeApprovers(approverDetails);
+            reAssignEvent.unsetReAssignmentData();
+            
         },
     });
 });
