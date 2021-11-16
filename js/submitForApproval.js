@@ -291,11 +291,11 @@ $(document).ready(function(){
             Host: "smtp.gmail.com",
             Username : "systemqdn2021@gmail.com",
             Password : "tjvxdnvqvepgtwck",
-            // To : receiver,
-            To : "chanchristianarana@gmail.com",
+            To : receiver,
+            // To : "chanchristianarana@gmail.com",
             From : "systemqdn2021@gmail.com",
             Subject : "QDN No. " + qndNumber  + " FOR APPROVAL" ,
-            Body : "QDN " + "<a href='http://tk-server.tspi.com:999/analysis.php'>" + qndNumber + "</a> needs approval.<br><br>" + 
+            Body : "QDN " + `<a href="${window.location.href}?qdnNo=${qdnNumber}">` + qndNumber + "</a> needs approval.<br><br>" + 
             "<strong>Note:</strong><br>" +
             "<i>  This notification is an automated message. Please do not reply directly to this email.</i>" 
         });

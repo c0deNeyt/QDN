@@ -162,13 +162,13 @@
         Host: "smtp.gmail.com",
         Username : "systemqdn2021@gmail.com",
         Password : "tjvxdnvqvepgtwck",
-        // To : receivers,
-        To : "chanchristianarana@gmail.com",
+        To : receivers,
+        // To : "chanchristianarana@gmail.com",
         From : "systemqdn2021@gmail.com",
         Subject : "QDN Issuance",
         Body : "Good Day," + "<br>" + "<br>" +
         "Please see below issuance under your respective area." + "<br>" + "<br>" +
-        "<b>QDN No.:</b> "      + "<a href='http://tk-server.tspi.com:999/analysis.php'>" + `${this.qdnNumber}` + "</a>" + "<br>" +
+        "<b>QDN No.:</b> "      + `<a href="${window.location.href}?qdnNo=${this.qdnNumber}">` + `${this.qdnNumber}` + "</a>" + "<br>" +
         "<b>Discrepancy:</b> "  + `${this.qdnDefects}` + "<br>" + 
         "<b>Issued To:</b> "    + `${this.qdnITEN}` + "<br>" +
         "<b>Issued By:</b> "    + `${this.qdnIBEN}` + "<br>" +
