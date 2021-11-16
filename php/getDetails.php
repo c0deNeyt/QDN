@@ -167,13 +167,21 @@ switch ($request) {
     break;
     case 7.1:
         $searchForThisQdnNo = $_POST["searchForThisQdnNo"];
-        $dataRequest = "SELECT `id`, 
-                                `qdnNo`
-                        FROM `analysis_tbl`
-                        WHERE `qdnNo` 
-                        LIKE '%$searchForThisQdnNo%'
-                        AND `status` = 0 
-                        LIMIT 5";
+        $status = $_POST["status"];
+        $dataRequest = "SELECT 
+                            `analysis_tbl`.`id`, 
+                            `analysis_tbl`.`qdnNo`
+                        FROM 
+                            `telford_db`.`analysis_tbl`
+                        WHERE
+                            `analysis_tbl`.`qdnNo`
+                        LIKE 
+                            '%$searchForThisQdnNo%'
+                        AND 
+                            `analysis_tbl`.`status` = $status
+                        ORDER BY 
+                            `analysis_tbl`.`id` DESC
+                         LIMIT 5";
         $dataFromDatabase = $db->prepare($dataRequest);
         $dataFromDatabase -> execute();
 
@@ -933,7 +941,6 @@ switch ($request) {
                                 `approvers`.`EMP_NO` = `emp_masterlist`.`EMP_NO`";
         $dataFromDatabase = $db->prepare($dataRequest);
         $dataFromDatabase -> execute();
-
         while($row = $dataFromDatabase->fetch(PDO::FETCH_ASSOC)){
                 $empName   = $row['EMP_NAME'];
                 $email   = $row['emailscol'];
@@ -1168,6 +1175,64 @@ switch ($request) {
             echo json_encode($qdnNoData);           
         };
     break;
+    case 19.2:
+        $matchedQdnNum = $_POST["matchedQdnNum"];
+        $dataRequest = "SELECT * 
+                        FROM 
+                            `telford_db`.`analysis_tbl`
+                        WHERE
+                            `analysis_tbl`.`qdnNo` = '$matchedQdnNum'
+                        AND
+                        `analysis_tbl`.`status` = 1";
+        $dataFromDatabase = $db->prepare($dataRequest);
+        $dataFromDatabase ->execute();
+        while($row =$dataFromDatabase->fetch(PDO::FETCH_ASSOC)){
+            $id                     = $row['id'];
+            $qdnNo                  = $row['qdnNo'];
+            $issuedByName           = $row['issuedByName'];
+            $issuedByTeam           = $row['issuedByTeam'];
+            $issuedToName           = $row['issuedToName'];
+            $issuedToTeam           = $row['issuedToTeam'];
+            $customer               = $row['customer'];
+            $packageType            = $row['packageType'];
+            $machine                = $row['machine'];
+            $deviceName             = $row['deviceName'];
+            $station                = $row['station'];
+            $lotId                  = $row['lotId'];
+            $teamResp               = $row['teamResp'];
+            $dateTime               = $row['dateTime'];
+            $classification         = $row['classification'];
+            $defects                = $row['defects'];
+            $failure_mode           = $row['failure_mode'];
+            $disposition            = $row['disposition'];
+            $cause_of_defects       = $row['cause_of_defects'];
+            $cause_of_defects_des   = $row['cause_of_defects_des'];
+            $prod_auth_col          = $row['prod_auth_col'];
+            $ee_auth_col            = $row['ee_auth_col'];
+            $pe_auth_col            = $row['pe_auth_col'];
+            $qa_auth_col            = $row['qa_auth_col'];
+            $others_auth_col        = $row['others_auth_col'];
+            // STORING DATA TO AN ARRAY
+            $qndNoData[] = array("qdnNo" => $qdnNo, "issuedByName" => $issuedByName,
+                "issuedByTeam" => $issuedByTeam, "issuedToName" => $issuedToName,
+                "issuedToTeam" => $issuedToTeam, "dateTime" => $dateTime,
+                "customer" => $customer, "station" => $station,
+                "teamResp" => $teamResp, "machine" => $machine, 
+                "packageType" => $packageType,"deviceName" => $deviceName, 
+                "lotId" => $lotId, "classification" => $classification, 
+                "failure_mode" => $failure_mode, "disposition" => $disposition, 
+                "defects" => $defects, "cause_of_defects" => $cause_of_defects, 
+                "cause_of_defects_des" => $cause_of_defects_des, "prod_auth_col" => $prod_auth_col, 
+                "ee_auth_col" => $ee_auth_col,"pe_auth_col" => $pe_auth_col, 
+                "qa_auth_col" => $qa_auth_col, "others_auth_col" => $others_auth_col,
+                "qdnId" => $id     
+            );
+        }
+        // ENCODING ARRAY TO JSON FORMAT
+        if ( $qndNoData ){
+            echo json_encode($qndNoData);
+        };
+    break;
     //=========================================
     // REQUEST FOR QDN REASSIGNMENT 
     //===========================================
@@ -1255,23 +1320,38 @@ switch ($request) {
     case 22:
         $userPassInput  = $_POST['userPassInput'];
         $empId          = $_POST['empId'];
+        $qdnId          = $_POST['qdnId'];
         $dataRequest = "SELECT `approvers`.`password`,
-                            `approvers`.`EMP_NO`
-                        FROM `telford_db`.`approvers`
-                        WHERE `EMP_NO` = '$empId'"; 
+                                `approvers`.`EMP_NO`,
+                                `emp_masterlist`.`EMP_NAME`,
+                                `emp_masterlist`.`EMP_NO`
+                        FROM
+                            `telford_db`.`approvers`
+                        INNER JOIN
+                            `telford_db`.`emp_masterlist`
+                        ON
+                            `approvers`.`EMP_NO` = `emp_masterlist`.`EMP_NO`
+                        WHERE
+                            `approvers`.`EMP_NO` = '$empId'"; 
         $dataFromDatabase = $db->prepare($dataRequest);
         $dataFromDatabase -> execute();
         while($row = $dataFromDatabase->fetch(PDO::FETCH_ASSOC)){
-            
             $hashed_password = $row['password'];    
             if(password_verify($userPassInput, $hashed_password)) {
                 $EMP_NO   = $row['EMP_NO'];
-                $data[] = array( "EMP_NO" => $EMP_NO
-                );
+                $EMP_NAME   = $row['EMP_NAME'];
+                $data[] = array( "EMP_NAME" => $EMP_NAME);
             }; 
         };
-        if ( $data ){
+        if ($data){
             echo json_encode($data);
+            $Insert = "UPDATE `telford_db`.`analysis_tbl`
+                        SET
+                        `status_resp` = ?, 
+                        `analysis_tbl`.`status` = 0
+                        WHERE `analysis_tbl`.`id` = ?"; 
+            $insertStmt = $db->prepare($Insert);
+            $result = $insertStmt->execute([$EMP_NAME, $qdnId]);
         };
         break;
         //=========================================

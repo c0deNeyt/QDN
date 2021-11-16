@@ -84,35 +84,6 @@
       });
     };
     //🔚* Method to insert into the database Ends Here!
-    //**Method for success alert!*/
-    // successAlert  = async() => {
-    //   const Toast = Swal.mixin({
-    //     toast: true,
-    //     position: 'top-right',
-    //     iconColor: 'white',
-    //     customClass: {
-    //       popup: 'colored-toast'
-    //     },
-    //     allowEscapeKey: false,
-    //     showConfirmButton: false,
-    //     timer: 5000,
-    //     timerProgressBar: true,
-    //     //**This will let you pause and play the alert loading*/
-    //     didOpen: (toast) => { 
-    //       toast.addEventListener('mouseenter', Swal.stopTimer)
-    //       toast.addEventListener('mouseleave', Swal.resumeTimer)
-    //     }
-    //   })
-    //   await Toast.fire({
-    //     icon: 'success',
-    //     title: 'Success!',
-    //     html:"QDN " + "<b style ='color:red;'>"+  `${this.qdnNumber}` +"</b>"
-    //     + " Sent for analysis!",
-    //   }).then(()=>{
-    //     window.location.replace("index.php");
-    //   });
-    // };
-    //🔚* Method for success alert Ends Here!
     //**METHOD TO GET EMAIL RECEIVERS*/
     fetchEmail() {
       let noIdea = `${this.qdnITENo}`
@@ -151,13 +122,13 @@
         else if (receiver.length > 0){
             receiver = receiver + ", " + data[i]['emailscol'];
         }; 
-        
       };
       return receiver;
     };
     //🔚** METHOD TO CONVERT EMAIL DETAILS INTO STRING ENDS HERE*/
     // METHOD THAT WILL SEND AN EMAIL
     sendEmail = receivers => {
+      console.log("RECEIVERS FROM ISSUANCE", receivers);
       Email.send({
         Host: "smtp.gmail.com",
         Username : "systemqdn2021@gmail.com",
@@ -168,7 +139,7 @@
         Subject : "QDN Issuance",
         Body : "Good Day," + "<br>" + "<br>" +
         "Please see below issuance under your respective area." + "<br>" + "<br>" +
-        "<b>QDN No.:</b> "      + `<a href="${window.location.href}?qdnNo=${this.qdnNumber}">` + `${this.qdnNumber}` + "</a>" + "<br>" +
+        "<b>QDN No.:</b> "      + `<a href='${window.location.href}?qdnNo=${this.qdnNumber}'> ${this.qdnNumber}</a>"` + "<br>" +
         "<b>Discrepancy:</b> "  + `${this.qdnDefects}` + "<br>" + 
         "<b>Issued To:</b> "    + `${this.qdnITEN}` + "<br>" +
         "<b>Issued By:</b> "    + `${this.qdnIBEN}` + "<br>" +

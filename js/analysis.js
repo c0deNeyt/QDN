@@ -7,18 +7,19 @@ console.log("STRICT MODE: " ,strict);
 // CommonJS
 // const Swal = require('sweetalert2')
 /**OBJECT CREATION AND ASSIGNING PROPERTIES*/
-function onLoadRequestEvent(requestNum, findThis, name){
+function onLoadRequestEvent(param1, param2, param3){
     return Object.create(requestObject, {
-        requestNum :{value: requestNum},
-        findThis :{value: findThis},
-        name :{value: name},
-        usrInput: {value: findThis}
+        requestNum :{value: param1},
+        findThis :{value: param2},
+        name :{value: param3},
+        usrInput: {value: param2},
+        status: {value: param3}
     })
 };
 
 /**OBJECT CREATION AND ASSIGNING PROPERTIES*/
 function onloadAppendToDOM(data, selectorIDs, tableName) {
-    return Object.create(appendObject, {
+    return Object.create(eventsObject, {
         data: {value: data},
         selectorIDs: {value: selectorIDs},
         analysisTblId: {value: selectorIDs},
@@ -31,7 +32,7 @@ function onloadAppendToDOM(data, selectorIDs, tableName) {
 function alertFactory(tittle, body, data ) {
     return Object.create(alertObject, {
         data: {value: data},
-        tittle: {value: tittle},
+        title: {value: tittle},
         body: {value: body},
         monthOnly: {value: month[date.getMonth()]}
     });
@@ -46,60 +47,63 @@ async function appendToDOM(filteredData) {
                             "environment", "useAsIs", "mcmr", "rework",
                             "splitLot", "shutdown", "shipBack", "production",
                             "process", "Maintenance", "Facilities", "QA","Others"];
+    const analysisQdnId = filteredData[19];
+     /**INSTANCE OF ONLOAD APPEND OBJECT*/
+     const onloadAppendEvent = new onloadAppendToDOM(filteredData, selectorsIDs);
+     // /**INSTANCE OF ONLOAD APPEND OBJECT*/
+     const onloadAppendRadioVal = new onloadAppendToDOM(filteredData, selectorRadio);
+     // /**APPEND EXECUTION ON ANALYSIS id="issueDetails"*/
+     onloadAppendEvent.append();
+      /**APPEND EXECUTION ON ANALYSIS id="issueDetails"*/
+      /**NOTE: 
+       * I decided to separate this method to identify which radio
+       * item should checked based on the data item
+       * -p. I decided to loop through the 
+       * selector instead of looping through the data("filteredData parameter"). */
+     onloadAppendRadioVal.appendRadio();
+     /**CONTAINMENT, CORRECTION, AND CORRECTIVE INSTANCE */
+     const containmentRequest = new onLoadRequestEvent(10, analysisQdnId, 'matchedContainment');
+     const correctionRequest = new onLoadRequestEvent(11, analysisQdnId, 'matchedCorrection');
+     const correctiveRequest = new onLoadRequestEvent(12, analysisQdnId, 'matchedCorrective');
+     /**METHOD  EXECUTION STORING DATA TO CONSTANT VARIABLE
+      * Note:
+      * cont = containment
+      * corr = correction
+      * crtv = corrective*/
+     const cont = await containmentRequest.requestForTableData();
+     const corr = await correctionRequest.requestForTableData();
+     const crtv = await correctiveRequest.requestForTableData();
+     /**Instance of appending table data.
+      * Note:
+      * onloadAppendToDOM accept 3 parameters as follows:
+      * First : array/object contain either containment, correction and corrective details
+      * Second : the ID of the latest QDN number
+      * Third : the table body class name.*/
+     const onloadAppendCont = new onloadAppendToDOM(cont, analysisQdnId, "containment");
+     const onloadAppendCorr = new onloadAppendToDOM(corr, analysisQdnId, "correction");
+     const onloadAppendCrtv = new onloadAppendToDOM(crtv, analysisQdnId, "corrective");
+     /**Execution of method(appendTableContent) from object onloadAppendToDOM*/
+     onloadAppendCont.appendTableContent();
+     onloadAppendCorr.appendTableContent();
+     onloadAppendCrtv.appendTableContent();
+     /**TO REMOVED ASSIGNMENT INPUT SECTION IF EXIST*/
+     $("#reAssignment").remove();    
     try{
-        /**INSTANCE OF ONLOAD APPEND OBJECT*/
-        const onloadAppendEvent = new onloadAppendToDOM(filteredData, selectorsIDs);
-        // /**INSTANCE OF ONLOAD APPEND OBJECT*/
-        const onloadAppendRadioVal = new onloadAppendToDOM(filteredData, selectorRadio);
-        // /**APPEND EXECUTION ON ANALYSIS id="issueDetails"*/
-        onloadAppendEvent.append();
-         /**APPEND EXECUTION ON ANALYSIS id="issueDetails"*/
-         /**NOTE: 
-          * I decided to separate this method to identify which radio
-          * item should checked based on the data item
-          * -p. I decided to loop through the 
-          * selector instead of looping through the data("filteredData parameter"). */
-        onloadAppendRadioVal.appendRadio();
         /**INSTANCE OF ONLOAD REQUEST with parameter of 9 for requestNum and 
-         *filteredData[19] for findThis */
-        const reassignmentRequest = new onLoadRequestEvent(9, filteredData[19]);
+         *filteredData[19] for findThis (qndID or analysis_tbl id) */
+        const reassignmentRequest = new onLoadRequestEvent(9, analysisQdnId);
         /**EXECUTING THE METHOD TO FETCH THE DATA FROM THE AJAX REQUEST */
-        let reAssRawData = await reassignmentRequest.requestForReassignment();
+        const reAssRawData = await reassignmentRequest.requestForReassignment();
         /**INSTANCE OF APPEND OBJECT */
         const onloadAppendReass = new onloadAppendToDOM(reAssRawData);
         /**EXECUTION OF METHOD APPEND REASSIGNMENT IF EXIST*/
         onloadAppendReass.appendReassignment();
-        /**CONTAINMENT, CORRECTION, AND CORRECTIVE INSTANCE */
-        const containmentRequest = new onLoadRequestEvent(10, filteredData[19], 'matchedContainment');
-        const correctionRequest = new onLoadRequestEvent(11, filteredData[19], 'matchedCorrection');
-        const correctiveRequest = new onLoadRequestEvent(12, filteredData[19], 'matchedCorrective');
-        /**METHOD  EXECUTION STORING DATA TO CONSTANT VARIABLE
-         * Note:
-         * cont = containment
-         * corr = correction
-         * crtv = corrective*/
-        const cont = await containmentRequest.requestForTableData();
-        const corr = await correctionRequest.requestForTableData();
-        const crtv = await correctiveRequest.requestForTableData();
-        /**Instance of appending table data.
-         * Note:
-         * onloadAppendToDOM accept 3 parameters as follows:
-         * First : array/object contain either containment, correction and corrective details
-         * Second : the ID of the latest QDN number
-         * Third : the table body class name.*/
-        const onloadAppendCont = new onloadAppendToDOM(cont, filteredData[19], "containment");
-        const onloadAppendCorr = new onloadAppendToDOM(corr, filteredData[19], "correction");
-        const onloadAppendCrtv = new onloadAppendToDOM(crtv, filteredData[19], "corrective");
-        /**Execution of method(appendTableContent) from object onloadAppendToDOM*/
-        onloadAppendCont.appendTableContent();
-        onloadAppendCorr.appendTableContent();
-        onloadAppendCrtv.appendTableContent();
-        /**TO REMOVED ASSIGNMENT INPUT SECTION IF EXIST*/
-        $("#reAssignment").remove();    
     }
     catch (e){
         /**Error HANDLING*/
-        console.log(e);
+        console.log("USUALLY EMAIL MISSING RECEIVER's CAUSING THIS", e);
+
+        // return e;
         // const error = new alertFactory(e);
         // error.errorAlert();
     }
@@ -116,13 +120,11 @@ function unsetData() {
     $(".analysisSection").remove();
     $("#reAssignDiv").remove();
     $("#reAssignment").remove();
-}   
+};
 (async function() {//*✅*/
-    /**Input Event
-     * Search for the matched qnd
-     * Matched True: Append the data to the dom 
-     * Matched False: set the DOM TO default */
-    const parameter = new URLSearchParams(window.location.search)
+    /**INSTANCE OF URSearchParams */
+    const parameter = new URLSearchParams(window.location.search);
+    /**FETCHING param name */
     const urlParam = parameter.get('qdnNo');
     const qdnNumberInput = document.getElementById("qdnNumber");
     /**CHECK IF THE CUSTOM URL IS VALID */
@@ -135,7 +137,7 @@ function unsetData() {
             /*INSTANCE OF ONLOAD REQUEST*/
             const onloadRequest = new onLoadRequestEvent(8, urlParam);
             /**MATCHED QDN NUMBER FROM urlParam Parameter */
-            let details = await onloadRequest.searchQdnDetails();
+            const details = await onloadRequest.searchQdnDetails();
             const filteredDetails = Object.values(details[0]);
             appendToDOM(filteredDetails);
         }
@@ -146,7 +148,8 @@ function unsetData() {
             qdnNumberInput.classList.add("is-invalid");
             if (e.readyState === 4){
                 /**INSTANCE OF ALERT FACTORY */
-                const error = new alertFactory(`Invalid URL 😈😈😈.<br>
+                const error = new alertFactory(`Something Went Wrong 🤔!`,
+                `Invalid URL 😈😈😈.<br>
                 Status: ${e.status} <br>
                 statusText: " ${e.statusText} "`);
                 /**METHOD EXECUTION*/
@@ -170,11 +173,19 @@ function unsetData() {
     $("#qdnNumber").on("input", async function () {
         /** .replace will removed excess spaces */
         let usrInput = $(this).val().replace(/\s/g,'');
+         /**AUTOCOMPLETE SETTING PARAMETERS INSTANCE*/
+        const analInstanceACSuggestion = new onLoadRequestEvent(7.1, usrInput,0);
+        /**approversOnLoadRequestEvent METHOD*/
+        const analACSuggestion = await analInstanceACSuggestion.autoCompleteDataRequest();
+        /**AC APPENDING RESULT*/
+        const acRawData = new onloadAppendToDOM(analACSuggestion);
+        /**onloadAppendToDOM METHOD*/
+        const analysisSuggestions = await acRawData.ACRawDataToArray();
         try{
             /*INSTANCE OF ONLOAD REQUEST*/
             const onloadRequest = new onLoadRequestEvent(8, usrInput);
             /**MATCHED QDN NUMBER FROM urlParam Parameter */
-            let details = await onloadRequest.searchQdnDetails();
+            const details = await onloadRequest.searchQdnDetails();
             const filteredDetails = Object.values(details[0]);
             appendToDOM(filteredDetails);
             reAssignEvent.unsetReAssignmentData();
@@ -182,7 +193,20 @@ function unsetData() {
         catch (e){
             /**ERROR HANDLING*/
             unsetData();
-        }
+        };
+        $(this).autocomplete({
+            source: analysisSuggestions,
+            select: async function(event, ui){
+                let analysisSelectedItem =  ui["item"]["value"];
+                /*INSTANCE OF ONLOAD REQUEST*/
+                const onloadRequest = new onLoadRequestEvent(8, analysisSelectedItem);
+                /**MATCHED QDN NUMBER FROM urlParam Parameter */
+                const details = await onloadRequest.searchQdnDetails();
+                const filteredDetails = Object.values(details[0]);
+                appendToDOM(filteredDetails);
+                reAssignEvent.unsetReAssignmentData();
+            },
+        });
     });
     $(document).on("change", "#reAssign", function () {
         // this will contain a reference to the checkbox   

@@ -520,7 +520,7 @@
                     });
                     setTimeout(function () {
                         resolve();
-                    }, 250);
+                    }, 250);    
                 });
             }
         });

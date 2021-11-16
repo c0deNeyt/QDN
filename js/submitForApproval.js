@@ -262,7 +262,6 @@ $(document).ready(function(){
             request.send(data);
         });
     };
-    
     //**FUNCTION THAT WILL LOOP THROUGH THE RESULTS OF fetchEmailReceivers Result */
     //**AND RETURN THE FINAL RECEIVERS FORMAT*/
     let generateEmailReceivers =  (objEmail) => {

@@ -28,7 +28,7 @@
     <link type="text/css" href="./css/approval.css" rel="stylesheet">
     <!------------------------------------------------------------------>
     <!-- JQUERY STYLESHEET -->
-    <link rel="stylesheet" href="./js/jquery-ui-1.12/jquery-ui.css">
+    <link href="./js/jquery-ui-1.13.0/jquery-ui.css" rel="stylesheet">
     <!------------------------------------------------------------------>
     <!-- Bootstrap core JS -->
     <script src="./bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -37,24 +37,28 @@
     <!------------------------------------------------------------------>
     <script src="./bootstrap/js/bootstrap.bundle.js"></script>
     <!------------------------------------------------------------------>
-
     <!--CORE JS-->
     <script type="text/javascript" src="./js/jquery-3.6.0.min.js"></script>
     <!------------------------------------------------------------------>   
+    <script defer type="text/javascript" src="./js/globalVariables.js"></script>
     <!-- <script defer src="./js/approvers.js"></script> -->
     <!------------------------------------------------------------------>
     <script defer src="./js/approversAuth.js"></script>
     <!------------------------------------------------------------------>
     <script src="./js/analysisFormValidation.js" defer></script>
     <!------------------------------------------------------------------>
-    <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js" ></script>
+    <script src="./js/sweetalert2.all.min.js"></script>
     <!------------------------------------------------------------------>
     <!-- JQUERY UI -->
     <!------------------------------------------------------------------>
+    <script defer src="./js/jquery-ui-1.13.0/external/jquery/jquery.js"></script>
+    <!------------------------------------------------------------------>
+    <script defer src="./js/jquery-ui.js"></script>
+    <!------------------------------------------------------------------>
+    <!-- EMAIL API -->
+    <!------------------------------------------------------------------>
     <script src="https://smtpjs.com/v3/smtp.js"></script>
     <!------------------------------------------------------------------>
-    <script src="./js/jquery-ui-1.12/jquery-ui.js"></script>
-    <!-- -------------------------------------------------------------- -->
     <!-- UNCOMMENT TO TEST HOW FAST THE PAGE LOAD
     <script type="text/javascript">
             var timerStart = Date.now();
@@ -78,7 +82,7 @@
           <div class="row col-md-12 mb-3">
             <div class="errorSpan col-sm-4">
               <label for="qdnNumber" class="form-label">QDN #:</label>
-              <input type="text" class="form-control" id="qdnNumber" required>
+              <input autocomplete = "off" type="text" class="form-control is-invalid" id="qdnNumber">
             </div>
           </div>
           <!--
@@ -302,12 +306,12 @@
                     <th scope="col" class="telfordRed">Status</th>
                   </tr>
                 </thead>
-                <tbody id="tblBodyContId">
+                <tbody id="containmentTbody">
                   <tr id="containmentRow">
-                    <td id = "containmentCol">Blank</td>
-                    <td id = "containmentRespCol">Blank</td>
-                    <td id = "containmentWhenCol">Blank</td>
-                    <td id = "containmentStatCol">Blank</td>
+                    <td id = "containmentCol" class="defaultCol">Blank</td>
+                    <td id = "containmentRespCol" class="defaultCol">Blank</td>
+                    <td id = "containmentWhenCol" class="defaultCol">Blank</td>
+                    <td id = "containmentStatCol" class="defaultCol">Blank</td>
                   </tr>
                 </tbody>
                 <!-- END OF TABLE -->
@@ -329,12 +333,12 @@
                     <th scope="col" class="telfordRed">Status</th>
                   </tr>
                 </thead>
-                <tbody id="tblBodyCorrId">
-                  <tr id = "correctionTblRow">
-                    <td id = "correctionTblCol">Blank</td>
-                    <td id = "correctionTblRespCol">Blank</td>
-                    <td id = "correctionTblWhenCol">Blank</td>
-                    <td id = "correctionTblStatCol">Blank</td>
+                <tbody id="correctionTbody">
+                  <tr id = "correctionRow">
+                    <td id = "correctionCol" class="defaultCol">Blank</td>
+                    <td id = "correctionRespCol" class="defaultCol">Blank</td>
+                    <td id = "correctionWhenCol" class="defaultCol">Blank</td>
+                    <td id = "correctionStatCol" class="defaultCol">Blank</td>
                   </tr>
                 </tbody>
                 <!-- END OF TABLE -->
@@ -356,12 +360,12 @@
                     <th scope="col" class="telfordRed">Status</th>
                   </tr>
                 </thead>
-                <tbody id="tblBodyCorrtvId">  
-                <tr id = "correctiveTblRow">
-                    <td id = "correctiveTblCol">Blank</td>
-                    <td id = "correctiveTblRespCol">Blank</td>
-                    <td id = "correctiveTblWhenCol">Blank</td>
-                    <td id = "correctiveTblStatCol">Blank</td>
+                <tbody id="correctiveTbody">  
+                <tr id = "correctiveRow">
+                    <td id = "correctiveCol" class="defaultCol">Blank</td>
+                    <td id = "correctiveRespCol" class="defaultCol">Blank</td>
+                    <td id = "correctiveWhenCol" class="defaultCol">Blank</td>
+                    <td id = "correctiveStatCol" class="defaultCol">Blank</td>
                   </tr>
                 </tbody>
                 <!-- END OF TABLE -->
@@ -430,8 +434,6 @@
         </form>
       </div>  
     </div>
-      
-
     <!-- UNCOMMENT TO TEST HOW FAST IS THE PAGE LOAD -->
     <!-- <script type="text/javascript">
              $(document).ready(function() {

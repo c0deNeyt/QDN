@@ -57,105 +57,112 @@ let bdGifUrl;
 let bdPosition;
 let bdColor;
 
+/**APPROVAL QDN NUMBER INPUT */
+const qdnNumberInput = document.getElementById("qdnNumber");
 /**OBJECT RESPONSIBLE FOR ALERTS*/
 const alertObject = {
     /** ERROR ALERT */
-   async errorAlert() {
-       const Toast = Swal.mixin({
-           toast: true,
-           position: 'top-right',
-           iconColor: 'white',
-           customClass: {
-               popup: 'colored-toast'
-           },
-           allowEscapeKey: false,
-           showConfirmButton: false,
-           timer: 5000,
-           timerProgressBar: true,
-           //**This will let you pause and play the alert loading*/
-           didOpen: (toast) => { 
-               toast.addEventListener('mouseenter', Swal.stopTimer)
-               toast.addEventListener('mouseleave', Swal.resumeTimer)
-           }
-       });
-       await Toast.fire({
-           icon: 'error',
-           title: 'Something Went Wrong at analysis.js!',
-           html:"<b style ='color:red;'>"+  `${this.data}` +"</b>",
-       });
-   },
-   defaultThemeSetting() {
-       fontColor = "#595959";
-       bgColor = `#fff`;
-       /**DEFAULT LINEAR radial gradient*/
-       bdColor = `radial-gradient(circle, rgba(128,0,0, 0.6) 0%, rgba(127,127,7,0.6) 46%)`;
-       /**BEE GIF */
-       bdGifUrl = `url("https://boholbeefarm.com/img/buzzbee.gif")`;
-       bdPosition = `center`
-   },
-   halloweenThemeSetting() {
-       fontColor = "#fff";
-       bgColor = `#000`;
-       /**broom with pumpkin image*/
-       bgColorImage = `#000 url(https://images.pexels.com/photos/5408080/pexels-photo-5408080.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260)`;
-       /**HALLOWEEN*/
-       bdColor = `linear-gradient(94deg, rgba(186,59,0,0.6) 0%, rgba(0,0,0,0.6) 100%)`;
-       /**GHOST GIF**/
-       bdGifUrl = `url("https://images.squarespace-cdn.com/content/v1/57fc473b6a496313f1bf59ea/1597463916534-UJCWHLQ8HC1I591ZWVIS/giphy-ghost-alt.gif")`;
-       bdPosition = `top left`;
-   },
-   christmasThemeSetting() {
-       fontColor = "#fff";
-       bgColorImage = `linear-gradient(45deg, rgba(4,186,0,1) 0%, rgba(200,7,7,1) 100%)`;
-       /**CHRISTMAS GRADIENT*/
-       bdColor ='linear-gradient(45deg, rgba(17,121,0, 0.6) 0%, rgba(215,166,0, 0.6) 51%, rgba(184,0,0, 0.6) 100%)';
-       /**GHOST GIF**/
-       bdGifUrl = 'url("https://i.giphy.com/media/7XAD7iitnID83tQ1WC/giphy.webp")';
-       bdPosition = `bottom left`;
-   },
-   newYearThemeSetting() {
-       fontColor = "#fff";
-       bgColorImage = `radial-gradient(circle, rgba(0,0,0,1) 40%, rgba(185,185,185,1) 100%)`;
-       /**NEW YEAR GRADIENT*/
-       bdColor =`radial-gradient(circle, rgba(0,0,0,0.8687850140056023) 70%, rgba(185,185,185,0) 100%)`;
-       /**FIREWORKS GIF**/
-       bdGifUrl = `url("https://i.giphy.com/media/3OvuH0GxGvbiakzthp/giphy.webp")`;
-       bdPosition = `center`;
-   },
-   setTheme(){
-       const currentDay = date.getDate();
-       switch(this.monthOnly){
-           case "November":
-               if ((currentDay > 0) && (15 >= currentDay)){
-                   this.halloweenThemeSetting();/**HALLOWEEN*/
-               }
-               else{
-                   this.christmasThemeSetting();/**CHRISTMAS*/
-               }
-           break;
-           case "December": 
-               this.christmasThemeSetting();/**CHRISTMAS*/
-           break;
-           case "January": 
-               this.newYearThemeSetting();/**NEW YEAR*/
-           break;
-           default:
-               this.defaultThemeSetting();/**DEFAULT*/
-           break;
-       }
-   },
-   /** SUCCESS ALERT */
-   async successAlert() {
-       this.setTheme();
+    async errorAlert() {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-right',
+            iconColor: 'white',
+            customClass: {
+                popup: 'colored-toast'
+            },
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: true,
+            //**This will let you pause and play the alert loading*/
+            didOpen: (toast) => { 
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+        await Toast.fire({
+            icon: 'error',
+            title: `${this.title}`,
+            html:"<b style ='color:red;'>"+  `${this.body}` +"</b>",
+        });
+    },
+    /**DEFAULT ALERT THEME*/
+    defaultThemeSetting() {
+        fontColor = "#595959";
+        bgColor = `#fff`;
+        /**DEFAULT LINEAR radial gradient*/
+        bdColor = `radial-gradient(circle, rgba(128,0,0, 0.6) 0%, rgba(127,127,7,0.6) 46%)`;
+        /**BEE GIF */
+        bdGifUrl = `url("https://boholbeefarm.com/img/buzzbee.gif")`;
+        bdPosition = `center`
+    },
+    /**HALLOWEEN ALERT THEME*/
+    halloweenThemeSetting() {
+        fontColor = "#fff";
+        bgColor = `#000`;
+        /**broom with pumpkin image*/
+        bgColorImage = `#000 url(https://images.pexels.com/photos/5408080/pexels-photo-5408080.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260)`;
+        /**HALLOWEEN*/
+        bdColor = `linear-gradient(94deg, rgba(186,59,0,0.6) 0%, rgba(0,0,0,0.6) 100%)`;
+        /**GHOST GIF**/
+        bdGifUrl = `url("https://images.squarespace-cdn.com/content/v1/57fc473b6a496313f1bf59ea/1597463916534-UJCWHLQ8HC1I591ZWVIS/giphy-ghost-alt.gif")`;
+        bdPosition = `top left`;
+    },
+    /**CHRISTMAS ALERT THEME */
+    christmasThemeSetting() {
+        fontColor = "#fff";
+        bgColorImage = `linear-gradient(45deg, rgba(4,186,0,1) 0%, rgba(200,7,7,1) 100%)`;
+        /**CHRISTMAS GRADIENT*/
+        bdColor ='linear-gradient(45deg, rgba(17,121,0, 0.6) 0%, rgba(215,166,0, 0.6) 51%, rgba(184,0,0, 0.6) 100%)';
+        /**GHOST GIF**/
+        bdGifUrl = 'url("https://i.giphy.com/media/7XAD7iitnID83tQ1WC/giphy.webp")';
+        bdPosition = `bottom left`;
+    },
+    /**NEW YEAR'S ALERT THEME*/
+    newYearThemeSetting() {
+        fontColor = "#fff";
+        bgColorImage = `radial-gradient(circle, rgba(0,0,0,1) 40%, rgba(185,185,185,1) 100%)`;
+        /**NEW YEAR GRADIENT*/
+        bdColor =`radial-gradient(circle, rgba(0,0,0,0.8687850140056023) 70%, rgba(185,185,185,0) 100%)`;
+        /**FIREWORKS GIF**/
+        bdGifUrl = `url("https://i.giphy.com/media/3OvuH0GxGvbiakzthp/giphy.webp")`;
+        bdPosition = `center`;
+    },
+    /**METHOD FOR CHECKING WHAT THEME 
+     * SHOULD WE USE BASED ON THE DATE*/
+    setTheme(){
+        const currentDay = date.getDate();
+        switch(this.monthOnly){
+            case "November":
+                if ((currentDay > 0) && (15 >= currentDay)){
+                    this.halloweenThemeSetting();/**HALLOWEEN*/
+                }
+                else{
+                    this.christmasThemeSetting();/**CHRISTMAS*/
+                }
+            break;
+            case "December": 
+                this.christmasThemeSetting();/**CHRISTMAS*/
+            break;
+            case "January": 
+                this.newYearThemeSetting();/**NEW YEAR*/
+            break;
+            default:
+                this.defaultThemeSetting();/**DEFAULT*/
+            break;
+        };
+    },
+    /** SUCCESS ALERT */
+    successAlert() {
+        this.setTheme();
         return Swal.fire({
-            title: `<h2 style="color: ${fontColor}; font-weight: bold;"> ${this.tittle}</h2>`,
+            title: `<h2 style="color: ${fontColor}; font-weight: bold;"> ${this.title}</h2>`,
             html:`<b style ='color:${fontColor}; font-size: 1.5rem'>`+  `${this.body}` +"</b>",
-            width: 600,
+            width: 400,
             /**SUCCESS GIF*/
             imageUrl: 'https://images.squarespace-cdn.com/content/v1/5063b09ee4b016af496f9ae8/1580760898623-CS6M1E5EM0S45D4328ZG/success_celebration_400.gif',
             imageWidth: 200,
             imageHeight: 200,
-            padding: '1.2rem',
             timer: 2500,
             timerProgressBar: true,
             showConfirmButton: false,
@@ -163,8 +170,7 @@ const alertObject = {
             allowEscapeKey: false,
             allowEnterKey: false, 
             background: `${bgColorImage}`,
-            backdrop: `
-            ${bdPosition}
+            backdrop:`${bdPosition}
             no-repeat
             ${bdGifUrl},
             ${bdColor}
@@ -175,15 +181,100 @@ const alertObject = {
                 toast.addEventListener('mouseleave', Swal.resumeTimer)
             }
         }); 
-   }    
+    },
+    /** SUCCESS ALERT */
+    reprocessAlert() {
+        this.setTheme();
+        return Swal.fire({
+            title: `<span style="color: ${fontColor}; font-weight: bold;">${this.title}</span>`,
+            html: `<input style="color: ${fontColor};" type="text" id="login" class="swal2-input" placeholder="Username">
+            <input style="color: ${fontColor};" type="password" id="password" class="swal2-input" placeholder="Password">`,
+            confirmButtonText: 'Submit!',
+            width: 600,
+            padding: '1.2rem',
+            background: `${bgColorImage}`,
+            backdrop: `
+            ${bdPosition}
+            no-repeat
+            ${bdGifUrl},
+            ${bdColor}
+            ${bdPosition}`,
+            focusConfirm: false,
+            preConfirm: function() {
+                return new Promise(async function (resolve) {
+                    const empId = Swal.getPopup().querySelector('#login').value
+                    const password = Swal.getPopup().querySelector('#password').value
+                    var employeeId = $.trim(empId);
+                    var empPass = $.trim(password);
+                    const qndNum = $("#qdnNumber").val().replace(/\s/g,'');
+                    /**SEARCHING FOR QND ID*/
+                    const showQdnID = new approversOnLoadRequestEvent(19.2, qndNum);
+                    /**METHOD FOR SEARCHING REQUEST*/
+                    const qdnID = await showQdnID.searchQdnDetails();
+                    /**TRY CATCH BLOCK TO VALIDATE THE PASSWORD*/ 
+                    try{
+                        /**STORING PARAMETERS INTO OBJECT */
+                        /**NOTE
+                         * a = for ajax request number
+                         * b = for employee Number
+                         * c = for employee Password
+                         * d,e = for ajax name value stored in formData which will used 
+                         * for post request in getDetail.php */
+                        const parameter = {a: 22, b: employeeId, c: empPass, d: "empId", e: "userPassInput", f:qdnID[0]['qdnId']};
+                        /**INSTANCE OF THE approversOnLoadRequestEvent OBJECT*/
+                        const validate = new approversOnLoadRequestEvent(parameter);
+                        /**METHOD EXECUTION
+                         * VALID USER CREDENTIAL*/
+                        const approversName  = await validate.reprocessCredValRequest();
+                        /**CHECKING FOR REASSIGNMENTS AND SENDING EMAILS*/
+                        const approverFullName = {c:approversName[0]['EMP_NAME']};
+                        /**INSTANCE OF CHECKING REASSIGNMENT EXISTENCE AND SENDING EMAIL*/
+                        const approverNotification = new onloadAppendToDOM(approverFullName);
+                        /**METHOD TO EXECUTE ALL THE INSTANCES AND METHOD A TO THE 
+                         * 
+                        */
+                        await approverNotification.approvalReassignmentCheck();
+                        /**====================================*/
+                        /**Success Alert for  REPROCESS EVENT */
+                        /**==================================*/
+                        const reprocessAlertFormat = new approverAlertFactory(`REPROCESS GRANTED!<br> 🎉 🥳 🎉`,
+                        `<b style="color:#c4c4c4;">Thank you </b><em>${approversName[0]['EMP_NAME']}</em>`);
+                        /**METHOD EXECUTION*/
+                        await reprocessAlertFormat.successAlert().then(()=>{
+                            window.location.href;
+                        });
+                    }   
+                    catch{
+                        Swal.showValidationMessage(`Invalid Approver ID or Password!`);
+                    };
+                    /**TODO
+                     * VALIDATE PASSWORD ✅
+                     * IF VALID:
+                     *      # SUCCESS ALERT ✅
+                     *      # CHECK IF REASSIGNMENT EXITS ✅
+                     *      # EXIST: GET THE EMAILS RECEIVERS data[0]['to'] ✅
+                     *      # EXIST FALSE: GET THE EMAILS RECEIVERS OF data[i]['issuedTo']
+                     *      # SET STATUS TO 0 ✅
+                     * IF INVALID;
+                     *      # JUST SWAL VALIDATION MESSAGE
+                     * APPEND REASSIGNMENT IF EXIST 
+                     */
+                    setTimeout(function () {
+                        resolve();
+                    }, 250);    
+                });
+            }
+        }); 
+    }       
 };
+/**OBJECT RESPONSIBLE FOR REASSIGNMENT EVENT*/
 const reAssignEvent = {
     unsetReAssignmentData: function(){
         /**REMOVING REASSIGNMENT */
         let reAssignment = document.querySelectorAll(".fromDbData");
         for(let i=0;i<reAssignment.length;i++){
-        reAssignment[i].remove();
-    }
+            reAssignment[i].remove();
+        }
     },
     toggleOff: async function() {
         $("#reAssignment, #submitReassignment").remove();
@@ -220,7 +311,6 @@ const reAssignEvent = {
             });
     },
 };
-
 /** OBJECT RESPONSIBLE FOR DATABASE REQUEST */
 const requestObject = {
     /**Request for latest QDN DETAILS */
@@ -257,13 +347,16 @@ const requestObject = {
                     resolve(receiver);
                 }
                 else{
+                    console.log(window.location.href);
                     reject(xhr.statusText);
+                   
                 };
             }
             xhr.open("POST", "./php/getDetails.php");
             xhr.send(formData);
         });
     },
+    /**METHOD TO SEARCH QND DETAILS BASED QDN NUMBER*/
     searchQdnDetails() {
         return $.ajax({
             type: 'POST',
@@ -282,9 +375,84 @@ const requestObject = {
             dataType: "json",
         });
     },
+    /**RETURN SUGGESTION JSON DATA*/
+    autoCompleteDataRequest(){
+        return new Promise ((resolve, reject)=>{
+            $.ajax({
+                type: 'POST',
+                url: "./php/getDetails.php",
+                data:{request: this.requestNum, searchForThisQdnNo: this.usrInput, status: this.status},
+                cache: false,
+                dataType: "json",
+                success: function(response){
+                    resolve(response);
+                },
+                error: function(e){
+                    reject(e);
+                }
+            });
+        });
+    },
+    /**THIS WILL VERIFY APPROVERS PASSWORD 
+     * INSERT TO "analysis_tbl" TABLE status_resp COLUMN THIS 
+     * WILL INDICATE THE RESPONSIBLE APPROVERS FOR THE REPROCESS ACTION
+     * FURTHERMORE THIS WILL SET THE STATUS TO 0 WHICH MEAN FOR ANALYSIS*/
+    reprocessCredValRequest(){
+        return new Promise ((resolve, reject)=>{
+            const creds = new FormData();
+            creds.append(this.name,  this.userName);
+            creds.append(this.name1,  this.password);
+            creds.append('qdnId', this.qdnId);
+            creds.append('request', this.request);
+            /**AJAX REQUEST */
+            $.ajax({
+                type: 'POST',
+                url: "./php/getDetails.php",
+                data: creds,
+                processData: false,
+                contentType: false,
+                cache: false,
+                dataType: "json",
+                success: function(response){
+                    resolve(response);
+                },
+                error: function(e){
+                    reject(e);
+                }
+            });
+        });
+    },
+    requestWith2param(){
+        return new Promise ((resolve, reject)=>{
+            const creds = new FormData();
+            creds.append(this.name,  this.val);
+            creds.append('request', this.requestNum);
+            /**AJAX REQUEST */
+            $.ajax({
+                type: 'POST',
+                url: "./php/getDetails.php",
+                data: creds,
+                processData: false,
+                contentType: false,
+                cache: false,
+                dataType: "json",
+                success: function(response){
+                    resolve(response);
+                },
+                error: function(e){
+                    reject(e);
+                }
+            });
+        });
+    },
+    /**TEST METHOD*/
+    testCases() {
+        const sampleObject = this.requestNum;
+        return sampleObject;
+    }
 };
 /** OBJECT RESPONSIBLE FOR APPENDING DATA TO THE DOM */
-const appendObject = {
+const eventsObject = {
     /**Appending to the fieldset or
      * for instance the card below the qnd
      * number input*/
@@ -494,4 +662,200 @@ const appendObject = {
             };/**</ END OF LOOP*/
         }/**END OF IF STATEMENT*/
     },/**METHOD ENDS HERE*/
+    appendApproverTableContent() {
+        /**Check if data is not null*/
+        if ( this.data ) {
+            let dataLen = this.data.length;
+            /**LOOP TO HANDLE THE Containments Result*/
+            for (let i=0;i<dataLen;i++) {
+                let actions = this.data[i]['actions'];
+                let responsible = this.data[i]['responsible'];
+                let when = this.data[i]['when'];
+                let status = this.data[i]['status'];
+                /**INSERTING TABLE ROW ABOVE THE CLASS "tdboyCorrection"*/
+                if (!i) {
+                    /**APPENDING DATA TO THE EXISTING TABLE LAYOUT */
+                    document.getElementById(`${this.tableName}Col`).innerText = actions;
+                    document.getElementById(`${this.tableName}RespCol`).innerText = responsible;
+                    document.getElementById(`${this.tableName}WhenCol`).innerText = when;
+                    document.getElementById(`${this.tableName}StatCol`).innerText = status;
+                }
+                /**INSERTING TABLE ROW BELOW THE THE NEWLY INSERTED ROW*/
+                else {
+                    /**CREATING ROW ELEMENT */
+                    const trElement = document.createElement('tr');
+                    trElement.classList.add(`${this.tableName}Row${i}`);
+                    /**ADDING THIS CLASS WILL ALLOW US TO REMOVED THE INSERTED ROWS */
+                    trElement.classList.add(`insertedRow`);
+                    /**CREATING ROW COLUMN*/
+                    /**COLUMN ACTIONS */
+                    const actElement = document.createElement('td');
+                    actElement.innerText = actions;
+                    /**COLUMN RESPONSIBLE */
+                    const respElement = document.createElement('td');
+                    respElement.innerText = responsible;
+                    /**COLUMN WHEN */
+                    const whenElement = document.createElement('td');
+                    whenElement.innerText = when;
+                    /**COLUMN STATUS */
+                    const statElement = document.createElement('td');
+                    statElement.innerText = status;
+                    /**APPENDING ROW ELEMENT TO THE TABLE BODY */
+                    $(`#${this.tableName}Tbody`).append(trElement);
+                    /**APPENDING ROW CELL DATA*/
+                    $(trElement).append(actElement);
+                    $(trElement).append(respElement);
+                    $(trElement).append(whenElement);
+                    $(trElement).append(statElement);
+                };
+            };/**</ END OF LOOP*/
+        }/**END OF IF STATEMENT*/
+    },/**METHOD ENDS HERE*/
+    /**THIS WILL QDN NUMBERS AS ARRAY */
+    ACRawDataToArray(){
+        /**This will hold the loop result */
+        let qdnNumbers = [];
+        /**storing length in variable will make
+         * the script run faster than usual*/
+        let dataLen = this.data.length;
+        /**LOOP TO push the QDN Numbers*/
+        for (var i = 0; i < dataLen; i++) {
+            qdnNumbers.push(this.data[i]['qdnNo']);
+        };
+        return qdnNumbers;      
+    },
+    /**REPROCESS INSTANCES AND METHOD EXECUTION*/
+    approvalReassignmentCheck: async function(){
+        const qndNumber = $("#qdnNumber").val().replace(/\s/g,'');
+        /**NOTE:
+         * PARAM A = AJAX Post request name.
+         * PARAM B = Request number.
+         * PARAM C = QND Number.*/
+        /**INSTANCE FOR CHECKING REASSIGNMENT*/
+        const reassignmentCheck = {a:"qdnNum", b:18, c:qndNumber};
+        const instanceGR = new globalRequest(reassignmentCheck);
+        /**INSTANCE FOR NO REASSIGNMENT*/
+        const noReAss = {a:"qdnNum", b:20, c:qndNumber};
+        const instanceGR3 = new globalRequest(noReAss);
+        console.log(this.approversName)
+        try{
+            /**METHOD TO GET THE LATEST REASSIGNMENT RAW DATA*/
+            const lastReassignment = await instanceGR.requestWith2param();
+            /**converting THE latestReassignment into EMP Number of emp
+             * responsible*/
+            const empNumberOfResponsible = lastReassignment[0]['to'];
+            /**STORING THE PARAMETERS VALUE INTO AN OBJECT TO REDUCE THE PARAMETERS*/
+            const designatedEmails = {a:"issuedToEmpNo", b:13, c:empNumberOfResponsible};
+            /**INSTANCE TO GET THE APPROVERS EMAIL OF THE PERSON RESPONSIBLE FOR THE QDN */
+            const instanceGR1 = new globalRequest(designatedEmails);
+            /**METHOD EXECUTION WHEN FETCHING EMAILS*/
+            const rawReceiversData = await instanceGR1.requestWith2param();
+            /**INSTANCE TO PROCESS THE FORMAT OF RECEIVERS */
+            const formatReceivers = new onloadAppendToDOM(rawReceiversData);
+            /**METHOD TO FORMAT RECEIVERS*/
+            const receivers = formatReceivers.formatRawDataOfReceivers();
+            /** SEND EMAILS */
+            const approvalNoReAss = {a:receivers, b: qndNumber, c:this.approversName};
+            /**INSTANCE FOR SENDING EMAIL */
+            const sendEmail = new onloadAppendToDOM(approvalNoReAss);
+            /**METHOD THAT WILL SEND AND EMAIL */
+            sendEmail.approvalEmailInstance();
+        }
+        catch{
+            /**METHOD TO GET THE LATEST RAW DATA*/
+            const noReassignmentReceiver = await instanceGR3.requestWith2param();
+            /**converting the data into EMP Number of emp responsible*/
+            const empNumberNoReAssResponsible = noReassignmentReceiver[0]['issuedTo'];
+            /**STORING THE PARAMETERS VALUE INTO AN OBJECT TO REDUCE THE PARAMETERS*/
+            const designatedEmails = {a:"issuedToEmpNo", b:13,c:empNumberNoReAssResponsible};
+            /**INSTANCE TO GET THE APPROVERS EMAIL OF THE PERSON RESPONSIBLE FOR THE QDN */
+            const instanceGR1 = new globalRequest(designatedEmails);
+            /**METHOD EXECUTION WHEN FETCHING EMAILS*/
+            const rawNoReAssReceivers = await instanceGR1.requestWith2param();
+            /**INSTANCE TO PROCESS THE FORMAT OF RECEIVERS */
+            const formatReceiversNoReAss = new onloadAppendToDOM(rawNoReAssReceivers);
+            /**METHOD TO FORMAT RECEIVERS*/
+            const noReAssReceivers = formatReceiversNoReAss.formatRawDataOfReceivers();
+            /** SEND EMAILS */
+            const approvalNoReAss = {a:noReAssReceivers, b: qndNumber, c: this.approversName};
+            /**INSTANCE FOR SENDING EMAIL */
+            const noReAssSendEmail = new onloadAppendToDOM(approvalNoReAss);
+            /**METHOD THAT WILL SEND AND EMAIL */
+            noReAssSendEmail.approvalEmailInstance();
+        }
+    },
+    /**METHOD TO FORMAT THE RAW EMAIL DATA INTO STING*/
+    formatRawDataOfReceivers: function(){
+        /**PROCESS RECEIVER */
+        /**LOOP TO SORE THE EMAILS INTO receiver variable */
+        console.log("This is the raw Emails", this.rawEmailData.length)
+        let rawEmailDataLen = this.rawEmailData.length;
+        let receivers = '';
+        for (let i=0;i<rawEmailDataLen;i++){
+            if (receivers){
+                receivers = receivers + ", " + this.rawEmailData[i]['emailscol'];
+            }
+            else{
+                receivers = this.rawEmailData[i]['emailscol'];
+            }
+        };
+        return receivers;
+    },
+    /**METHOD TO EXECUTE SEND REPROCESS EMAIL FORMAT*/
+    approvalEmailInstance: async function(){
+        try{
+            /** SEND EMAILS */
+            const details = {r: this.receivers, s:`QDN No. ${this.qndNum} for Reprocess`,
+            b:`Need to Reprocess QDN Number <a href='${window.location.href}?qdnNo=${this.qndNum}'>${this.qndNum}</a><br>
+            Requested by: ${this.approversName} <br><br>`};
+            const emailThing = new sendEmail(details);
+            emailThing.initialEmailFormat();
+        }
+        catch(e){
+            const sendingEmailError = new approverAlertFactory(`Something Went Wrong 🤔!`,
+            `Sending Email Failed!.<br>
+            Location: globalVariable.js <br>
+            StatusCode: "${e.status}"`);
+            /**METHOD EXECUTION*/
+            await sendingEmailError.errorAlert();
+        }
+    }
+};
+/**OBJECT TO UNSET THE INSERTED DATA FROM DATABASE USING SEARCH EVENT
+ * OR SOMETHING*/
+const unsetInsertedData = {
+    /**REMOVED THE INSERTED ROWS
+     * SET DEFAULT VALUE OF TABLES  */
+    approvalRemovedInsertedRwo(){
+        let reAssignment = document.querySelectorAll(".insertedRow");
+        for(let i=0;i<reAssignment.length;i++){
+            reAssignment[i].remove();
+        }
+    },
+    approvalSetTableDefaultValue(){
+        let defaultColumn = document.querySelectorAll('.defaultCol');
+        for(let i=0;i<defaultColumn.length;i++){
+            $(defaultColumn[i]).html("Blank");
+        };
+    }
+};
+/**OBJECT FOR THE EMAIL FORMAT*/
+const emailFormats = {
+    initialEmailFormat(){
+        // SCRIPT FOR EMAIL SENDING AND EMAIL
+        console.log("RECEIVERS FROM emailFormats OBJECT",this.receivers);
+        return Email.send({
+            Host: "smtp.gmail.com",
+            Username : "systemqdn2021@gmail.com",
+            Password : "qamkxxsshizhpcge",
+            // To : this.receivers,
+            To : "chanchristianarana@gmail.com",
+            From : "systemqdn2021@gmail.com",
+            Subject : this.subject,
+            Body : this.body +
+            "<strong>Note:</strong><br>" +
+            "<i>    This notification is an automated message. Please do not reply directly to this email.</i>"
+        });
+    }
+     
 };

@@ -1,4 +1,64 @@
 'use strict'
+/**OBJECT CREATION AND ASSIGNING PROPERTIES*/
+function onloadAppendToDOM(data, selectorIDs, tableName) {
+    return Object.create(eventsObject, {
+        data: {value: data},
+        selectorIDs: {value: selectorIDs},
+        analysisTblId: {value: selectorIDs},
+        /**table variables*/
+        tableName: {value: tableName},
+        /**USED IN formatting rawEmail Data*/
+        rawEmailData: {value: data},
+        /**Email Instance (approval)*/
+        receivers:{value: data.a},
+        qndNum: {value: data.b},
+        approversName:{value: data.c}
+    });
+};
+function approversOnLoadRequestEvent(param1, param2, param3){
+    return Object.create(requestObject, {
+        requestNum :{value: param1},
+        findThis :{value: param2},
+        name :{value: param3},
+        usrInput: {value: param2},
+        status: {value: param3},
+        /**this custom properties used to 
+         * APPROVERS REPROCESS*/
+        request: {value: param1.a},
+        userName :{value: param1.b},
+        password :{value: param1.c},
+        name: {value:  param1.d},
+        name1: {value:  param1.e},
+        qdnId: {value:  param1.f},
+    })
+};
+/**OBJECT CREATION AND ASSIGNING PROPERTIES*/
+function approverAlertFactory(param1, param2, param3 ) {
+    return Object.create(alertObject, {
+        title: {value: param1},
+        body: {value: param2},
+        data: {value: param3},
+        monthOnly: {value: month[date.getMonth()]},
+    });
+};
+/**OBJECT CREATION AND ASSIGNING PROPERTIES (global request)
+ * This aims to avoid too many parameters in my functions*/
+function globalRequest(param) {
+    return Object.create(requestObject, {
+        name: {value: param.a},
+        requestNum: {value: param.b},
+        val: {value: param.c},
+    });
+};
+/**OBJECT CREATION AND ASSIGNING PROPERTIES
+ * RESPONSIBLE FOR EMAIL PROPERTIES*/
+function sendEmail(details){
+    return Object.create(emailFormats, {
+        receivers :{value: details.r},
+        subject: {value: details.s},
+        body: {value: details.b}
+    });
+};
 // CONSTRUCTOR FUNCTION
 function Approval(){
     this.userInputPass;
@@ -27,7 +87,7 @@ Approval.prototype.getQdnNum = function () {
 /** HIDES THA SELECT MENU, REPROCESS BUTTON AND CLOSE QDN BUTTON */
 Approval.prototype.hideCommands = function(showHide){
     let allCommands = document.getElementById("allCommands");
-    let x = allCommands.style.display = showHide;
+    allCommands.style.display = showHide;
 }
 function FetchApprover(selectorID, qndNumber){
     this.fetching = new Promise (function (resolve, reject) {
@@ -125,7 +185,7 @@ class approverReq {
         });
     }
     /**Request for containment details*/
-    getQdnContainment() {
+    getQdnTableDetails() {
         return new Promise ((resolve, reject) => {
             let formData = new FormData;
             formData.append(`${this.customParam}`,  this.qdnDbId);
@@ -306,7 +366,6 @@ class approverEvt extends alerts {
     hideCommands() {
         let x = document.getElementById("allCommands");
         x.style.display = "none";
-        return this;
     }
     /** This will append the default value to the approvers
      * select menu */
@@ -316,11 +375,9 @@ class approverEvt extends alerts {
         /**locating the span element that holds the innerText
          * of PRODUCTION APPROVER*/
         if(this.value){
-            const parent =  spanElement[this.spanIndex].parentElement.firstElementChild.lastElementChild;
-            const child = parent.lastElementChild.innerText = this.value;
+            spanElement[this.spanIndex].innerText = this.value;
         }else{
-            const parent =  spanElement[this.spanIndex].parentElement.firstElementChild.lastElementChild;
-            const child = parent.lastElementChild.innerText = "Needs Approval...";
+            spanElement[this.spanIndex].innerText = "Needs Approval...";
         }
     }
     /**this will decide where to put the database value 
@@ -340,23 +397,23 @@ class approverEvt extends alerts {
                     $(`#${this.approverSectionIds[i]}`).val(this.objectValues[i]);
                 break;
                 case 19 :/**Case that will append value for Prod Approver */
-                    const appendProdApprovers = new approverEvt(18, this.objectValues[i]);
+                    const appendProdApprovers = new approverEvt(20, this.objectValues[i]);
                     appendProdApprovers.appendApprover();
                 break;
                 case 20:/**Case that will append value for EE Approver */
-                    const appendEEApprovers = new approverEvt(19, this.objectValues[i]);
+                    const appendEEApprovers = new approverEvt(24, this.objectValues[i]);
                     appendEEApprovers.appendApprover();
                 break;
                 case 21:  /**Case that will append value for PE Approver */
-                    const appendPEApprovers = new approverEvt(20, this.objectValues[i]);
+                    const appendPEApprovers = new approverEvt(28, this.objectValues[i]);
                     appendPEApprovers.appendApprover();
                 break;
                 case 22: /**Case that will append value for QA Approver */
-                    const appendQAApprovers = new approverEvt(21, this.objectValues[i]);
+                    const appendQAApprovers = new approverEvt(32, this.objectValues[i]);
                     appendQAApprovers.appendApprover();
                 break;
                 case 23: /**Case that will append value for Others Approver */
-                    const appendOthersApprovers = new approverEvt(22, this.objectValues[i]);
+                    const appendOthersApprovers = new approverEvt(36, this.objectValues[i]);
                     appendOthersApprovers.appendApprover();
                 break;
                 default:/**case for QND details but 
@@ -368,7 +425,6 @@ class approverEvt extends alerts {
         };
     }
 };
-
 /** CLASS FOR THE MAIN LOGIC */
 class appendAuth extends approverReq{
     appendAuthToDOM (data, selector) {
@@ -386,94 +442,212 @@ class appendAuth extends approverReq{
     };
 };
 //FUNCTION TO RESPONSIBLE FOR INSTANTIATING
-let executeApprovers = async () =>{
-    /**INSTANTIATING... */
-    const approverReqExec = new approverReq();  
-    /* Request for approvers list */
-    let rawDataProd = await approverReqExec.approversListReq(14);
-    let rawDataEE = await approverReqExec.approversListReq(14.1);
-    let rawDataPE = await approverReqExec.approversListReq(14.2);
-    let rawDataQA = await approverReqExec.approversListReq(14.3);
-    let rawDataO = await approverReqExec.approversListReq(14.4);
-    /** Appending the approvers list to the DOM */
-    const appendAuthExec = new appendAuth();
-    /** Appending prod approvers... */
-    let PROD = appendAuthExec.appendAuthToDOM(rawDataProd, $("#productionAuth"));
-    /** Appending EE approvers... */
-    let EE = appendAuthExec.appendAuthToDOM(rawDataEE, $("#EEAuth"));
-    /** Appending PE approvers... */
-    let PE = appendAuthExec.appendAuthToDOM(rawDataPE, $("#PEAuth"));
-    /** Appending QA approvers... */
-    let QA = appendAuthExec.appendAuthToDOM(rawDataQA, $("#qaAuth"));
-    /** Appending Others approvers... */
-    let O = appendAuthExec.appendAuthToDOM(rawDataO, $("#othersAuth"));
-   
-    /** Instance of Approvers event each param contains selector*/
-    const approverEvtExec = new approverEvt();
-    /** Prod parameter binding */
-    const executeProdBind = approverEvtExec.credValidation.bind(PROD);
-    executeProdBind();
-    /** EE parameter binding */
-    const executeEeBind = approverEvtExec.credValidation.bind(EE);
-    executeEeBind();
-    /** PE parameter binding */
-    const executePeBind = approverEvtExec.credValidation.bind(PE);
-    executePeBind();
-    /** QA parameter binding */
-    const executeQaBind = approverEvtExec.credValidation.bind(QA);
-    executeQaBind();
-    /** Others parameter binding */
-    const executeOBind = approverEvtExec.credValidation.bind(O);
-    executeOBind();
-    // console.log("I need this QDN Number %c OKAY LANG", 'background: #000; color: lightGreen;');   
+let executeApprovers = async reqResult =>{
+     /**INSTANTIATING... */
+     const approverReqExec = new approverReq();  
+     /* Request for approvers list */
+     let rawDataProd = await approverReqExec.approversListReq(14);
+     let rawDataEE = await approverReqExec.approversListReq(14.1);
+     let rawDataPE = await approverReqExec.approversListReq(14.2);
+     let rawDataQA = await approverReqExec.approversListReq(14.3);
+     let rawDataO = await approverReqExec.approversListReq(14.4);
+     /** Appending the approvers list to the DOM */
+     const appendAuthExec = new appendAuth();
+     /** Appending prod approvers... */
+     let PROD = appendAuthExec.appendAuthToDOM(rawDataProd, $("#productionAuth"));
+     /** Appending EE approvers... */
+     let EE = appendAuthExec.appendAuthToDOM(rawDataEE, $("#EEAuth"));
+     /** Appending PE approvers... */
+     let PE = appendAuthExec.appendAuthToDOM(rawDataPE, $("#PEAuth"));
+     /** Appending QA approvers... */
+     let QA = appendAuthExec.appendAuthToDOM(rawDataQA, $("#qaAuth"));
+     /** Appending Others approvers... */
+     let O = appendAuthExec.appendAuthToDOM(rawDataO, $("#othersAuth"));
+ 
+     /** Instance of Approvers event each param contains selector*/
+     const approverEvtExec = new approverEvt();
+     /** Prod parameter binding */
+     const executeProdBind = approverEvtExec.credValidation.bind(PROD);
+     executeProdBind();
+     /** EE parameter binding */
+     const executeEeBind = approverEvtExec.credValidation.bind(EE);
+     executeEeBind();
+     /** PE parameter binding */
+     const executePeBind = approverEvtExec.credValidation.bind(PE);
+     executePeBind();
+     /** QA parameter binding */
+     const executeQaBind = approverEvtExec.credValidation.bind(QA);
+     executeQaBind();
+     /** Others parameter binding */
+     const executeOBind = approverEvtExec.credValidation.bind(O);
+     executeOBind(); 
+
+    qdnNumberInput.classList.remove("is-invalid")
+    qdnNumberInput.classList.add("is-valid");
+    approval.hideCommands("block");
+    const approverSectionIds = ["qdnNumber", "ibName", "ibTeam", "itName",
+    "itTeam", "dateTime", "customer", "station", 
+    "teamResp", "machine", "pkgType", "partName", 
+    "lotId", "classification", "failureMode", "disposition", 
+    "rootCause", "defects", "codDes" ]; 
+    /**rawData of latest QDN Details */
+    let objectValues = Object.values(reqResult[0]);
+    const currentQDNId =objectValues[objectValues.length -1];
+    console.log(currentQDNId);
+    /**INSTANCE OF ONLOAD REQUEST with parameter of 9 for requestNum and 
+         *filteredData[19] for findThis (qndID or analysis_tbl id) */
+    const approvalReassignmentRequest = new approversOnLoadRequestEvent(9, currentQDNId);
+    /**EXECUTING THE METHOD TO FETCH THE DATA FROM THE AJAX REQUEST */
+    const approvalReAssRawData = await approvalReassignmentRequest.requestForReassignment();
+    /**INSTANCE OF APPEND OBJECT */
+    const approvalOnloadAppendReass = new onloadAppendToDOM(approvalReAssRawData);
+    /**EXECUTION OF METHOD APPEND REASSIGNMENT IF EXIST*/
+    approvalOnloadAppendReass.appendReassignment();
+    const contInstance =  new approverReq(currentQDNId, 10,"matchedContainment");  
+    const corrInstance =  new approverReq(currentQDNId, 11,"matchedCorrection");  
+    const crtvInstance =  new approverReq(currentQDNId, 12,"matchedCorrective"); 
+    /**RAW DATA OF  */
+    const cont = await contInstance.getQdnTableDetails();
+    const corr = await corrInstance.getQdnTableDetails();
+    const crtv = await crtvInstance.getQdnTableDetails();
+    /**INSTANCE OF APPENDING */
+    const onloadApproverAppendCont = new onloadAppendToDOM(cont, currentQDNId, "containment");
+    const onloadApproverAppendCorr = new onloadAppendToDOM(corr, currentQDNId, "correction");
+    const onloadApproverAppendCrtv = new onloadAppendToDOM(crtv, currentQDNId, "corrective");
+    /**Execution of method(appendTableContent) from object onloadAppendToDOM*/
+    onloadApproverAppendCont.appendApproverTableContent();
+    onloadApproverAppendCorr.appendApproverTableContent();
+    onloadApproverAppendCrtv.appendApproverTableContent();
+    /** instantiating approverEvt*/
+    const approverEvent = new approverEvt(approverSectionIds, objectValues);
+    /**Execution of onloadAppendItem Method*/
+    approverEvent.onloadAppendItem();          
 };
-window.onload = ()=>{
-    executeApprovers();
-    console.log("I need this QDN Number %c OKAY LANG AKO !!!", 'background: #000; color: lightGreen;');
-    const approval = new Approval();
-    const hideCommands = approval.hideCommands("block");
-    (async()=>{
-        const req = new approverReq();
-        let reqResult = await req.getQdnDetails();
-        /**Array of selectors name this if for reference where to append the 
-         * items from database*/
-        const approverSectionIds = ["qdnNumber", "ibName", "ibTeam", "itName",
-                                   "itTeam", "dateTime", "customer", "station", 
-                                   "teamResp", "machine", "pkgType", "partName", 
-                                   "lotId", "classification", "failureMode", "disposition", 
-                                   "rootCause", "defects", "codDes" ]; 
-        /**rawData of latest QDN Details */
-        let objectValues = Object.values(reqResult[0]);
-        /**INSTANCE OF approversReq Class */
-        const contInstance =  new approverReq(objectValues[objectValues.length -1], 10,"matchedContainment");  
-        const corrInstance =  new approverReq(objectValues[objectValues.length -1], 11,"matchedCorrection");  
-        const crtvInstance =  new approverReq(objectValues[objectValues.length -1], 12,"matchedCorrective");  
-        
+console.log("I need this QDN Number %c OKAY LANG AKO !!!", 'background: #000; color: lightGreen;');
+const approval = new Approval();
+/**INSTANCE OF URSearchParams */
+const parameter = new URLSearchParams(window.location.search);
+/**FETCHING param name */
+const approvalUrlParam = parameter.get('qdnNo');
+(async function(){
+    /**Array of selectors name this if for reference where to append the 
+     * items from database*/
+    if(approvalUrlParam){
+        console.log("CUSTOM URL", true);
+        document.getElementById("qdnNumber").value = approvalUrlParam;
         try{
-            let cont = await contInstance.getQdnContainment();
-            let corr = await corrInstance.getQdnContainment();
-            let crtv = await crtvInstance.getQdnContainment();
-            console.log("This is the containment ", cont);
-            console.log("This is the correction ", corr);
-            console.log("This is the corrective  ", crtv);
-            /** instantiating approverEvt*/
-            const approverEvent = new approverEvt(approverSectionIds, objectValues);
-            /**Execution of onloadAppendItem Method*/
-            approverEvent.onloadAppendItem();          
-           
-        }catch(e){
-            console.log("this is the error", e, objectValues[objectValues.length - 1]);
-            const hideCommands = approval.hideCommands("none");
-        };
-        
-      
-        // console.log("And this the the result of request -->", containmentDetails);
+            /*INSTANCE OF ONLOAD REQUEST*/
+            qdnNumberInput.classList.remove("is-invalid")
+            qdnNumberInput.classList.add("is-valid");
+            const approversOnloadRequest = new approversOnLoadRequestEvent(19.2, approvalUrlParam);
+            /**MATCHED QDN NUMBER FROM urlParam Parameter */
+            const approverDetails = await approversOnloadRequest.searchQdnDetails();
+            executeApprovers(approverDetails);
+        }
+        catch(e){
+            /**ERROR HANDLING*/
+            /**ADD BOOTSTRAP VALIDATION INVALID*/
+            qdnNumberInput.classList.remove("is-valid")
+            qdnNumberInput.classList.add("is-invalid");
+            // approval.hideCommands("none");
+            if (e.readyState === 4){
+                /**INSTANCE OF ALERT FACTORY */
+                console.log (e)
+                const error = new approverAlertFactory(`Something Went Wrong 🤔!`,
+                `Invalid URL 😈😈😈.<br>
+                Location: approversAuth.js <br>
+                StatusCode: "${e.status}"`);
+                /**METHOD EXECUTION*/
+                await error.errorAlert();
+            }
+        }
+    }
+    /**NO CUSTOM URL */
+    else{
+        /**INSTANCE OF ONLOAD EVENT DEFAULT LATEST QDN */
+        const req = new approverReq();
+        /**METHOD EXECUTION */
+        const reqResult = await req.getQdnDetails(); 
+        console.log("CUSTOM URL", false);
+        executeApprovers(reqResult);
+        approval.hideCommands("block");
+    };
 
-    })();
-
-    $('#qdnNumber').on('input', async function(){
-        console.log(this.value);
+})();
+function unsetApproval() {
+    qdnNumberInput.classList.remove("is-valid");
+    qdnNumberInput.classList.add("is-invalid");
+    /**REMOVING ELEMENT WITH .fromdbResult CLASS*/
+    let spanElement = document.querySelectorAll('.fromdbResutl');
+    for(let i=0;i<spanElement.length;i++){
+        $(spanElement[i]).html("");
+    };
+    unsetInsertedData.approvalRemovedInsertedRwo();
+    unsetInsertedData.approvalSetTableDefaultValue();
+    approval.hideCommands("none");
+}
+$('#qdnNumber').on('input keyup', async function(){
+    /** .replace will removed excess spaces */
+    let usrInput = $(this).val().replace(/\s/g,'');
+    /**AUTOCOMPLETE SETTING PARAMETERS INSTANCE*/
+    /**NOTE:
+     * First Param = request Number.
+     * Second Param = QND Number.
+     * Third Param = QDN Status*/
+    const instanceACSuggestion = new approversOnLoadRequestEvent(7.1, usrInput, 1);
+    /**approversOnLoadRequestEvent METHOD*/
+    const ACSuggestion = await instanceACSuggestion.autoCompleteDataRequest();
+    /**AC APPENDING RESULT*/
+    const instanceOnloadAppendToDOM = new onloadAppendToDOM(ACSuggestion);
+    /**onloadAppendToDOM METHOD*/
+    const suggestions = await instanceOnloadAppendToDOM.ACRawDataToArray();
+    try{
+        /**THIS WILL REMOVED IF THERE IS A PREVIOUS DATA 
+         * PASSED TO THE DOM*/
+        unsetApproval();
+        /**THIS WILL SET THE QND INPUT FIELD VALIDITY STATUS*/
+        qdnNumberInput.classList.remove("is-invalid");
+        qdnNumberInput.classList.add("is-valid");
+        /*INSTANCE OF ONLOAD REQUEST*/
+        /**NOTE:
+         * First Param = request Number.
+         * Second Param = QND Number.*/
+        const searchRequest = new approversOnLoadRequestEvent(19.2, usrInput);
+        /**MATCHED QDN NUMBER FROM urlParam Parameter */
+        const approverDetails = await searchRequest.searchQdnDetails();
+        executeApprovers(approverDetails);
+        reAssignEvent.unsetReAssignmentData();
+    }
+    catch(e){
+        // console.log("SEARCH NOT FOUND!");
+        unsetApproval();
+        reAssignEvent.unsetReAssignmentData();
+    };
+    $(this).autocomplete({
+        source: suggestions,
+        select: async function(event, ui){
+            let selectedItem =  ui["item"]["value"];
+            /**THIS WILL REMOVED IF THERE IS A PREVIOUS DATA 
+             * PASSED TO THE DOM*/
+            unsetApproval();
+            /*INSTANCE OF ONLOAD REQUEST*/
+            qdnNumberInput.classList.remove("is-invalid");
+            qdnNumberInput.classList.add("is-valid");
+            const searchRequest = new approversOnLoadRequestEvent(19.2, selectedItem);
+            /**MATCHED QDN NUMBER FROM urlParam Parameter */
+            const approverDetails = await searchRequest.searchQdnDetails();
+            executeApprovers(approverDetails);
+            reAssignEvent.unsetReAssignmentData();
+            
+        },
     });
-}   
+});
+$('#reProcess').on('click', async function(){
+    let qndNum = $("#qdnNumber").val().replace(/\s/g,'');
+    /**Success Alert for  Reassignment */
+    const approverAlertFormat = new approverAlertFactory(`Reprocess QDN #<em>${qndNum}</em>`);
+    /**METHOD EXECUTION*/
+    approverAlertFormat.reprocessAlert();
+});
 
   

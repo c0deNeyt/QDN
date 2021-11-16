@@ -29,7 +29,7 @@
   <link rel="stylesheet" type="text/css" href="./css/analysis.css">
   <!------------------------------------------------------------------>
   <!-- JQUERY STYLESHEET -->
-  <link rel="stylesheet" href="./js/jquery-ui-1.12.1/jquery-ui.css">
+  <link href="./js/jquery-ui-1.13.0/jquery-ui.css" rel="stylesheet">
   <!------------------------------------------------------------------>
   <!-- Bootstrap core JS -->
   <script src="./bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -49,13 +49,17 @@
   <!------------------------------------------------------------------>
   <script src = "./js/submitForApproval.js" defer></script>
   <!------------------------------------------------------------------>
-  <script src="https://smtpjs.com/v3/smtp.js"></script>
-  <!------------------------------------------------------------------>
   <script src="./js/sweetalert2.all.min.js"></script>
   <!------------------------------------------------------------------>
   <!-- JQUERY UI -->
   <!------------------------------------------------------------------>
-  <script src="./js/jquery-ui-1.12/jquery-ui.js"></script>
+  <script defer src="./js/jquery-ui-1.13.0/external/jquery/jquery.js"></script>
+  <!------------------------------------------------------------------>
+  <script defer src="./js/jquery-ui.js"></script>
+  <!------------------------------------------------------------------>
+  <!-- EMAIL API -->
+  <!------------------------------------------------------------------>
+  <script src="https://smtpjs.com/v3/smtp.js"></script>
   <!------------------------------------------------------------------>
 </head>
 <body>
