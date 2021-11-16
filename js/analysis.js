@@ -38,7 +38,7 @@ function alertFactory(tittle, body, data ) {
     });
 };
 /**SET DEFAULT VALUE FUNCTION FUNCTION*/
-async function appendToDOM(filteredData) {
+    async function appendToDOM(filteredData) {
     const selectorsIDs = ["qdnNumber", "ibName","ibTeam","itName",
     "itTeam", "dateTime", "customer", "station",
     "teamResp", "machine", "pkgType","partName",
@@ -101,11 +101,7 @@ async function appendToDOM(filteredData) {
     }
     catch (e){
         /**Error HANDLING*/
-        console.log("USUALLY EMAIL MISSING RECEIVER's CAUSING THIS", e);
-
-        // return e;
-        // const error = new alertFactory(e);
-        // error.errorAlert();
+        console.log("NO REASSIGNMENT", e);
     }
 };
 /**FUNCTION TO UNSET LOADED DATA*/
