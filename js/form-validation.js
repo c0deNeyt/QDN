@@ -140,7 +140,7 @@
         Subject : "QDN Issuance",
         Body : "Good Day," + "<br>" + "<br>" +
         "Please see below issuance under your respective area." + "<br>" + "<br>" +
-        "<b>QDN No.:</b> "      + `<a href='${window.location.href}?qdnNo=${this.qdnNumber}'> ${this.qdnNumber}</a>"` + "<br>" +
+        "<b>QDN No.:</b> "      + `<a href='${window.location.href = 'analysis.php'}?qdnNo=${this.qdnNumber}'> ${this.qdnNumber}</a>"` + "<br>" +
         "<b>Discrepancy:</b> "  + `${this.qdnDefects}` + "<br>" + 
         "<b>Issued To:</b> "    + `${this.qdnITEN}` + "<br>" +
         "<b>Issued By:</b> "    + `${this.qdnIBEN}` + "<br>" +
