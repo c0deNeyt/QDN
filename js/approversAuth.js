@@ -493,20 +493,11 @@ let executeApprovers = async reqResult =>{
     /**rawData of latest QDN Details */
     let objectValues = Object.values(reqResult[0]);
     const currentQDNId =objectValues[objectValues.length -1];
-    console.log(currentQDNId);
-    /**INSTANCE OF ONLOAD REQUEST with parameter of 9 for requestNum and 
-         *filteredData[19] for findThis (qndID or analysis_tbl id) */
-    const approvalReassignmentRequest = new approversOnLoadRequestEvent(9, currentQDNId);
-    /**EXECUTING THE METHOD TO FETCH THE DATA FROM THE AJAX REQUEST */
-    const approvalReAssRawData = await approvalReassignmentRequest.requestForReassignment();
-    /**INSTANCE OF APPEND OBJECT */
-    const approvalOnloadAppendReass = new onloadAppendToDOM(approvalReAssRawData);
-    /**EXECUTION OF METHOD APPEND REASSIGNMENT IF EXIST*/
-    approvalOnloadAppendReass.appendReassignment();
+   /**INSTANTIATING TABLE DATA REQUEST*/
     const contInstance =  new approverReq(currentQDNId, 10,"matchedContainment");  
     const corrInstance =  new approverReq(currentQDNId, 11,"matchedCorrection");  
     const crtvInstance =  new approverReq(currentQDNId, 12,"matchedCorrective"); 
-    /**RAW DATA OF  */
+    /**RAW DATA OF TABLES */
     const cont = await contInstance.getQdnTableDetails();
     const corr = await corrInstance.getQdnTableDetails();
     const crtv = await crtvInstance.getQdnTableDetails();
@@ -521,7 +512,21 @@ let executeApprovers = async reqResult =>{
     /** instantiating approverEvt*/
     const approverEvent = new approverEvt(approverSectionIds, objectValues);
     /**Execution of onloadAppendItem Method*/
-    approverEvent.onloadAppendItem();          
+    approverEvent.onloadAppendItem();     
+    try{
+        /**INSTANCE OF ONLOAD REQUEST with parameter of 9 for requestNum and 
+        *filteredData[19] for findThis (qndID or analysis_tbl id) */
+        const approvalReassignmentRequest = new approversOnLoadRequestEvent(9, currentQDNId);
+        /**EXECUTING THE METHOD TO FETCH THE DATA FROM THE AJAX REQUEST */
+        const approvalReAssRawData = await approvalReassignmentRequest.requestForReassignment();
+        /**INSTANCE OF APPEND OBJECT */
+        const approvalOnloadAppendReass = new onloadAppendToDOM(approvalReAssRawData);
+        /**EXECUTION OF METHOD APPEND REASSIGNMENT IF EXIST*/
+        approvalOnloadAppendReass.appendReassignment();
+    }   
+    catch(e){
+        console.log("NO REASSIGNMENT", e);
+    }  
 };
 console.log("I need this QDN Number %c OKAY LANG AKO !!!", 'background: #000; color: lightGreen;');
 const approval = new Approval();

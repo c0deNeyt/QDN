@@ -4,14 +4,39 @@
 (async function () {
   'use strict'
   /**OBJECT CREATION AND ASSIGNING PROPERTIES*/
-  function alertFactory(tittle, body, data ) {
+  function issuanceAlertFactory(title, body, data ) {
     return Object.create(alertObject, {
         data: {value: data},
-        tittle: {value: tittle},
+        title: {value: title},
         body: {value: body},
         monthOnly: {value: month[date.getMonth()]}
     });
   };
+  function issuanceGlobalRequest(param) {
+    return Object.create(requestObject, {
+        name: {value: param.a},
+        requestNum: {value: param.b},
+        val: {value: param.c},
+    });
+  };
+  function issuanceAlgoEvt (data){
+    return Object.create(eventsObject, {
+      rawEmailData : {value: data},
+       /**Email Instance (issuance)*/
+       receivers:{value: data.a},
+       qndNum: {value: data.b}
+    })
+  };
+  /**OBJECT CREATION AND ASSIGNING PROPERTIES
+  * RESPONSIBLE FOR EMAIL PROPERTIES*/
+  function issuanceSendEmail(details){
+    return Object.create(emailFormats, {
+        receivers :{value: details.r},
+        subject: {value: details.s},
+        body: {value: details.b}
+    });
+  };
+
   class mainObject  {
     constructor (){
       this.qdnNumber         = $("#qdnNumber").html();
@@ -61,21 +86,53 @@
         const initiateMainObj = new mainObject();
         if (response.status == 200 && response.ok){
           // console.log("This is the response from insert Event", response);
-          // Fetch the initial emails from db.
-          const fetchRawEmails = await initiateMainObj.fetchEmail();
-          // Convert the object into a string format
-          const receivers = initiateMainObj.emailDetails(fetchRawEmails);
-          // This will send an emails
-          initiateMainObj.sendEmail(receivers);
-          // This will execute the success alert method
-          // initiateMainObj.successAlert(); 
-          const alertFormat = new alertFactory(`ISSUANCE SUCCESS!<br> 🎉 🥳 🎉`, 
-          `QDN <em>${$("#qdnNumber").html()}</em> Sent for analysis!`);
-          /**METHOD EXECUTION*/
-          alertFormat.successAlert().then(()=>{
-            window.location.href = `?qdnNo=${$("#qdnNumber").html()}`;
-          });         
-          return response;
+          /**STORING THE PARAMETERS VALUE INTO AN OBJECT TO REDUCE THE PARAMETERS*/
+          const issuanceCustomParam = {a:"issuedToEmpNo", b:13, c: $("#issuedToEmpNumber").val()};
+          /**INSTANCE TO GET THE APPROVERS EMAIL OF THE PERSON RESPONSIBLE FOR THE QDN */
+          const emailDetailsReq = new issuanceGlobalRequest(issuanceCustomParam);
+          const issuanceRawReceiversData = await emailDetailsReq.requestWith2param();
+          /**INSTANCE TO PROCESS THE FORMAT OF RECEIVERS */
+          const issuanceFormatReceivers = new issuanceAlgoEvt(issuanceRawReceiversData);
+          /**METHOD TO FORMAT RECEIVERS*/
+          const issuanceReceivers = issuanceFormatReceivers.formatRawDataOfReceivers();
+          /** SEND EMAILS */
+          const issuanceEmailDetails = {a:issuanceReceivers, b:  $("#qdnNumber").html()};
+          /**INSTANCE FOR SENDING EMAIL */
+          const issuanceSettingEmailDetails = new issuanceAlgoEvt(issuanceEmailDetails);
+          try{
+            /** SEND EMAILS */
+            const issuanceEmailFormat = {r: issuanceSettingEmailDetails.receivers, s:`QDN Issuance`,b: `<p>Good Day,</p><br>
+            <p>Please see below issuance under your respective area.</p> <br> 
+            <b>QDN No.: </b><a href='${window.location.protocol}//${window.location.hostname}/QDN/analysis.php?qdnNo=${issuanceSettingEmailDetails.qndNum}'>${issuanceSettingEmailDetails.qndNum}</a><br> 
+            <b>Discrepancy: </b>${initiateMainObj.qdnDefects}<br>  
+            <b>Issued To: </b>${initiateMainObj.qdnITEN}<br> 
+            <b>Issued By: </b>${initiateMainObj.qdnIBEN} <br> 
+            <b>Station: </b>${initiateMainObj.qdnStation} <br>  
+            <b>Date/Time: </b>${initiateMainObj.qdnDateTime} <br><br> 
+            <b>LOT DETAILS</b><br> 
+              <b>&emsp;Lot ID No.: </b>${initiateMainObj.qdnLotId} <br> 
+              <b>&emsp;Package Type: </b>${initiateMainObj.qdnPkgtype} <br> 
+              <b>&emsp;Part Name: </b>${initiateMainObj.qdnDeviceName} <br> 
+              <b>&emsp;Machine No.: </b>${initiateMainObj.qdnMachine}`};
+            const issuanceEmailThing = new issuanceSendEmail(issuanceEmailFormat);
+            issuanceEmailThing.initialEmailFormat();
+            // This will INSTANTIATE the success ALERT FACTORY
+            const issuanceAlertFormat = new issuanceAlertFactory(`ISSUANCE SUCCESS!<br> 🎉 🥳 🎉`, 
+            `QDN <em>${$("#qdnNumber").html()}</em> Sent for analysis!`);
+            /**METHOD EXECUTION*/
+            await issuanceAlertFormat.successAlert()
+            .then(function(){
+              window.location.reload();
+            });
+          }
+          catch(e){
+              const sendingEmailError = new issuanceAlertFactory(`Something Went Wrong 🤔!`,
+              `Sending Email Failed!.<br>
+              Location: form-validation.js <br>
+              StatusCode: "${e.status}"`);
+              /**METHOD EXECUTION*/
+              await sendingEmailError.errorAlert();
+          }
         }
         else{
           // error inserting to the database.
@@ -84,105 +141,6 @@
       });
     };
     //🔚* Method to insert into the database Ends Here!
-    //**METHOD TO GET EMAIL RECEIVERS*/
-    fetchEmail() {
-      let noIdea = `${this.qdnITENo}`
-      let plainEmpNum = (noIdea.trim());
-      //PROMISE 
-      return new Promise ((resolve, reject) => {
-          let xhr = new XMLHttpRequest();
-          let data = new FormData();
-          data.append('issuedToEmpNo', plainEmpNum);
-          data.append('request', 13);
-          xhr.responseType = "json";//**This will convert responseTest to JSON*/
-          xhr.onload = () =>{
-              if (xhr.readyState === 4 && xhr.status === 200){
-                  let output = xhr.response;
-                  resolve(output);
-              }
-              else{
-                  reject(xhr.statusText);
-              };
-          };
-          xhr.open('POST', './php/getDetails.php');
-          xhr.send(data);
-      });
-    };
-    //🔚**METHOD TO GET EMAIL RECEIVERS ENDS HERE!*/
-    // METHOD TO CONVERT EMAIL DETAILS INTO STRING
-    emailDetails (data){
-      var dataLen = data.length;
-      var receiver = "";
-      // LOOP TO HANDLE EACH EMAIL RESULTS
-      for (var i = 0; i < dataLen; i++){
-        if ( receiver.length == 0){
-            var emailResult = data[i]['emailscol'];
-            receiver = emailResult;
-        }
-        else if (receiver.length > 0){
-            receiver = receiver + ", " + data[i]['emailscol'];
-        }; 
-        
-      };
-      return receiver;
-    };
-    //🔚** METHOD TO CONVERT EMAIL DETAILS INTO STRING ENDS HERE*/
-    // METHOD THAT WILL SEND AN EMAIL
-    sendEmail = receivers => {
-      console.log("RECEIVERS FROM ISSUANCE", receivers);
-      Email.send({
-        Host: "smtp.gmail.com",
-        Username : "systemqdn2021@gmail.com",
-        Password : "tjvxdnvqvepgtwck",
-        To : receivers,
-        // To : "chanchristianarana@gmail.com",
-        From : "systemqdn2021@gmail.com",
-        Subject : "QDN Issuance",
-        Body : "Good Day," + "<br>" + "<br>" +
-        "Please see below issuance under your respective area." + "<br>" + "<br>" +
-        "<b>QDN No.:</b> "      + `<a href='${window.location.href = 'analysis.php'}?qdnNo=${this.qdnNumber}'> ${this.qdnNumber}</a>"` + "<br>" +
-        "<b>Discrepancy:</b> "  + `${this.qdnDefects}` + "<br>" + 
-        "<b>Issued To:</b> "    + `${this.qdnITEN}` + "<br>" +
-        "<b>Issued By:</b> "    + `${this.qdnIBEN}` + "<br>" +
-        "<b>Station:</b> "      + `${this.qdnStation}` + "<br>" + 
-        "<b>Date/Time:</b> "    + `${this.qdnDateTime}` + "<br>" +
-        "<pre><b>Lot Details</b><br>" +
-        "   <b>Lot ID No.:</b> "   + `${this.qdnLotId}` + "<br>" +
-        "   <b>Package Type:</b> " + `${this.qdnPkgtype}` + "<br>" +
-        "   <b>Part Name:</b> "    + `${this.qdnDeviceName}` +  "<br>" +
-        "   <b>Machine No.:</b> "  + `${this.qdnMachine}` + "<br>" +
-        "</pre>" +  
-        "<strong>Note:</strong>" + "<br>" +
-        "<pre>  This notification is an automated message. Please do not reply directly to this email.</pre>"
-      });
-    };
-    //**METHOD OF ERROR ALERT */
-    errorAlert = async (errorVar) => {
-      const Toast = Swal.mixin({
-        toast: true,
-        position: 'top-right',
-        iconColor: 'white',
-        customClass: {
-          popup: 'colored-toast'
-        },
-        allowEscapeKey: false,
-        showConfirmButton: false,
-        timer: 25000,
-        timerProgressBar: true,
-        //**This will let you pause and play the alert loading*/
-        didOpen: (toast) => { 
-          toast.addEventListener('mouseenter', Swal.stopTimer)
-          toast.addEventListener('mouseleave', Swal.resumeTimer)
-        }
-      })
-      await Toast.fire({
-        icon: 'error',
-        title: 'Issuance interrupted!',
-        html:"<b style ='color:red;'>"+  errorVar +"</b>",
-      });
-    };
-    //🔚** Method of error alert ends here!
-  
   };
   var forms = document.querySelectorAll('.needs-validation')
   // Loop over them and prevent submission
@@ -214,7 +172,8 @@
               html: "invalidInputAlert",
             },
             html: invalidList,
-          }); /*SweetAlert Ends here!*/  
+          }); /*SweetAlert Ends here!*/
+          console.log(window.location.protocol)
         }
         else{
           event.preventDefault();
@@ -222,16 +181,8 @@
           // WILL DISABLE THE BUTTON TEMPORARILY TO AVOID MULTIPLE SENT 
           // REQUEST TO DATABASE.
           $(":input[id ='issuanceSubmit']").prop('disabled', true);
-          try{
-            //Instantiating the object
-            const initiateMainObj = new mainObject();
-            // execute the insert event to the database
-            initiateMainObj.insertToDatabase();
-          }
-          catch (err){
-            const newInstantObject = new mainObject();
-            newInstantObject.errorAlert(err);
-          }
+          const instanceMainObj = new mainObject();
+          instanceMainObj.insertToDatabase();
         };
         form.classList.add('was-validated')
       }, false)
