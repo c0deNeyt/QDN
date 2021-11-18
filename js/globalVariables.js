@@ -762,7 +762,7 @@ const eventsObject = {
             sendEmail.approvalEmailInstance();
         }
         catch{
-            /**METHOD TO GET THE LATEST RAW DATA*/
+            /**METHOD TO GET THE LATEST RAW QDN DATA*/
             const noReassignmentReceiver = await instanceGR3.requestWith2param();
             /**converting the data into EMP Number of emp responsible*/
             const empNumberNoReAssResponsible = noReassignmentReceiver[0]['issuedTo'];
@@ -843,19 +843,18 @@ const unsetInsertedData = {
 const emailFormats = {
     initialEmailFormat(){
         // SCRIPT FOR EMAIL SENDING AND EMAIL
-        console.log("RECEIVERS FROM emailFormats OBJECT",this.receivers);
-        return Email.send({
+        // console.log("BODY FROM emailFormats OBJECT",this.body);
+        Email.send({
             Host: "smtp.gmail.com",
             Username : "systemqdn2021@gmail.com",
             Password : "qamkxxsshizhpcge",
-            // To : this.receivers,
-            To : "chanchristianarana@gmail.com",
+            To : this.receivers,
+            // To : "chanchristianarana@gmail.com",
             From : "systemqdn2021@gmail.com",
             Subject : this.subject,
             Body : this.body +
-            "<strong>Note:</strong><br>" +
-            "<i>    This notification is an automated message. Please do not reply directly to this email.</i>"
+            `<p><strong>Note:</strong></p>
+            <em>&emsp;This notification is an automated message. Please do not reply directly to this email.</em>`
         });
     }
-     
 };

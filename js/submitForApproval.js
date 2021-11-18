@@ -119,20 +119,6 @@ $(document).ready(function(){
             catch(err){
                 console.log("Something went wrong. Check submitForApproval.js", err);
             }
-            //========================================================
-            // INTEGRATION OF URL SEARCH
-            //========================================================
-            // const test = (new URL(document.location)).searchParams;
-            // const test2 = test.get('qndNo');
-            // if(test2){
-            //     console.log(true, test2);
-            // }
-            // else{
-            //     console.log(false, "from else")
-            // }
-           
-            // document.getElementById("qdnNumber").value = test2;
-
         }
         exec();
     }, 500);
