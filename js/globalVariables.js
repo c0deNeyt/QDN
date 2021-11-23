@@ -844,7 +844,6 @@ const unsetInsertedData = {
 const emailFormats = {
     initialEmailFormat(){
         // SCRIPT FOR EMAIL SENDING AND EMAIL
-        console.log("BODY FROM emailFormats OBJECT",this.body);
         console.log("RECEIVERS FROM emailFormats OBJECT",this.receivers);
         Email.send({
             Host: "smtp.gmail.com",
@@ -857,6 +856,9 @@ const emailFormats = {
             Body : this.body +
             `<p><strong>Note:</strong></p>
             <em>&emsp;This notification is an automated message. Please do not reply directly to this email.</em>`
+        }).then(function(){
+            //RELOAD THE PAGE
+            window.location.reload();
         });
     }
 };

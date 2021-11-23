@@ -600,13 +600,14 @@ $('#qdnNumber').on('input keyup', async function(){
      * Second Param = QND Number.
      * Third Param = QDN Status*/
     const instanceACSuggestion = new approversOnLoadRequestEvent(7.1, usrInput, 1);
-    /**approversOnLoadRequestEvent METHOD*/
-    const ACSuggestion = await instanceACSuggestion.autoCompleteDataRequest();
-    /**AC APPENDING RESULT*/
-    const instanceOnloadAppendToDOM = new onloadAppendToDOM(ACSuggestion);
-    /**onloadAppendToDOM METHOD*/
-    const suggestions = await instanceOnloadAppendToDOM.ACRawDataToArray();
+   
     try{
+        /**approversOnLoadRequestEvent METHOD*/
+        const ACSuggestion = await instanceACSuggestion.autoCompleteDataRequest();
+        /**AC APPENDING RESULT*/
+        const instanceOnloadAppendToDOM = new onloadAppendToDOM(ACSuggestion);
+        /**onloadAppendToDOM METHOD*/
+        const suggestions = await instanceOnloadAppendToDOM.ACRawDataToArray();
         /**THIS WILL REMOVED IF THERE IS A PREVIOUS DATA 
          * PASSED TO THE DOM*/
         unsetApproval();
@@ -622,30 +623,31 @@ $('#qdnNumber').on('input keyup', async function(){
         const approverDetails = await searchRequest.searchQdnDetails();
         executeApprovers(approverDetails);
         reAssignEvent.unsetReAssignmentData();
+        $(this).autocomplete({
+            source: suggestions,
+            select: async function(event, ui){
+                let selectedItem =  ui["item"]["value"];
+                /**THIS WILL REMOVED IF THERE IS A PREVIOUS DATA 
+                 * PASSED TO THE DOM*/
+                unsetApproval();
+                /*INSTANCE OF ONLOAD REQUEST*/
+                qdnNumberInput.classList.remove("is-invalid");
+                qdnNumberInput.classList.add("is-valid");
+                const searchRequest = new approversOnLoadRequestEvent(19.2, selectedItem);
+                /**MATCHED QDN NUMBER FROM urlParam Parameter */
+                const approverDetails = await searchRequest.searchQdnDetails();
+                executeApprovers(approverDetails);
+                reAssignEvent.unsetReAssignmentData();
+                
+            },
+        });
     }
     catch(e){
         // console.log("SEARCH NOT FOUND!");
         unsetApproval();
         reAssignEvent.unsetReAssignmentData();
     };
-    $(this).autocomplete({
-        source: suggestions,
-        select: async function(event, ui){
-            let selectedItem =  ui["item"]["value"];
-            /**THIS WILL REMOVED IF THERE IS A PREVIOUS DATA 
-             * PASSED TO THE DOM*/
-            unsetApproval();
-            /*INSTANCE OF ONLOAD REQUEST*/
-            qdnNumberInput.classList.remove("is-invalid");
-            qdnNumberInput.classList.add("is-valid");
-            const searchRequest = new approversOnLoadRequestEvent(19.2, selectedItem);
-            /**MATCHED QDN NUMBER FROM urlParam Parameter */
-            const approverDetails = await searchRequest.searchQdnDetails();
-            executeApprovers(approverDetails);
-            reAssignEvent.unsetReAssignmentData();
-            
-        },
-    });
+    
 });
 $('#reProcess').on('click', async function(){
     let qndNum = $("#qdnNumber").val().replace(/\s/g,'');
