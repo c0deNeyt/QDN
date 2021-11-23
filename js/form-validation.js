@@ -95,13 +95,10 @@
           const issuanceFormatReceivers = new issuanceAlgoEvt(issuanceRawReceiversData);
           /**METHOD TO FORMAT RECEIVERS*/
           const issuanceReceivers = issuanceFormatReceivers.formatRawDataOfReceivers();
-          /** SEND EMAILS */
-          const issuanceEmailDetails = {a:issuanceReceivers, b:  $("#qdnNumber").html()};
-          /**INSTANCE FOR SENDING EMAIL */
-          const issuanceSettingEmailDetails = new issuanceAlgoEvt(issuanceEmailDetails);
+          console.log (issuanceReceivers)
           try{
-            /** SEND EMAILS */
-            const issuanceEmailFormat = {r: issuanceSettingEmailDetails.receivers, s:`QDN Issuance`,b: `<p>Good Day,</p><br>
+            /**PARSING PARAMETER VALUES NEEDED FOR issuanceSendEmail Object below*/
+            const issuanceEmailFormat = {r: issuanceReceivers, s:`QDN Issuance`,b: `<p>Good Day,</p><br>
             <p>Please see below issuance under your respective area.</p> <br> 
             <b>QDN No.: </b><a href='${window.location.protocol}//${window.location.hostname}/QDN/analysis.php?qdnNo=${issuanceSettingEmailDetails.qndNum}'>${issuanceSettingEmailDetails.qndNum}</a><br> 
             <b>Discrepancy: </b>${initiateMainObj.qdnDefects}<br>  
@@ -114,16 +111,10 @@
               <b>&emsp;Package Type: </b>${initiateMainObj.qdnPkgtype} <br> 
               <b>&emsp;Part Name: </b>${initiateMainObj.qdnDeviceName} <br> 
               <b>&emsp;Machine No.: </b>${initiateMainObj.qdnMachine}`};
+            /**INSTANCE FOR SENDING EMAIL */
             const issuanceEmailThing = new issuanceSendEmail(issuanceEmailFormat);
+            /** SEND EMAILS */
             issuanceEmailThing.initialEmailFormat();
-            // This will INSTANTIATE the success ALERT FACTORY
-            const issuanceAlertFormat = new issuanceAlertFactory(`ISSUANCE SUCCESS!<br> 🎉 🥳 🎉`, 
-            `QDN <em>${$("#qdnNumber").html()}</em> Sent for analysis!`);
-            /**METHOD EXECUTION*/
-            await issuanceAlertFormat.successAlert()
-            .then(function(){
-              window.location.reload();
-            });
           }
           catch(e){
               const sendingEmailError = new issuanceAlertFactory(`Something Went Wrong 🤔!`,
@@ -133,6 +124,11 @@
               /**METHOD EXECUTION*/
               await sendingEmailError.errorAlert();
           }
+          // This will INSTANTIATE the success ALERT FACTORY
+          const issuanceAlertFormat = new issuanceAlertFactory(`ISSUANCE SUCCESS!<br> 🎉 🥳 🎉`, 
+          `QDN <em>${$("#qdnNumber").html()}</em> Sent for analysis!`);
+          /**METHOD EXECUTION*/
+          await issuanceAlertFormat.successAlert()
         }
         else{
           // error inserting to the database.
@@ -173,7 +169,16 @@
             },
             html: invalidList,
           }); /*SweetAlert Ends here!*/
-          console.log(window.location.protocol)
+           /**STORING THE PARAMETERS VALUE INTO AN OBJECT TO REDUCE THE PARAMETERS*/
+           const issuanceCustomParam = {a:"issuedToEmpNo", b:13, c: $("#issuedToEmpNumber").val()};
+           /**INSTANCE TO GET THE APPROVERS EMAIL OF THE PERSON RESPONSIBLE FOR THE QDN */
+           const emailDetailsReq = new issuanceGlobalRequest(issuanceCustomParam);
+           const issuanceRawReceiversData = await emailDetailsReq.requestWith2param();
+           /**INSTANCE TO PROCESS THE FORMAT OF RECEIVERS */
+           const issuanceFormatReceivers = new issuanceAlgoEvt(issuanceRawReceiversData);
+           /**METHOD TO FORMAT RECEIVERS*/
+           const issuanceReceivers = issuanceFormatReceivers.formatRawDataOfReceivers();
+           console.log (issuanceReceivers)
         }
         else{
           event.preventDefault();

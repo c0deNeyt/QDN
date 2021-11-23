@@ -59,7 +59,7 @@
   <!------------------------------------------------------------------>
   <!-- EMAIL API -->
   <!------------------------------------------------------------------>
-  <script src="https://smtpjs.com/v3/smtp.js"></script>
+  <script src="./js/smtp.js"></script>
   <!------------------------------------------------------------------>
 </head>
 <body>
@@ -80,6 +80,9 @@
           <div class="errorSpan col-sm-4">
             <label for="qdnNumber" class="form-label">QDN #:</label>
             <input autocomplete = "off" type="text" class="form-control" id="qdnNumber">
+            <div class="invalid-feedback">
+              Invalid QND No.
+            </div>  
           </div>
         </div>
         <!--
