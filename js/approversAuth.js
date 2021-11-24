@@ -199,7 +199,7 @@ class approverReq {
                 resolve(result);
             })
             .catch(error => {
-                resolve(error)
+                reject(error);
             });
         });
     
