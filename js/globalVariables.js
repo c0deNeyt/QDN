@@ -1,3 +1,4 @@
+
 /**REASSIGNMENT VARIABLES */
 var reAssignmentInputs = `<div id='reAssignment'>
     <div  class='row '>
@@ -30,7 +31,6 @@ var reAssignmentInputs = `<div id='reAssignment'>
     </div>
     <button class='submitReassignment w-100 btn btn-primary btn-lg mt-3' id='submitReassignment'>Submit for Reassignment</button>
 </div>`;
-
 /**DATE VARIABLES */
 const month = new Array();
 month[0] = "January";
@@ -56,6 +56,7 @@ let bgColor;
 let bdGifUrl;
 let bdPosition;
 let bdColor;
+
 
 /**APPROVAL QDN NUMBER INPUT */
 const qdnNumberInput = document.getElementById("qdnNumber");
@@ -788,6 +789,7 @@ const eventsObject = {
     formatRawDataOfReceivers: function(){
         /**PROCESS RECEIVER */
         /**LOOP TO SORE THE EMAILS INTO receiver variable */
+        // console.log("This is the raw Emails", this.rawEmailData)
         let rawEmailDataLen = this.rawEmailData.length;
         let receivers = '';
         for (let i=0;i<rawEmailDataLen;i++){
@@ -820,6 +822,32 @@ const eventsObject = {
             /**METHOD EXECUTION*/
             await sendingEmailError.errorAlert();
         }
+    },
+    /**METHOD TO INSERT DATA TO THE DATA BASE WHEN ISSUANCE DATA
+     * IS VALID */
+    issuanceInsertEvent(){
+        //*request url
+        let url = './php/process.php';
+        //Setting up body parameter using FromData
+        let formData = new FormData();
+        formData.append('qdnNumber2Db',         `${this.qdnNumber}`);
+        formData.append('qdnIBENo2Db',          `${this.qdnIBENo}`);
+        formData.append('qdnIBEN2Db',           `${this.qdnIBEN}`);
+        formData.append('qdnIBET2Db',           `${this.qdnIBET}`);
+        formData.append('qdnITENo2Db',          `${this.qdnITENo}`);
+        formData.append('qdnITEN2Db',           `${this.qdnITEN}`);
+        formData.append('qdnITET2Db',           `${this.qdnITET}`);
+        formData.append('qdncustomer2Db',       `${this.qdnCustomer}`);
+        formData.append('qdnmachine2Db',        `${this.qdnMachine}`);
+        formData.append('qdnpkgtype2Db',        `${this.qdnPkgtype}`);
+        formData.append('qdnDeviceName2Db',     `${this.qdnDeviceName}`);
+        formData.append('qdnStation2Db',        `${this.qdnStation}`);
+        formData.append('qdnLotId2Db',          `${this.qdnLotId}`);
+        formData.append('qdnTeamResp2Db',       `${this.qdnTeamResp}`);
+        formData.append('qdnDateTime2Db',       `${this.qdnDateTime}`);
+        formData.append('qdnClassification2Db', `${this.qdnClassification}`);
+        formData.append('qdnDefects2Db',        `${this.qdnDefects}`);
+        return fetch(url, { method: 'POST', body: formData });
     }
 };
 /**OBJECT TO UNSET THE INSERTED DATA FROM DATABASE USING SEARCH EVENT
@@ -844,21 +872,18 @@ const unsetInsertedData = {
 const emailFormats = {
     initialEmailFormat(){
         // SCRIPT FOR EMAIL SENDING AND EMAIL
-        console.log("RECEIVERS FROM emailFormats OBJECT",this.receivers);
+        // console.log("RECEIVERS FROM emailFormats OBJECT",this.receivers);
         Email.send({
             Host: "smtp.gmail.com",
             Username : "systemqdn2021@gmail.com",
             Password : "qamkxxsshizhpcge",
-            To : this.receivers,
-            // To : "chanchristianarana@gmail.com",
+            // To : this.receivers,
+            To : "chanchristianarana@gmail.com",
             From : "systemqdn2021@gmail.com",
             Subject : this.subject,
             Body : this.body +
             `<p><strong>Note:</strong></p>
             <em>&emsp;This notification is an automated message. Please do not reply directly to this email.</em>`
-        }).then(function(){
-            //RELOAD THE PAGE
-            window.location.reload();
         });
     }
 };
