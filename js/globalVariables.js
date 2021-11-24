@@ -788,7 +788,6 @@ const eventsObject = {
     formatRawDataOfReceivers: function(){
         /**PROCESS RECEIVER */
         /**LOOP TO SORE THE EMAILS INTO receiver variable */
-        console.log("This is the raw Emails", this.rawEmailData.length)
         let rawEmailDataLen = this.rawEmailData.length;
         let receivers = '';
         for (let i=0;i<rawEmailDataLen;i++){
@@ -799,7 +798,9 @@ const eventsObject = {
                 receivers = this.rawEmailData[i]['emailscol'];
             }
         };
+        console.log("This is the raw Emails", receivers);
         return receivers;
+        
     },
     /**METHOD TO EXECUTE SEND REPROCESS EMAIL FORMAT*/
     approvalEmailInstance: async function(){
@@ -843,7 +844,8 @@ const unsetInsertedData = {
 const emailFormats = {
     initialEmailFormat(){
         // SCRIPT FOR EMAIL SENDING AND EMAIL
-        // console.log("BODY FROM emailFormats OBJECT",this.body);
+        console.log("BODY FROM emailFormats OBJECT",this.body);
+        console.log("RECEIVERS FROM emailFormats OBJECT",this.receivers);
         Email.send({
             Host: "smtp.gmail.com",
             Username : "systemqdn2021@gmail.com",

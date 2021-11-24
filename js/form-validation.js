@@ -95,7 +95,7 @@
           const issuanceFormatReceivers = new issuanceAlgoEvt(issuanceRawReceiversData);
           /**METHOD TO FORMAT RECEIVERS*/
           const issuanceReceivers = issuanceFormatReceivers.formatRawDataOfReceivers();
-          /** SEND EMAILS */
+          console.log("RECEIVERS OBJECT",issuanceReceivers);
           const issuanceEmailDetails = {a:issuanceReceivers, b:  $("#qdnNumber").html()};
           /**INSTANCE FOR SENDING EMAIL */
           const issuanceSettingEmailDetails = new issuanceAlgoEvt(issuanceEmailDetails);
@@ -114,6 +114,7 @@
               <b>&emsp;Package Type: </b>${initiateMainObj.qdnPkgtype} <br> 
               <b>&emsp;Part Name: </b>${initiateMainObj.qdnDeviceName} <br> 
               <b>&emsp;Machine No.: </b>${initiateMainObj.qdnMachine}`};
+            /** SEND EMAILS */
             const issuanceEmailThing = new issuanceSendEmail(issuanceEmailFormat);
             issuanceEmailThing.initialEmailFormat();
             // This will INSTANTIATE the success ALERT FACTORY
