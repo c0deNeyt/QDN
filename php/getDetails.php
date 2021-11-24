@@ -593,25 +593,37 @@ switch ($request) {
         };
     break;
     //===========================================
-    //  FOR EMAIL RECEIVER    
+    //  FOR EMAIL RECEIVER
+    //  ADDED 19 AS PROCESS EMAIL RECEIVERS AND 
+    //  120 AS QND ENGR. FOR EACH RESULTS
     //===========================================
     case 13:
         $issuedToEmpNo = $_POST["issuedToEmpNo"];
         $dataRequest = "SELECT 
                             `emp_masterlist`.`EMP_NAME`,
                             `emails`.`emailscol`
-                            FROM 
-                                `telford_db`.`emp_masterlist`
-                            INNER JOIN 
-                                `telford_db`.`emp_has_emails`
-                            ON 
-                                `emp_masterlist`.`EMP_NO` = `emp_has_emails`.`emp_masterlist_EMP_NO`
-                            INNER JOIN 
-                                `telford_db`.`emails`
-                            ON 
-                                `emp_has_emails`.`emails_id` = `emails`.`id`
-                            WHERE 
-                                `EMP_NO` =  $issuedToEmpNo ";
+                        FROM 
+                            `telford_db`.`emp_masterlist`
+                        LEFT JOIN 
+                            `telford_db`.`emp_has_emails`
+                        ON 
+                            `emp_masterlist`.`EMP_NO` = `emp_has_emails`.`emp_masterlist_EMP_NO`
+                        LEFT JOIN 
+                            `telford_db`.`emails`
+                        ON 
+                            `emp_has_emails`.`emails_id` = `emails`.`id`
+                        WHERE  
+                            `emp_masterlist`.`EMP_NO` =  $issuedToEmpNo
+                        UNION
+                        SELECT 
+                            `id`,
+                            `emailscol`
+                        FROM 
+                            `telford_db`.`emails`
+                        WHERE 
+                            `emails`.`id` 
+                        IN  
+                            (92, 120)";
         $dataFromDatabase = $db->prepare($dataRequest);
         $dataFromDatabase -> execute();
 
