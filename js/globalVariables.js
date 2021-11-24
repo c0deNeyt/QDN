@@ -877,8 +877,8 @@ const emailFormats = {
             Host: "smtp.gmail.com",
             Username : "systemqdn2021@gmail.com",
             Password : "qamkxxsshizhpcge",
-            // To : this.receivers,
-            To : "chanchristianarana@gmail.com",
+            To : this.receivers,
+            // To : "chanchristianarana@gmail.com",
             From : "systemqdn2021@gmail.com",
             Subject : this.subject,
             Body : this.body +

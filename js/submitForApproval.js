@@ -150,22 +150,36 @@ $(document).ready(function(){
     // RECEIVERS
     let fetchEmailRecievers = (empNumero) => {
         return new Promise ((resolve, reject) => {
-            let xhr = new XMLHttpRequest();
-            let data = new FormData();
-            data.append('issuedToEmpNo', empNumero);
-            data.append('request', 13);
-            xhr.responseType = "json";//**This will convert responseTest to JSON format*/
-            xhr.onload = () =>{
-                if (xhr.readyState === 4 && xhr.status === 200){
-                    let output = xhr.response;
-                    resolve(output);
+            // let xhr = new XMLHttpRequest();
+            // let data = new FormData();
+            // data.append('issuedToEmpNo', empNumero);
+            // data.append('request', 13);
+            // xhr.responseType = "json";//**This will convert responseTest to JSON format*/
+            // xhr.onload = () =>{
+            //     if (xhr.readyState === 4 && xhr.status === 200){
+            //         let output = xhr.response;
+            //         resolve(output);
+            //     }
+            //     else{
+            //         reject(xhr.statusText);
+            //     };
+            // };
+            // xhr.open('POST', './php/getDetails.php');
+            // xhr.send(data);
+
+            $.ajax({
+                type: 'POST',
+                url: "./php/getDetails.php",
+                data: {'issuedToEmpNo': empNumero, request: 13 },
+                cache: false,
+                dataType: "json",
+                success: function(response){
+                    resolve(response);
+                },
+                error: function(error){
+                   reject(error.statusText);
                 }
-                else{
-                    reject(xhr.statusText);
-                };
-            };
-            xhr.open('POST', './php/getDetails.php');
-            xhr.send(data);
+            });
         });
     };//🔚**GENERATION OF INITIAL RECEIVERS ENDS HERE!*/
 
@@ -280,7 +294,7 @@ $(document).ready(function(){
             // To : "chanchristianarana@gmail.com",
             From : "systemqdn2021@gmail.com",
             Subject : "QDN No. " + qndNumber  + " FOR APPROVAL" ,
-            Body : "QDN " + `<a href="${window.location.href}?qdnNo=${qdnNumber}">` + qndNumber + "</a> needs approval.<br><br>" + 
+            Body : "QDN " + `<a href="${window.location.href}?qdnNo=${qndNumber}">` + qndNumber + "</a> needs approval.<br><br>" + 
             "<strong>Note:</strong><br>" +
             "<i>  This notification is an automated message. Please do not reply directly to this email.</i>" 
         });
@@ -396,7 +410,7 @@ $(document).ready(function(){
         Swal.fire({
             icon: 'error',
             title: 'Oops...',
-            text: "Something went wrong on " + errorCode + "!", 
+            text: "Something went wrong, " + errorCode + "!", 
         });
     };//🔚*FUNCTION FOR ERROR ALERT ENDS HERE!*/
 
@@ -422,7 +436,6 @@ $(document).ready(function(){
                 }else{
                     emails4QDNReceivers = await fetchEmailRecievers(issuedToEmpID);
                 };
-
                 //**PARSING INTO ARRAY INITIAL EMAILS*/
                 let initialEmail = generateEmailReceivers(emails4QDNReceivers);
                 //**PARSING INTO ARRAY APPROVERS EMAILS*/

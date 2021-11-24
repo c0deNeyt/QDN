@@ -75,7 +75,7 @@
         const emailDetailsReq = new issuanceGlobalRequest(issuanceCustomParam);
         /**METHOD OF THE INSTANCE emailDetailsReq */
         const issuanceRawReceiversData = await emailDetailsReq.requestWith2param();
-        if(issuanceRawReceiversData.length > 2){
+        if(issuanceRawReceiversData.length > 3){
           console.log("RECEIVERS FOUND", issuanceRawReceiversData);
           /**INSTANCE TO PROCESS THE FORMAT OF RECEIVERS */
           const issuanceFormatReceivers = new issuanceAlgoEvt(issuanceRawReceiversData);
