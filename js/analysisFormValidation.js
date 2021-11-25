@@ -99,9 +99,6 @@
       });
     };
     //**🔚
-    updateContainment() {
-
-    }
   };
   // Fetch all the forms we want to apply custom Bootstrap validation styles
   var forms = document.querySelectorAll('.needs-validation');
@@ -212,23 +209,6 @@
                   error: function() {
                     alert ("No receiver Found! Error form file (analysisFormValidation.js) Line 120!");
                   },
-                });
-              };
-             
-              function reAssignmentAlert(){
-                Swal.fire({
-                  position: 'top-end',
-                  icon: 'success',
-                  title: 'Reassigned!',
-                  allowOutsideClick: false,
-                  allowEscapeKey: false,
-                  allowEnterKey: false,
-                  allowOutsideClick: false,
-                  showConfirmButton: false,
-                  timer: 3000
-                })
-                .then(function() {
-                  window.location.href = "./analysis.php";
                 });
               };
               // AJAX REQUEST TO FIND THE CURRENT ID OF QDN NUMBER

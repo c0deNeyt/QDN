@@ -423,6 +423,28 @@ const requestObject = {
             });
         });
     },
+    requestWith1param(){
+        return new Promise ((resolve, reject)=>{
+            const singleParam = new FormData();
+            singleParam.append('request', this.no);
+            /**AJAX REQUEST */
+            $.ajax({
+                type: 'POST',
+                url: "./php/getDetails.php",
+                data: singleParam,
+                processData: false,
+                contentType: false,
+                cache: false,
+                dataType: "json",
+                success: function(response){
+                    resolve(response);
+                },
+                error: function(e){
+                    reject(e);
+                }
+            });
+        });
+    },
     requestWith2param(){
         return new Promise ((resolve, reject)=>{
             const creds = new FormData();
@@ -433,6 +455,30 @@ const requestObject = {
                 type: 'POST',
                 url: "./php/getDetails.php",
                 data: creds,
+                processData: false,
+                contentType: false,
+                cache: false,
+                dataType: "json",
+                success: function(response){
+                    resolve(response);
+                },
+                error: function(e){
+                    reject(e);
+                }
+            });
+        });
+    },
+    requestWith3param(){
+        return new Promise ((resolve, reject)=>{
+            const data = new FormData();
+            data.append(this.name,  this.val);
+            data.append(this.name1,  this.val1);
+            data.append('request', this.requestNum);
+            /**AJAX REQUEST */
+            $.ajax({
+                type: 'POST',
+                url: "./php/getDetails.php",
+                data: data,
                 processData: false,
                 contentType: false,
                 cache: false,
@@ -877,8 +923,8 @@ const emailFormats = {
             Host: "smtp.gmail.com",
             Username : "systemqdn2021@gmail.com",
             Password : "qamkxxsshizhpcge",
-            To : this.receivers,
-            // To : "chanchristianarana@gmail.com",
+            // To : this.receivers,
+            To : "chanchristianarana@gmail.com",
             From : "systemqdn2021@gmail.com",
             Subject : this.subject,
             Body : this.body +

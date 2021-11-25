@@ -1,11 +1,6 @@
 "use strict";
 var strict = (function() { return !this; })();
 console.log("STRICT MODE: " ,strict);
-// ES6 Modules or TypeScript
-// import Swal from './sweetalert2.all.min';
-
-// CommonJS
-// const Swal = require('sweetalert2')
 /**OBJECT CREATION AND ASSIGNING PROPERTIES*/
 function onLoadRequestEvent(param1, param2, param3){
     return Object.create(requestObject, {
@@ -16,7 +11,6 @@ function onLoadRequestEvent(param1, param2, param3){
         status: {value: param3}
     })
 };
-
 /**OBJECT CREATION AND ASSIGNING PROPERTIES*/
 function onloadAppendToDOM(data, selectorIDs, tableName) {
     return Object.create(eventsObject, {
@@ -27,7 +21,6 @@ function onloadAppendToDOM(data, selectorIDs, tableName) {
         tableName: {value: tableName}
     });
 };
-
 /**OBJECT CREATION AND ASSIGNING PROPERTIES*/
 function alertFactory(tittle, body, data ) {
     return Object.create(alertObject, {
@@ -35,6 +28,16 @@ function alertFactory(tittle, body, data ) {
         title: {value: tittle},
         body: {value: body},
         monthOnly: {value: month[date.getMonth()]}
+    });
+};
+/**OBJECT CREATION AND ASSIGNING PROPERTIES (global request)
+ * This aims to avoid too many parameters in my functions*/
+ function analysisGlobalRequest(param) {
+    return Object.create(requestObject, {
+        no: {value: param},
+        name: {value: param.a},
+        requestNum: {value: param.b},
+        val: {value: param.c},
     });
 };
 /**SET DEFAULT VALUE FUNCTION FUNCTION*/
@@ -103,7 +106,7 @@ try{
 }
 catch (e){
     /**Error HANDLING*/
-    console.log("NO REASSIGNMENT", e);
+    // console.log("NO REASSIGNMENT", e);
 }
 };
 /**FUNCTION TO UNSET LOADED DATA*/
@@ -121,6 +124,7 @@ function unsetData() {
     $("#reAssignDiv").remove();
     $("#reAssignment").remove();
 };
+/**MAIN FUNCTION FOR ANALYSIS*/
 (async function() {//*✅*/
     /**INSTANCE OF URSearchParams */
     const parameter = new URLSearchParams(window.location.search);
@@ -133,6 +137,7 @@ function unsetData() {
         /**ADD BOOTSTRAP VALIDATION valid*/
         qdnNumberInput.classList.remove("is-invalid")
         qdnNumberInput.classList.add("is-valid");
+        /**trycatch block to check the validity of url */
         try{
             /*INSTANCE OF ONLOAD REQUEST*/
             const onloadRequest = new onLoadRequestEvent(8, urlParam);
@@ -158,7 +163,7 @@ function unsetData() {
         }
     }
     else{
-        console.log("Custom URL is",false);
+        // console.log("Custom URL is",false);
         /*INSTANCE OF ONLOAD REQUEST*/
         const onloadRequest = new onLoadRequestEvent(8.2);
         /**ONLOAD RAW DATA */
@@ -175,7 +180,6 @@ function unsetData() {
         let usrInput = $(this).val().replace(/\s/g,'');
          /**AUTOCOMPLETE SETTING PARAMETERS INSTANCE*/
         const analInstanceACSuggestion = new onLoadRequestEvent(7.1, usrInput,0);
-      
         try{
             /**approversOnLoadRequestEvent METHOD*/
             const analACSuggestion = await analInstanceACSuggestion.autoCompleteDataRequest();
@@ -208,7 +212,6 @@ function unsetData() {
             /**ERROR HANDLING*/
             unsetData();
         };
-      
     });
     $(document).on("change", "#reAssign", function () {
         // this will contain a reference to the checkbox   
@@ -247,3 +250,44 @@ function unsetData() {
         }
     });
 })();
+/**
+ * SUBMIT FORT APPROVAL CLICK EVENT HANDLER 
+ **/
+$(document).on('click', '#forApproval', async function (){
+    /**TO DO'S:
+     * PROMPT FOR SUBMISSION
+     * CHECK THE STATUS
+     *      IF NOT 0 = THROW AN INFO ALERT
+     *      IF 0 = SET STATUS TO 1
+     * CHECK IF THERE IS RE-ASSIGNMENT
+     */
+    /**PROMPT ALERT*/
+    Swal.fire({
+        title: 'Are you sure?',
+        html: "Sending this QDN (Number: " + "<b style ='color:red;'>"+ $("#qdnNumber").val() +"</b>"
+            + ") for approval won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, Submit this!'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            const reAssParam = {a:"qdnNum", b:18, c: $("#qdnNumber").val()};
+            try{
+                const reassignmentReq = new analysisGlobalRequest(reAssParam);
+                await reassignmentReq.requestWith2param();
+                /**INITIAL APPROVERS MAIL WITHOUT APPROVERS OTHERS EMAILS*/
+                const reassignmentReq1 = new analysisGlobalRequest(17);
+                const initMail = await reassignmentReq1.requestWith1param(); 
+                /**INITIAL OTHERS EMAILS*/ 
+                const reassignmentReq2 = new analysisGlobalRequest(14.4);
+                const initOthersMail = await reassignmentReq2.requestWith1param();  
+                console.log(initOthersMail);
+            }
+            catch(e){
+                console.log("No reassignment!");
+            }
+        };
+    });
+});

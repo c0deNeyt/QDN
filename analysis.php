@@ -47,7 +47,7 @@
   <!------------------------------------------------------------------>
   <script src="./js/analysisFormValidation.js" defer></script>
   <!------------------------------------------------------------------>
-  <script src = "./js/submitForApproval.js" defer></script>
+  <!-- <script src = "./js/submitForApproval.js" defer></script> -->
   <!------------------------------------------------------------------>
   <script src="./js/sweetalert2.all.min.js"></script>
   <!------------------------------------------------------------------>
