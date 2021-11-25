@@ -70,13 +70,13 @@
     async  validIssuanceEvt(){
       /**STORING THE PARAMETERS VALUE INTO AN OBJECT TO REDUCE THE PARAMETERS*/
       const issuanceCustomParam = {a:"issuedToEmpNo", b:13, c: $("#issuedToEmpNumber").val()};
+      // const issuanceCustomParam = {a:"issuedToEmpNo", b:13, c: 1111};
       try{
         /**INSTANCE TO GET THE APPROVERS EMAIL OF THE PERSON RESPONSIBLE FOR THE QDN */
         const emailDetailsReq = new issuanceGlobalRequest(issuanceCustomParam);
         /**METHOD OF THE INSTANCE emailDetailsReq */
         const issuanceRawReceiversData = await emailDetailsReq.requestWith2param();
-        if(issuanceRawReceiversData.length > 3){
-          console.log("RECEIVERS FOUND", issuanceRawReceiversData);
+        if(issuanceRawReceiversData[0]['emailscol']){
           /**INSTANCE TO PROCESS THE FORMAT OF RECEIVERS */
           const issuanceFormatReceivers = new issuanceAlgoEvt(issuanceRawReceiversData);
           /**METHOD TO FORMAT RECEIVERS*/
@@ -112,10 +112,13 @@
         }
         else{
           const errorReceivers = new issuanceAlertFactory(`Something Went Wrong 🤔!`,
-          `🤦 No email(s) available 🤦<br>
-          Location: for-validation.js`);
+          `🤦 No email(s) available. Responsible employee details needs update. 🤦<br>
+          Location: form-validation.js`);
           /**METHOD EXECUTION*/
-          await errorReceivers.errorAlert();
+          await errorReceivers.errorAlert().then(function(){
+            /**THIS WILL ENABLE THE SUBMIT BUTTON */
+            $(":input[id ='issuanceSubmit']").prop('disabled', false);
+          });
         };
       }
       catch(e){
