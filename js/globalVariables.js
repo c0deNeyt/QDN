@@ -894,6 +894,22 @@ const eventsObject = {
         formData.append('qdnClassification2Db', `${this.qdnClassification}`);
         formData.append('qdnDefects2Db',        `${this.qdnDefects}`);
         return fetch(url, { method: 'POST', body: formData });
+    },
+    removeEmailDuplicates(){
+        let combinedEmailsLen = this.data.length;
+        let emailsArray = "";
+        let test = [];
+        for (let i=0;i<combinedEmailsLen;i++){
+            console.log(this.data[i])
+            // if((emailsArray.indexOf(combinedEmailsLen) == -1) && (emailsArray)){
+            //     emailsArray = emailsArray + ", " + this.data[i];
+            // }
+            // else if ((emailsArray.indexOf(this.data[i]) == -1)){
+            //     emailsArray = emailsArray + this.data[i];
+            // }
+        };
+        // return emailsArray;
+    //    return emailsArray;
     }
 };
 /**OBJECT TO UNSET THE INSERTED DATA FROM DATABASE USING SEARCH EVENT

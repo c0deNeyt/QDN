@@ -188,7 +188,6 @@ switch ($request) {
         while($row = $dataFromDatabase->fetch(PDO::FETCH_ASSOC)){
             $id      = $row['id'];
             $qdnNo   = $row['qdnNo'];
-
             $data[] = array("id" => $id, "qdnNo" => $qdnNo);
         }
         if ( $data ){
@@ -198,7 +197,8 @@ switch ($request) {
     case 7.2:
         $searchForThisQdnNo = $_POST["searchForThisQdnNo"];
         $dataRequest = "SELECT `id`, 
-                                `qdnNo`
+                                `qdnNo`,
+                                `issuedTo`
                         FROM `analysis_tbl`
                         WHERE `qdnNo` = '$searchForThisQdnNo'
                         AND `status` = 0";
@@ -208,8 +208,8 @@ switch ($request) {
         while($row = $dataFromDatabase->fetch(PDO::FETCH_ASSOC)){
             $id      = $row['id'];
             $qdnNo   = $row['qdnNo'];
-
-            $data[] = array("id" => $id, "qdnNo" => $qdnNo);
+            $issuedTo   = $row['issuedTo'];
+            $data[] = array("id" => $id, "qdnNo" => $qdnNo, "issuedTo" => $issuedTo);
         }
         if ( $data ){
             echo json_encode($data);
