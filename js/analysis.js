@@ -275,18 +275,73 @@ $(document).on('click', '#forApproval', async function (){
         if (result.isConfirmed) {
             const reAssParam = {a:"qdnNum", b:18, c: $("#qdnNumber").val()};
             try{
+                /*INSTANCE RESPONSIBLE FOR REASSIGNMENT
+                TRY CATCH WILL FAIL IF NO RESULT FOUND*/
                 const reassignmentReq = new analysisGlobalRequest(reAssParam);
-                await reassignmentReq.requestWith2param();
-                /**INITIAL APPROVERS MAIL WITHOUT APPROVERS OTHERS EMAILS*/
-                const reassignmentReq1 = new analysisGlobalRequest(17);
-                const initMail = await reassignmentReq1.requestWith1param(); 
-                /**INITIAL OTHERS EMAILS*/ 
-                const reassignmentReq2 = new analysisGlobalRequest(14.4);
-                const initOthersMail = await reassignmentReq2.requestWith1param();  
-                console.log(initOthersMail);
+                const reAssignmentDetails = await reassignmentReq.requestWith2param();
+                /**OVERRIDING reAssParam*/
+                reAssParam.a = "qdnNumber";
+                reAssParam.b = 9.1;
+                /**GET QDN NUMBER OF PERSON RESPONSIBLE */
+                const reassignmentReq3 = new analysisGlobalRequest(reAssParam); 
+                const resultRawDetails = await reassignmentReq3.requestWith2param();
+                /**PERSON RESPONSIBLE EMP NO.*/
+                let respEmpNo = resultRawDetails[0]['empNo'];
+                let respEmpDept= resultRawDetails[0]['pl'];
+                // console.log("REASSIGNMENT IS PRESENT!!");
+                switch (respEmpDept == "G & A"){
+                    // G&A EMPLOYEE
+                    case true:
+                        /**OVERRIDING reAssParam*/
+                        reAssParam.a = "issuedToEmpNo";
+                        reAssParam.b = 13;
+                        reAssParam.c = respEmpNo;
+                        /**INSTANCE TO FIND EMAIL RECEIVERS OF RESP EMP*/
+                        const initEmpEmailIns = new analysisGlobalRequest(reAssParam);
+                        /**METHOD TO FETCH EMAIL*/
+                        const r = await initEmpEmailIns.requestWith2param();
+                        /**THIS WILL FILTER THE OBJECT AND CONVERT TO ARRAY*/
+                        let initEmpEmailRes = Object.keys(r).map((key) => r[key]['emailscol']);
+                        /**INITIAL OTHERS EMAILS*/ 
+                        const reassignmentReq2 = new analysisGlobalRequest(14.4);
+                        /**METHOD TO FETCH OTHERS EMAIL*/
+                        const a = await reassignmentReq2.requestWith1param();
+                        /**THIS WILL FILTER THE OBJECT AND CONVERT TO ARRAY*/
+                        let initOthersMail = Object.keys(a).map((key) => a[key]['emailscol']);
+                        /**THIS WILL MERGE THE initEmpEmailRes & initOthersMail INTO ARRAY*/
+                        const combinedEmails = initEmpEmailRes.concat(initOthersMail);
+                        /**REMOVE DUPLICATE INSIDE THE ARRAY*/
+                        const insRmvDuplicates = new onloadAppendToDOM(combinedEmails);
+                        const removeDuplicates = insRmvDuplicates.removeEmailDuplicates();
+                        console.log(removeDuplicates);
+                    break;
+                    //NOT G&A EMPLOYEE
+                    default:
+                        /**PROD, PE, EE, QA */
+                        /**INITIAL APPROVERS MAIL WITHOUT APPROVERS OTHERS EMAILS*/
+                        const reassignmentReq1 = new analysisGlobalRequest(17);
+                        const initMail = await reassignmentReq1.requestWith1param(); 
+                        let valueOfKey1 = Object.keys(initMail)
+                        //**FUNCTION EXECUTION TO REMOVE DUPLICATE EMAILS*/
+                        // const emailsNotGandA = removeDupMails(combinedEmails);
+                        console.log("G & A NOOOOOOT DETECTED!!", valueOfKey1);
+                        // forApprovalDialogBox(emailsNotGandA, qdnNumber);
+                    break;
+                };
+                // console.log(respEmpDept);
             }
             catch(e){
-                console.log("No reassignment!");
+                //**INITIAL EMAILS */
+                //**THIS WILL LOOK FOR EMP NUMBER OF EMPLOYEE RESPONSIBLE IF NO REASSIGNMENT*/
+                /**OVERRIDING reAssParam*/
+                reAssParam.a = "searchForThisQdnNo";
+                reAssParam.b = 7.2;
+                /**GET QDN NUMBER OF PERSON RESPONSIBLE */
+                const reassignmentReq4 = new analysisGlobalRequest(reAssParam); 
+                const resultRawDetails = await reassignmentReq4.requestWith2param();
+                /**PERSON RESPONSIBLE EMP NO.*/
+                let resp1EmpNo = resultRawDetails[0]['issuedTo'];
+                console.log("No reassignment!", resp1EmpNo);
             }
         };
     });

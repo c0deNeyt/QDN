@@ -428,7 +428,7 @@ $(document).ready(function(){
                 //**OTHERS APPROVERS LIST*/
                 const othersApprovers = await fetchOthersApprover();
                 //**INITIAL EMAILS */
-                //**THIS WILL LOOK FOR EMP NUMBER OF EMPLOYEE REPONSIBEL IF NO REASSIGNMENT*/
+                //**THIS WILL LOOK FOR EMP NUMBER OF EMPLOYEE RESPONSIBLE IF NO REASSIGNMENT*/
                 const issuedToEmpID = await verifyEmpId(qdnNumber);
                 let emails4QDNReceivers;
                 if (check4Reassignments != null){//**THIS WILL VALIDATE IF THERE IS REASSIGNMENT */
