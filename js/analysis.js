@@ -38,6 +38,17 @@ function alertFactory(tittle, body, data ) {
         name: {value: param.a},
         requestNum: {value: param.b},
         val: {value: param.c},
+        name1: {value: param.d},
+        val1: {value: param.e},
+    });
+};
+/**OBJECT CREATION AND ASSIGNING PROPERTIES
+ * RESPONSIBLE FOR EMAIL PROPERTIES*/
+ function analysisSendEmail(details){
+    return Object.create(emailFormats, {
+        receivers :{value: details.r},
+        subject: {value: details.s},
+        body: {value: details.b}
     });
 };
 /**SET DEFAULT VALUE FUNCTION FUNCTION*/
@@ -250,16 +261,17 @@ function unsetData() {
         }
     });
 })();
+
 /**
  * SUBMIT FORT APPROVAL CLICK EVENT HANDLER 
  **/
 $(document).on('click', '#forApproval', async function (){
     /**TO DO'S:
-     * PROMPT FOR SUBMISSION
+     * PROMPT FOR SUBMISSION ✅
      * CHECK THE STATUS
      *      IF NOT 0 = THROW AN INFO ALERT
      *      IF 0 = SET STATUS TO 1
-     * CHECK IF THERE IS RE-ASSIGNMENT
+     * CHECK IF THERE IS RE-ASSIGNMENT ✅
      */
     /**PROMPT ALERT*/
     Swal.fire({
@@ -283,13 +295,13 @@ $(document).on('click', '#forApproval', async function (){
                 reAssParam.a = "qdnNumber";
                 reAssParam.b = 9.1;
                 /**GET QDN NUMBER OF PERSON RESPONSIBLE */
-                const reassignmentReq3 = new analysisGlobalRequest(reAssParam); 
-                const resultRawDetails = await reassignmentReq3.requestWith2param();
+                const reassignmentReq1 = new analysisGlobalRequest(reAssParam); 
+                const resultRawDetails = await reassignmentReq1.requestWith2param();
                 /**PERSON RESPONSIBLE EMP NO.*/
                 let respEmpNo = resultRawDetails[0]['empNo'];
                 let respEmpDept= resultRawDetails[0]['pl'];
                 // console.log("REASSIGNMENT IS PRESENT!!");
-                switch (respEmpDept == "G & A"){
+                switch (respEmpDept === "G & A"){
                     // G&A EMPLOYEE
                     case true:
                         /**OVERRIDING reAssParam*/
@@ -300,7 +312,8 @@ $(document).on('click', '#forApproval', async function (){
                         const initEmpEmailIns = new analysisGlobalRequest(reAssParam);
                         /**METHOD TO FETCH EMAIL*/
                         const r = await initEmpEmailIns.requestWith2param();
-                        /**THIS WILL FILTER THE OBJECT AND CONVERT TO ARRAY*/
+                        /**THIS WILL FILTER THE OBJECT AND CONVERT TO ARRAY
+                         * RESULTING EMAILS INSIDE THE ARRAY*/
                         let initEmpEmailRes = Object.keys(r).map((key) => r[key]['emailscol']);
                         /**INITIAL OTHERS EMAILS*/ 
                         const reassignmentReq2 = new analysisGlobalRequest(14.4);
@@ -312,25 +325,68 @@ $(document).on('click', '#forApproval', async function (){
                         const combinedEmails = initEmpEmailRes.concat(initOthersMail);
                         /**REMOVE DUPLICATE INSIDE THE ARRAY*/
                         const insRmvDuplicates = new onloadAppendToDOM(combinedEmails);
-                        const removeDuplicates = insRmvDuplicates.removeEmailDuplicates();
-                        console.log(removeDuplicates);
-                    break;
+                        /**METHOD TO REMOVE THE DUPLICATE EMAILS*/
+                        const removedDuplicates = insRmvDuplicates.removeEmailDuplicates();
+                        /**CONVERTING ARRAY INTO STING*/
+                        const emailsReceivers = removedDuplicates.toString();
+                        //** SEND EMAILS */
+                        const detailsWGandA = {r:emailsReceivers, s:`QDN No. ${$("#qdnNumber").val()} FOR APPROVAL`, b:`<p>QDN No. <a href="${window.location.protocol}//${window.location.hostname}/QDN/approval.php?qdnNo=${$("#qdnNumber").val()}">${$("#qdnNumber").val()}</a> needs approval. </p><br>`};
+                        /**instance to send email */
+                        const submitForApprovalEmailIns = new analysisSendEmail(detailsWGandA);
+                        /**METHOD TO SEND EMAIL */
+                        await submitForApprovalEmailIns.initialEmailFormat();
+                    break;8
                     //NOT G&A EMPLOYEE
                     default:
+                        /**OVERRIDING reAssParam*/
+                        reAssParam.a = "issuedToEmpNo";
+                        reAssParam.b = 13;
+                        reAssParam.c = respEmpNo;
+                        /**INSTANCE TO FIND EMAIL RECEIVERS OF RESP EMP*/
+                        const initEmpEmailInsNoGandA = new analysisGlobalRequest(reAssParam);
+                        /**METHOD TO FETCH EMAIL*/
+                        const intMailNoGandA = await initEmpEmailInsNoGandA.requestWith2param();
+                        /**THIS WILL FILTER THE OBJECT AND CONVERT TO ARRAY
+                         * RESULTING EMAILS INSIDE THE ARRAY*/
+                        const initEmpEmailResNoGandA = Object.keys(intMailNoGandA).map((key) => intMailNoGandA[key]['emailscol']);
                         /**PROD, PE, EE, QA */
                         /**INITIAL APPROVERS MAIL WITHOUT APPROVERS OTHERS EMAILS*/
-                        const reassignmentReq1 = new analysisGlobalRequest(17);
-                        const initMail = await reassignmentReq1.requestWith1param(); 
-                        let valueOfKey1 = Object.keys(initMail)
-                        //**FUNCTION EXECUTION TO REMOVE DUPLICATE EMAILS*/
-                        // const emailsNotGandA = removeDupMails(combinedEmails);
-                        console.log("G & A NOOOOOOT DETECTED!!", valueOfKey1);
-                        // forApprovalDialogBox(emailsNotGandA, qdnNumber);
+                        const reassignmentReq3 = new analysisGlobalRequest(17);
+                        /**METHOD*/
+                        const approversReceivers = await reassignmentReq3.requestWith1param(); 
+                        /**METHOD TO FETCH OTHERS EMAIL*/
+                        /**THIS WILL FILTER THE OBJECT AND CONVERT TO ARRAY*/
+                        const initNoGandA = Object.keys(approversReceivers).map((key) => approversReceivers[key]['emailscol']);
+                        /**THIS WILL MERGE THE initEmpEmailRes & initOthersMail INTO ARRAY*/
+                        const combinedEmailsNoGandA = initEmpEmailResNoGandA.concat(initNoGandA);
+                        /**REMOVE DUPLICATE INSIDE THE ARRAY*/
+                        const insRmvDuplicatesNoGandA = new onloadAppendToDOM(combinedEmailsNoGandA);
+                        /**METHOD TO REMOVE THE DUPLICATE EMAILS*/
+                        const removedDuplicatesNoGandA = insRmvDuplicatesNoGandA.removeEmailDuplicates();
+                        /**CONVERTING ARRAY INTO STING*/
+                        const emailsReceiversNoGandA = removedDuplicatesNoGandA.toString();
+                        //** SEND EMAILS */
+                        const detailsNoGandA = {r:emailsReceiversNoGandA, s:`QDN No. ${$("#qdnNumber").val()} FOR APPROVAL`, b:`<p>QDN No. <a href="${window.location.protocol}//${window.location.hostname}/QDN/approval.php?qdnNo=${$("#qdnNumber").val()}">${$("#qdnNumber").val()}</a> needs approval. </p><br>`};
+                        /**instance to send email */
+                        const submitForApprovalEmailInsNoGandA = new analysisSendEmail(detailsNoGandA);
+                        /**METHOD TO SEND EMAIL */
+                        await submitForApprovalEmailInsNoGandA.initialEmailFormat();
                     break;
                 };
-                // console.log(respEmpDept);
+                // This will INSTANTIATE the success ALERT FACTORY
+                const analysisAlertFormat = new alertFactory(`SUBMISSION SUCCESS!<br> 🎉 🥳 🎉`, `QDN <em>${$("#qdnNumber").html()}</em> Sent for approval!`);
+                /**METHOD EXECUTION*/
+                analysisAlertFormat.successAlert().then(function(){
+                    /**SETTING THE STATUS TO 1 */ 
+                    const setStatusVAr = {a:"qndNumber", b:16, c: $("#qdnNumber").val(), d:"status", e:1};
+                    /** instance for update request in analysis_tbl*/
+                    const settingStatus = new analysisGlobalRequest(setStatusVAr);
+                    settingStatus.requestWith3param();  
+                    //RELOAD THE PAGE
+                    window.location.reload();
+                });
             }
-            catch(e){
+            catch{
                 //**INITIAL EMAILS */
                 //**THIS WILL LOOK FOR EMP NUMBER OF EMPLOYEE RESPONSIBLE IF NO REASSIGNMENT*/
                 /**OVERRIDING reAssParam*/
@@ -340,8 +396,92 @@ $(document).on('click', '#forApproval', async function (){
                 const reassignmentReq4 = new analysisGlobalRequest(reAssParam); 
                 const resultRawDetails = await reassignmentReq4.requestWith2param();
                 /**PERSON RESPONSIBLE EMP NO.*/
-                let resp1EmpNo = resultRawDetails[0]['issuedTo'];
-                console.log("No reassignment!", resp1EmpNo);
+                const noReAssResp1EmpNo = resultRawDetails[0]['issuedTo'];
+                const noReAssRespDept = resultRawDetails[0]['pl'];
+                switch (noReAssRespDept === "G & A"){
+                    // G&A EMPLOYEE
+                    case true:
+                        /**OVERRIDING reAssParam*/
+                        reAssParam.a = "issuedToEmpNo";
+                        reAssParam.b = 13;
+                        reAssParam.c = noReAssResp1EmpNo;
+                        /**INSTANCE TO FIND EMAIL RECEIVERS OF RESP EMP*/
+                        const initEmpEmailIns = new analysisGlobalRequest(reAssParam);
+                        /**METHOD TO FETCH EMAIL*/
+                        const r = await initEmpEmailIns.requestWith2param();
+                        /**THIS WILL FILTER THE OBJECT AND CONVERT TO ARRAY
+                         * RESULTING EMAILS INSIDE THE ARRAY*/
+                        let initEmpEmailRes = Object.keys(r).map((key) => r[key]['emailscol']);
+                        /**INITIAL OTHERS EMAILS*/ 
+                        const reassignmentReq2 = new analysisGlobalRequest(14.4);
+                        /**METHOD TO FETCH OTHERS EMAIL*/
+                        const a = await reassignmentReq2.requestWith1param();
+                        /**THIS WILL FILTER THE OBJECT AND CONVERT TO ARRAY*/
+                        let initOthersMail = Object.keys(a).map((key) => a[key]['emailscol']);
+                        /**THIS WILL MERGE THE initEmpEmailRes & initOthersMail INTO ARRAY*/
+                        const combinedEmails = initEmpEmailRes.concat(initOthersMail);
+                        /**REMOVE DUPLICATE INSIDE THE ARRAY*/
+                        const insRmvDuplicates = new onloadAppendToDOM(combinedEmails);
+                        /**METHOD TO REMOVE THE DUPLICATE EMAILS*/
+                        const removedDuplicates = insRmvDuplicates.removeEmailDuplicates();
+                        /**CONVERTING ARRAY INTO STING*/
+                        const emailsReceivers = removedDuplicates.toString();
+                        //** SEND EMAILS */
+                        const detailsWGandA = {r:emailsReceivers, s:`QDN No. ${$("#qdnNumber").val()} FOR APPROVAL`, b:`<p>QDN No. <a href="${window.location.protocol}//${window.location.hostname}/QDN/approval.php?qdnNo=${$("#qdnNumber").val()}">${$("#qdnNumber").val()}</a> needs approval. </p><br>`};
+                        /**instance to send email */
+                        const submitForApprovalEmailIns = new analysisSendEmail(detailsWGandA);
+                        /**METHOD TO SEND EMAIL */
+                        await submitForApprovalEmailIns.initialEmailFormat();
+                    break;8
+                    //NOT G&A EMPLOYEE
+                    default:
+                        /**OVERRIDING reAssParam*/
+                        reAssParam.a = "issuedToEmpNo";
+                        reAssParam.b = 13;
+                        reAssParam.c = respEmpNo;
+                        /**INSTANCE TO FIND EMAIL RECEIVERS OF RESP EMP*/
+                        const initEmpEmailInsNoGandA = new analysisGlobalRequest(reAssParam);
+                        /**METHOD TO FETCH EMAIL*/
+                        const intMailNoGandA = await initEmpEmailInsNoGandA.requestWith2param();
+                        /**THIS WILL FILTER THE OBJECT AND CONVERT TO ARRAY
+                         * RESULTING EMAILS INSIDE THE ARRAY*/
+                        const initEmpEmailResNoGandA = Object.keys(intMailNoGandA).map((key) => intMailNoGandA[key]['emailscol']);
+                        /**PROD, PE, EE, QA */
+                        /**INITIAL APPROVERS MAIL WITHOUT APPROVERS OTHERS EMAILS*/
+                        const reassignmentReq3 = new analysisGlobalRequest(17);
+                        /**METHOD*/
+                        const approversReceivers = await reassignmentReq3.requestWith1param(); 
+                        /**METHOD TO FETCH OTHERS EMAIL*/
+                        /**THIS WILL FILTER THE OBJECT AND CONVERT TO ARRAY*/
+                        const initNoGandA = Object.keys(approversReceivers).map((key) => approversReceivers[key]['emailscol']);
+                        /**THIS WILL MERGE THE initEmpEmailRes & initOthersMail INTO ARRAY*/
+                        const combinedEmailsNoGandA = initEmpEmailResNoGandA.concat(initNoGandA);
+                        /**REMOVE DUPLICATE INSIDE THE ARRAY*/
+                        const insRmvDuplicatesNoGandA = new onloadAppendToDOM(combinedEmailsNoGandA);
+                        /**METHOD TO REMOVE THE DUPLICATE EMAILS*/
+                        const removedDuplicatesNoGandA = insRmvDuplicatesNoGandA.removeEmailDuplicates();
+                        /**CONVERTING ARRAY INTO STING*/
+                        const emailsReceiversNoGandA = removedDuplicatesNoGandA.toString();
+                        //** SEND EMAILS */
+                        const detailsNoGandA = {r:emailsReceiversNoGandA, s:`QDN No. ${$("#qdnNumber").val()} FOR APPROVAL`, b:`<p>QDN No. <a href="${window.location.protocol}//${window.location.hostname}/QDN/approval.php?qdnNo=${$("#qdnNumber").val()}">${$("#qdnNumber").val()}</a> needs approval. </p><br>`};
+                        /**instance to send email */
+                        const submitForApprovalEmailInsNoGandA = new analysisSendEmail(detailsNoGandA);
+                        /**METHOD TO SEND EMAIL */
+                        await submitForApprovalEmailInsNoGandA.initialEmailFormat();
+                    break;
+                };
+                // This will INSTANTIATE the success ALERT FACTORY
+                const analysisAlertFormat = new alertFactory(`SUBMISSION SUCCESS!<br> 🎉 🥳 🎉`, `QDN <em>${$("#qdnNumber").html()}</em> Sent for approval!`);
+                /**METHOD EXECUTION*/
+                analysisAlertFormat.successAlert().then(function(){
+                    /**SETTING THE STATUS TO 1 */ 
+                    const setStatusVAr = {a:"qndNumber", b:16, c: $("#qdnNumber").val(), d:"status", e:1};
+                    /** instance for update request in analysis_tbl*/
+                    const settingStatus = new analysisGlobalRequest(setStatusVAr);
+                    settingStatus.requestWith3param();  
+                    //RELOAD THE PAGE
+                    window.location.reload();
+                });
             }
         };
     });

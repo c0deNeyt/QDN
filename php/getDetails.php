@@ -196,20 +196,28 @@ switch ($request) {
     break;
     case 7.2:
         $searchForThisQdnNo = $_POST["searchForThisQdnNo"];
-        $dataRequest = "SELECT `id`, 
-                                `qdnNo`,
-                                `issuedTo`
-                        FROM `analysis_tbl`
-                        WHERE `qdnNo` = '$searchForThisQdnNo'
-                        AND `status` = 0";
+        $dataRequest = "SELECT 
+                            `analysis_tbl`.`id`, 
+                            `analysis_tbl`.`qdnNo`,
+                            `analysis_tbl`.`issuedTo`,
+                            `emp_masterlist`.`PRODUCT_LINE` AS 'pl'
+                        FROM `telford_db`.`analysis_tbl`
+                        INNER JOIN
+                            `telford_db`.`emp_masterlist`
+                        ON
+                            `analysis_tbl`.`issuedTo` = `emp_masterlist`.`EMP_NO`
+                        WHERE 
+                            `qdnNo` = '$searchForThisQdnNo'
+                        AND
+                            `status` = 0";
         $dataFromDatabase = $db->prepare($dataRequest);
         $dataFromDatabase -> execute();
-
         while($row = $dataFromDatabase->fetch(PDO::FETCH_ASSOC)){
             $id      = $row['id'];
             $qdnNo   = $row['qdnNo'];
             $issuedTo   = $row['issuedTo'];
-            $data[] = array("id" => $id, "qdnNo" => $qdnNo, "issuedTo" => $issuedTo);
+            $pl   = $row['pl'];
+            $data[] = array("id" => $id, "qdnNo" => $qdnNo, "issuedTo" => $issuedTo, "pl" => $pl);
         }
         if ( $data ){
             echo json_encode($data);
@@ -594,7 +602,7 @@ switch ($request) {
     break;
     //===========================================
     //  FOR EMAIL RECEIVER
-    //  ADDED 19 AS PROCESS EMAIL RECEIVERS AND 
+    //  ADDED 92 AS PROCESS EMAIL RECEIVERS AND 
     //  120 AS QND ENGR. FOR EACH RESULTS
     //===========================================
     case 13:
@@ -867,9 +875,9 @@ switch ($request) {
         $status     = $_POST['status'];
         $qndNumber  = $_POST['qndNumber'];
         $Insert = "UPDATE `analysis_tbl`
-                SET
-                `status` = ?
-                WHERE `qdnNo` = ?"; 
+                    SET
+                    `status` = ?
+                    WHERE `qdnNo` = ?"; 
         $stmtinsert = $db->prepare($Insert);
         $result = $stmtinsert->execute([$status, $qndNumber]);
         if ($result){
