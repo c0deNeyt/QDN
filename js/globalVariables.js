@@ -896,20 +896,13 @@ const eventsObject = {
         return fetch(url, { method: 'POST', body: formData });
     },
     removeEmailDuplicates(){
-        let combinedEmailsLen = this.data.length;
-        let emailsArray = "";
-        let test = [];
-        for (let i=0;i<combinedEmailsLen;i++){
-            console.log(this.data[i])
-            // if((emailsArray.indexOf(combinedEmailsLen) == -1) && (emailsArray)){
-            //     emailsArray = emailsArray + ", " + this.data[i];
-            // }
-            // else if ((emailsArray.indexOf(this.data[i]) == -1)){
-            //     emailsArray = emailsArray + this.data[i];
-            // }
-        };
-        // return emailsArray;
-    //    return emailsArray;
+        let emails = this.data;
+        /**This will remove the duplicate emails inside the array*/
+        let uniqueEmails = [...new Set(emails)];
+        return uniqueEmails;
+    },
+    submitForApproval(){
+        
     }
 };
 /**OBJECT TO UNSET THE INSERTED DATA FROM DATABASE USING SEARCH EVENT
@@ -934,7 +927,7 @@ const unsetInsertedData = {
 const emailFormats = {
     initialEmailFormat(){
         // SCRIPT FOR EMAIL SENDING AND EMAIL
-        // console.log("RECEIVERS FROM emailFormats OBJECT",this.receivers);
+        console.log("RECEIVERS FROM emailFormats OBJECT",this.receivers);
         Email.send({
             Host: "smtp.gmail.com",
             Username : "systemqdn2021@gmail.com",

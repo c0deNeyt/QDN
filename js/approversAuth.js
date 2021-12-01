@@ -187,22 +187,26 @@ class approverReq {
     /**Request for containment details*/
     getQdnTableDetails() {
         return new Promise ((resolve, reject) => {
-            let formData = new FormData;
+            const formData = new FormData;
             formData.append(`${this.customParam}`,  this.qdnDbId);
             formData.append('request', this.requestNumber);
-            fetch('./php/getDetails.php', {
-                method: 'POST',
-                body: formData,
-            })
-            .then(response => response.json())
-            .then(result => {
-                resolve(result);
-            })
-            .catch(error => {
-                reject(error);
+            /**AJAX REQUEST */
+            $.ajax({
+                type: 'POST',
+                url: "./php/getDetails.php",
+                data: formData,
+                processData: false,
+                contentType: false,
+                cache: false,
+                dataType: "json",
+                success: function(response){
+                    resolve(response);
+                },
+                error: function(e){
+                    reject(e);
+                }
             });
         });
-    
     }
 };
 /** CLASS FOR ALL ALERTS */
@@ -638,7 +642,6 @@ $('#qdnNumber').on('input keyup', async function(){
                 const approverDetails = await searchRequest.searchQdnDetails();
                 executeApprovers(approverDetails);
                 reAssignEvent.unsetReAssignmentData();
-                
             },
         });
     }
@@ -647,7 +650,6 @@ $('#qdnNumber').on('input keyup', async function(){
         unsetApproval();
         reAssignEvent.unsetReAssignmentData();
     };
-    
 });
 $('#reProcess').on('click', async function(){
     let qndNum = $("#qdnNumber").val().replace(/\s/g,'');
