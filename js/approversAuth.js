@@ -446,28 +446,28 @@ class appendAuth extends approverReq{
     };
 };
 //FUNCTION TO RESPONSIBLE FOR INSTANTIATING
-let executeApprovers = async reqResult =>{
+const executeApprovers = async reqResult =>{
      /**INSTANTIATING... */
      const approverReqExec = new approverReq();  
      /* Request for approvers list */
-     let rawDataProd = await approverReqExec.approversListReq(14);
-     let rawDataEE = await approverReqExec.approversListReq(14.1);
-     let rawDataPE = await approverReqExec.approversListReq(14.2);
-     let rawDataQA = await approverReqExec.approversListReq(14.3);
-     let rawDataO = await approverReqExec.approversListReq(14.4);
+     const rawDataProd = await approverReqExec.approversListReq(14);
+     const rawDataEE = await approverReqExec.approversListReq(14.1);
+     const rawDataPE = await approverReqExec.approversListReq(14.2);
+     const rawDataQA = await approverReqExec.approversListReq(14.3);
+     const rawDataO = await approverReqExec.approversListReq(14.4);
      /** Appending the approvers list to the DOM */
      const appendAuthExec = new appendAuth();
      /** Appending prod approvers... */
-     let PROD = appendAuthExec.appendAuthToDOM(rawDataProd, $("#productionAuth"));
+     const PROD = appendAuthExec.appendAuthToDOM(rawDataProd, $("#productionAuth"));
      /** Appending EE approvers... */
-     let EE = appendAuthExec.appendAuthToDOM(rawDataEE, $("#EEAuth"));
+     const EE = appendAuthExec.appendAuthToDOM(rawDataEE, $("#EEAuth"));
      /** Appending PE approvers... */
-     let PE = appendAuthExec.appendAuthToDOM(rawDataPE, $("#PEAuth"));
+     const PE = appendAuthExec.appendAuthToDOM(rawDataPE, $("#PEAuth"));
      /** Appending QA approvers... */
-     let QA = appendAuthExec.appendAuthToDOM(rawDataQA, $("#qaAuth"));
+     const QA = appendAuthExec.appendAuthToDOM(rawDataQA, $("#qaAuth"));
      /** Appending Others approvers... */
-     let O = appendAuthExec.appendAuthToDOM(rawDataO, $("#othersAuth"));
- 
+     const O = appendAuthExec.appendAuthToDOM(rawDataO, $("#othersAuth"));
+
      /** Instance of Approvers event each param contains selector*/
      const approverEvtExec = new approverEvt();
      /** Prod parameter binding */
@@ -497,23 +497,23 @@ let executeApprovers = async reqResult =>{
     /**rawData of latest QDN Details */
     let objectValues = Object.values(reqResult[0]);
     const currentQDNId =objectValues[objectValues.length -1];
-   /**INSTANTIATING TABLE DATA REQUEST*/
+    /**INSTANTIATING TABLE DATA REQUEST*/
     const contInstance =  new approverReq(currentQDNId, 10,"matchedContainment");  
     const corrInstance =  new approverReq(currentQDNId, 11,"matchedCorrection");  
     const crtvInstance =  new approverReq(currentQDNId, 12,"matchedCorrective"); 
-    /**RAW DATA OF TABLES */
-    const cont = await contInstance.getQdnTableDetails();
-    const corr = await corrInstance.getQdnTableDetails();
-    const crtv = await crtvInstance.getQdnTableDetails();
-    /**INSTANCE OF APPENDING */
-    const onloadApproverAppendCont = new onloadAppendToDOM(cont, currentQDNId, "containment");
-    const onloadApproverAppendCorr = new onloadAppendToDOM(corr, currentQDNId, "correction");
-    const onloadApproverAppendCrtv = new onloadAppendToDOM(crtv, currentQDNId, "corrective");
-    /**Execution of method(appendTableContent) from object onloadAppendToDOM*/
-    onloadApproverAppendCont.appendApproverTableContent();
-    onloadApproverAppendCorr.appendApproverTableContent();
-    onloadApproverAppendCrtv.appendApproverTableContent();
-    /** instantiating approverEvt*/
+    // /**RAW DATA OF TABLES */
+    // const cont = await contInstance.getQdnTableDetails();
+    // const corr = await corrInstance.getQdnTableDetails();
+    // const crtv = await crtvInstance.getQdnTableDetails();
+    // /**INSTANCE OF APPENDING */
+    // const onloadApproverAppendCont = new onloadAppendToDOM(cont, currentQDNId, "containment");
+    // const onloadApproverAppendCorr = new onloadAppendToDOM(corr, currentQDNId, "correction");
+    // const onloadApproverAppendCrtv = new onloadAppendToDOM(crtv, currentQDNId, "corrective");
+    // /**Execution of method(appendTableContent) from object onloadAppendToDOM*/
+    // onloadApproverAppendCont.appendApproverTableContent();
+    // onloadApproverAppendCorr.appendApproverTableContent();
+    // onloadApproverAppendCrtv.appendApproverTableContent();
+    // /** instantiating approverEvt*/
     const approverEvent = new approverEvt(approverSectionIds, objectValues);
     /**Execution of onloadAppendItem Method*/
     approverEvent.onloadAppendItem();     
@@ -529,7 +529,7 @@ let executeApprovers = async reqResult =>{
         approvalOnloadAppendReass.appendReassignment();
     }   
     catch(e){
-        console.log("NO REASSIGNMENT", e);
+        return false;
     }  
 };
 console.log("I need this QDN Number %c OKAY LANG AKO !!!", 'background: #000; color: lightGreen;');
@@ -542,7 +542,7 @@ const approvalUrlParam = parameter.get('qdnNo');
     /**Array of selectors name this if for reference where to append the 
      * items from database*/
     if(approvalUrlParam){
-        console.log("CUSTOM URL", true);
+        // console.log("CUSTOM URL", true);
         document.getElementById("qdnNumber").value = approvalUrlParam;
         try{
             /*INSTANCE OF ONLOAD REQUEST*/

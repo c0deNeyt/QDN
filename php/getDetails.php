@@ -479,7 +479,7 @@ switch ($request) {
                             `containments`.`analysis_tbl_id`
                             FROM 
                                 `telford_db`.`analysis_tbl`
-                            INNER JOIN 
+                            LEFT JOIN 
                                 `telford_db`.`containments`
                                 ON 
                                     `analysis_tbl`.`id` =   `containments`.`analysis_tbl_id`
@@ -524,7 +524,7 @@ switch ($request) {
                             `corrections`.`analysis_tbl_id`
                             FROM 
                                 `telford_db`.`analysis_tbl`
-                            INNER JOIN 
+                            LEFT JOIN 
                                 `telford_db`.`corrections`
                                 ON 
                                     `analysis_tbl`.`id` =   `corrections`.`analysis_tbl_id`
@@ -569,7 +569,7 @@ switch ($request) {
                             `correctives`.`analysis_tbl_id`
                         FROM 
                             `telford_db`.`analysis_tbl`
-                        INNER JOIN 
+                        LEFT JOIN 
                             `telford_db`.`correctives`
                             ON 
                                 `analysis_tbl`.`id` =   `correctives`.`analysis_tbl_id`
