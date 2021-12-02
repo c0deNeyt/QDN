@@ -190,21 +190,16 @@ class approverReq {
             const formData = new FormData;
             formData.append(`${this.customParam}`,  this.qdnDbId);
             formData.append('request', this.requestNumber);
-            /**AJAX REQUEST */
-            $.ajax({
-                type: 'POST',
-                url: "./php/getDetails.php",
-                data: formData,
-                processData: false,
-                contentType: false,
-                cache: false,
-                dataType: "json",
-                success: function(response){
-                    resolve(response);
-                },
-                error: function(e){
-                    reject(e);
-                }
+            fetch('./php/getDetails.php', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(result => {
+                resolve(result);
+            })
+            .catch(error => {
+                reject(error);
             });
         });
     }
@@ -501,19 +496,22 @@ const executeApprovers = async reqResult =>{
     const contInstance =  new approverReq(currentQDNId, 10,"matchedContainment");  
     const corrInstance =  new approverReq(currentQDNId, 11,"matchedCorrection");  
     const crtvInstance =  new approverReq(currentQDNId, 12,"matchedCorrective"); 
-    // /**RAW DATA OF TABLES */
-    // const cont = await contInstance.getQdnTableDetails();
-    // const corr = await corrInstance.getQdnTableDetails();
-    // const crtv = await crtvInstance.getQdnTableDetails();
-    // /**INSTANCE OF APPENDING */
-    // const onloadApproverAppendCont = new onloadAppendToDOM(cont, currentQDNId, "containment");
-    // const onloadApproverAppendCorr = new onloadAppendToDOM(corr, currentQDNId, "correction");
-    // const onloadApproverAppendCrtv = new onloadAppendToDOM(crtv, currentQDNId, "corrective");
-    // /**Execution of method(appendTableContent) from object onloadAppendToDOM*/
-    // onloadApproverAppendCont.appendApproverTableContent();
-    // onloadApproverAppendCorr.appendApproverTableContent();
-    // onloadApproverAppendCrtv.appendApproverTableContent();
-    // /** instantiating approverEvt*/
+    try{    
+          /**RAW DATA OF TABLES */
+        const cont = await contInstance.getQdnTableDetails();
+        const corr = await corrInstance.getQdnTableDetails();
+        const crtv = await crtvInstance.getQdnTableDetails();
+        /**INSTANCE OF APPENDING */
+        const onloadApproverAppendCont = new onloadAppendToDOM(cont, currentQDNId, "containment");
+        const onloadApproverAppendCorr = new onloadAppendToDOM(corr, currentQDNId, "correction");
+        const onloadApproverAppendCrtv = new onloadAppendToDOM(crtv, currentQDNId, "corrective");
+        /**Execution of method(appendTableContent) from object onloadAppendToDOM*/
+        onloadApproverAppendCont.appendApproverTableContent();
+        onloadApproverAppendCorr.appendApproverTableContent();
+        onloadApproverAppendCrtv.appendApproverTableContent();
+        /** instantiating approverEvt*/
+    }catch{}
+  
     const approverEvent = new approverEvt(approverSectionIds, objectValues);
     /**Execution of onloadAppendItem Method*/
     approverEvent.onloadAppendItem();     
@@ -528,9 +526,7 @@ const executeApprovers = async reqResult =>{
         /**EXECUTION OF METHOD APPEND REASSIGNMENT IF EXIST*/
         approvalOnloadAppendReass.appendReassignment();
     }   
-    catch(e){
-        return false;
-    }  
+    catch(e){}  
 };
 console.log("I need this QDN Number %c OKAY LANG AKO !!!", 'background: #000; color: lightGreen;');
 const approval = new Approval();
