@@ -1036,22 +1036,22 @@
     //==============================================================
     // </END OF REPROCESS AND CLOSING QDN BUTTON CLICK EVENTS
     //==============================================================
-    document.onkeydown = function (e) {
-        if (e.keyCode == 123) {
-            return false;
+    document.keydown(function(e) {
+        if(e.which == 123){
+            console.log("Pressed F12")
+            // e.preventDefault();
         }
-        if (e.ctrlKey && e.shiftKey && e.s == 'I'.charCodeAt(0)) {
-            return false;
+        if(e.ctrlKey && e.shiftKey && e.which == 73){
+            e.preventDefault();
         }
-        if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) {
-            return false;
+        if(e.ctrlKey && e.shiftKey && e.which == 75){
+            e.preventDefault();
         }
-        if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
-            return false;
+        if(e.ctrlKey && e.shiftKey && e.which == 67){
+            e.preventDefault();
         }
-        if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
-            return false;
+        if(e.ctrlKey && e.shiftKey && e.which == 74){
+            e.preventDefault();
         }
-    }
-
+});
 

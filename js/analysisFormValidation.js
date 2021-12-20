@@ -390,7 +390,6 @@
                     var correctionStatusVal    = correctionStatus.innerText;
 
                     var newCorrectionCombine   = correctionActVal + correctionRespVal + correctionWhenVal + correctionStatusVal;
-                  
                     if (correctionCombine != newCorrectionCombine){
                       $.ajax({
                         url: './php/update_correction.php',
