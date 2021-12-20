@@ -438,7 +438,7 @@ $(document).on('click', '#forApproval', async function (){
                         /**OVERRIDING reAssParam*/
                         reAssParam.a = "issuedToEmpNo";
                         reAssParam.b = 13;
-                        reAssParam.c = respEmpNo;
+                        reAssParam.c = noReAssResp1EmpNo;
                         /**INSTANCE TO FIND EMAIL RECEIVERS OF RESP EMP*/
                         const initEmpEmailInsNoGandA = new analysisGlobalRequest(reAssParam);
                         /**METHOD TO FETCH EMAIL*/
